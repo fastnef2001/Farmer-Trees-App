@@ -4,8 +4,14 @@ import HeaderComponent from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import Input from '../../components/Input/Input.component';
 import IconSend from '../../assets/images/IconSend.svg';
+import { Button } from '../../components/Button/Button';
+import { Modal } from '../../components/Modal/Modal';
 
 const ChangePassword = ({ navigation }: any) => {
+  const [isModalVisible, setIsModalVisible] = React.useState(false);
+
+  const handleModal = () => setIsModalVisible(() => !isModalVisible);
+
   return (
     <View style={styles.container}>
       <HeaderComponent />
@@ -45,9 +51,7 @@ const ChangePassword = ({ navigation }: any) => {
             // error={errorName}
           />
         </View>
-        <TouchableOpacity
-          style={styles.btnSendSession}
-          onPress={() => navigation.navigate('OTPScreen')}>
+        <TouchableOpacity style={styles.btnSendSession} onPress={handleModal}>
           <View style={styles.txtBtnSignup}>
             <IconSend />
             <Text
@@ -62,6 +66,42 @@ const ChangePassword = ({ navigation }: any) => {
             </Text>
           </View>
         </TouchableOpacity>
+        <Modal isVisible={isModalVisible}>
+          <Modal.Container>
+            <Modal.Header title="Successfully" />
+            <Modal.Body>
+              <Text
+                style={{
+                  fontSize: 14,
+                  textAlign: 'center',
+                  fontWeight: '600',
+                }}>
+                You have successfully changed your password.
+              </Text>
+            </Modal.Body>
+            <Modal.Footer>
+              <View
+                style={{
+                  width: '100%',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                }}>
+                {/* <Button
+                  isRight={false}
+                  isLogin={false}
+                  title="CANCEL"
+                  onPress={handleModal}
+                /> */}
+                <Button
+                  isRight={true}
+                  isLogin={true}
+                  title="LOGIN"
+                  onPress={() => navigation.navigate('LoginScreen')}
+                />
+              </View>
+            </Modal.Footer>
+          </Modal.Container>
+        </Modal>
       </View>
     </View>
   );
