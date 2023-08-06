@@ -40,15 +40,18 @@ const RegistrationScreen = ({ navigation }: any) => {
               // error={errorName}
             />
             <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  marginRight: 24,
-                  marginTop: 4,
-                  lineHeight: 20,
-                }}>
-                Forget password
-              </Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ForgotPasswordScreen')}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    marginRight: 24,
+                    marginTop: 4,
+                    lineHeight: 20,
+                  }}>
+                  Forget password
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

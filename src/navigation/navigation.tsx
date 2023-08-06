@@ -5,7 +5,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home/Home.screen';
 import RegistrationScreen from '../screens/Login/Registration.screen';
 import LoginScreen from '../screens/Login/Login.screen';
+import ForgotPassword from '../screens/Password/ForgotPassword.sceen';
 import Profile from '../screens/Profile/Profile.screen';
+import OTPScreen from '../screens/Password/OTP.screen';
+import ChangePassword from '../screens/Password/ChangePassword.screen';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const Stack = createNativeStackNavigator();
@@ -66,6 +69,21 @@ const MainNavigation = () => {
           name="LoginScreen"
           options={{ headerShown: false }}
           component={LoginScreen}
+        />
+        <Stack.Screen
+          name="ForgotPasswordScreen"
+          options={{ headerShown: false }}
+          component={ForgotPassword}
+        />
+        <Stack.Screen
+          name="OTPScreen"
+          options={{ headerShown: false }}
+          component={OTPScreen}
+        />
+        <Stack.Screen
+          name="ChangePassword"
+          options={{ headerShown: false }}
+          component={ChangePassword}
         />
         {/* add your another screen here using -> Stack.Screen */}
       </Stack.Navigator>
