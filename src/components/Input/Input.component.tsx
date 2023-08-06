@@ -79,7 +79,7 @@ const Input = ({
 const style = StyleSheet.create({
   label: {
     marginVertical: 2,
-    fontSize: 15,
+    fontSize: 12,
     color: COLORS.blue,
   },
   span: {
