@@ -17,7 +17,7 @@ const RegistrationScreen = ({ navigation }: any) => {
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={'#163859'} />
-      <SafeAreaView style={styleLogin as any}>
+      <SafeAreaView style={styleBG as any}>
         <HeaderComponent />
         <View style={{ alignItems: 'center' }}>
           <View style={{ marginTop: 12 }}>
@@ -68,7 +68,9 @@ const RegistrationScreen = ({ navigation }: any) => {
           </TouchableOpacity>
         </View>
         <View style={{ alignItems: 'center' }}>
-          <TouchableOpacity style={styles.signinBtn}>
+          <TouchableOpacity
+            style={styles.signinBtn}
+            onPress={() => navigation.navigate('Farmname')}>
             <View style={styles.txtBtnSignup}>
               <IconSignUp />
               <Text
@@ -104,8 +106,8 @@ const RegistrationScreen = ({ navigation }: any) => {
   );
 };
 
-const styleLogin = StyleSheet.create<any>({
-  backgroundColor: '#FFFFFF',
+const styleBG = StyleSheet.create<any>({
+  backgroundColor: '#F6F6F6',
   height: '100%',
 });
 

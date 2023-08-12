@@ -10,6 +10,8 @@ import Profile from '../screens/Profile/Profile.screen';
 import OTPScreen from '../screens/Password/OTP.screen';
 import ChangePassword from '../screens/Password/ChangePassword.screen';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AddTree from '../screens/Setupfarm/Addtree.screen';
+import Farmname from '../screens/Setupfarm/Farmname.screen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -61,14 +63,14 @@ const MainNavigation = () => {
           component={MyTabs}
         /> */}
         <Stack.Screen
-          name="RegistrationScreen"
-          options={{ headerShown: false }}
-          component={RegistrationScreen}
-        />
-        <Stack.Screen
           name="LoginScreen"
           options={{ headerShown: false }}
           component={LoginScreen}
+        />
+        <Stack.Screen
+          name="RegistrationScreen"
+          options={{ headerShown: false }}
+          component={RegistrationScreen}
         />
         <Stack.Screen
           name="ForgotPasswordScreen"
@@ -84,6 +86,16 @@ const MainNavigation = () => {
           name="ChangePassword"
           options={{ headerShown: false }}
           component={ChangePassword}
+        />
+        <Stack.Screen
+          name="AddTree"
+          options={{ headerShown: false }}
+          component={AddTree}
+        />
+        <Stack.Screen
+          name="Farmname"
+          options={{ headerShown: false }}
+          component={Farmname}
         />
         {/* add your another screen here using -> Stack.Screen */}
       </Stack.Navigator>

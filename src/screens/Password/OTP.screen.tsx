@@ -104,7 +104,7 @@ export default OTPScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F6F6F6',
     height: '100%',
   },
   headSession: {
