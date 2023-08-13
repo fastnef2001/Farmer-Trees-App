@@ -2,17 +2,13 @@ import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
-    flex: 2,
-    paddingTop: 10,
-    paddingHorizontal: 10,
     alignItems: 'center',
+    marginTop: 16,
   },
   textTitleContainer: {
-    marginTop: 10,
     fontSize: 26,
     fontWeight: 'bold',
     color: '#163859',
-    textAlign: 'center',
   },
   textRightLogo: { fontSize: 14, color: '#FFFFFF', fontWeight: 'bold' },
   formSection: {
@@ -26,8 +22,6 @@ export default StyleSheet.create({
   },
   formSectionLogin: {
     backgroundColor: '#FFFFFF',
-    width: 347,
-    height: 200,
     marginTop: 34,
     borderRadius: 15,
     shadowColor: '#000',
@@ -35,26 +29,32 @@ export default StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
     shadowOffset: { width: -2, height: 4 },
+    padding: 16,
+    width: '90%',
   },
   txtBottomFormSignin: {
-    paddingVertical: 24,
-    paddingHorizontal: 36,
+    width: '90%',
+    paddingTop: 16,
+    paddingBottom: 24,
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   signinBtn: {
-    width: 350,
+    width: '90%',
     height: 48,
     backgroundColor: '#163859',
     borderRadius: 10,
   },
   signupGoogleBtn: {
     marginTop: 12,
-    width: 350,
+    width: '90%',
     height: 48,
     backgroundColor: '#FFFFFF',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#163859',
+    marginBottom: 24,
   },
   txtBtnSignup: {
     marginTop: 12,

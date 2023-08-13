@@ -67,11 +67,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-    paddingTop: 10,
+
+    fontFamily: 'Nunito',
+    fontSize: 20,
+    fontWeight: '700',
+    lineHeight: 28,
+    letterSpacing: 0,
     textAlign: 'center',
-    fontSize: 24,
     color: '#163859',
-    fontWeight: 'bold',
   },
   body: {
     justifyContent: 'center',

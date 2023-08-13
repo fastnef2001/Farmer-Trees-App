@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   SafeAreaView,
@@ -10,7 +11,7 @@ import {
 import HeaderComponent from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconAdd from '../../assets/images/IconAdd.svg';
-import { Modal } from '../../components/Modal/Modal';
+import { ModalInsert } from '../../components/Modal/ModalInsert';
 import { Button } from '../../components/Button/Button';
 
 const Addtree = ({ navigation }: any) => {
@@ -19,7 +20,7 @@ const Addtree = ({ navigation }: any) => {
   const handleModal = () => setIsModalVisible(() => !isModalVisible);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styleLogin as any}>
       <HeaderComponent />
       <View style={styles.headSession}>
         <TouchableOpacity onPress={() => navigation.navigate('Farmname')}>
@@ -39,43 +40,28 @@ const Addtree = ({ navigation }: any) => {
       <TouchableOpacity onPress={handleModal} style={styles.buttonAdd}>
         <IconAdd />
       </TouchableOpacity>
-      <Modal isVisible={isModalVisible}>
-        <Modal.Container>
-          <Modal.Header title="Successfully" />
-          <Modal.Body>
-            <Text
-              style={{
-                fontSize: 14,
-                textAlign: 'center',
-                fontWeight: '600',
-              }}>
-              You have successfully registered, please login.
-            </Text>
-          </Modal.Body>
-          <Modal.Footer>
-            <View
-              style={{
-                width: '100%',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}>
-              <Button
-                isRight={false}
-                isLogin={false}
-                title="CANCEL"
-                onPress={handleModal}
-              />
-              <Button
-                isRight={true}
-                isLogin={true}
-                title="LOGIN"
-                onPress={() => navigation.navigate('LoginScreen')}
+
+      <ModalInsert isVisible={isModalVisible}>
+        <ModalInsert.Container>
+          <ModalInsert.Header>
+            <View style={styles.headSessionModal}>
+              <TouchableOpacity onPress={handleModal}>
+                <IconBack> </IconBack>
+              </TouchableOpacity>
+              <View style={styles.txtContainer}>
+                <Text style={styles.txtTitleModal}>Add tree</Text>
+              </View>
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                }}
               />
             </View>
-          </Modal.Footer>
-        </Modal.Container>
-      </Modal>
-    </View>
+          </ModalInsert.Header>
+        </ModalInsert.Container>
+      </ModalInsert>
+    </SafeAreaView>
   );
 };
 
@@ -98,6 +84,15 @@ const styles = StyleSheet.create({
     marginTop: 14,
     height: 40,
   },
+  headSessionModal: {
+    flexDirection: 'row',
+    width: '100%',
+    maxHeight: '100%',
+    paddingRight: 0,
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
+  },
+
   txtTitle: {
     marginLeft: 20,
     fontSize: 20,
@@ -105,6 +100,25 @@ const styles = StyleSheet.create({
     color: '#163859',
     lineHeight: 28,
     textAlign: 'center',
+  },
+
+  txtContainer: {
+    height: 40,
+    width: '100%',
+    backgroundColor: '#163859',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  txtTitleModal: {
+    fontFamily: 'Nunito',
+    fontSize: 20,
+    fontWeight: '700',
+    lineHeight: 27,
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: '#ffffff',
   },
   buttonAdd: {
     flex: 1,
