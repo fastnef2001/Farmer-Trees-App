@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-
     fontFamily: 'Nunito',
     fontSize: 20,
     fontWeight: '700',
