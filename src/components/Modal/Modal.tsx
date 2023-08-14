@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import { StyleSheet, View, Text, Button } from 'react-native';
 import RNModal from 'react-native-modal';
@@ -33,21 +34,23 @@ const ModalContainer = ({ children }: { children: React.ReactNode }) => (
 
 const ModalHeader = ({ title }: { title: string }) => (
   <View style={styles.header}>
-    <IconDone style={{ marginTop: 18 }} />
+    <IconDone />
     <Text style={styles.text}>{title}</Text>
     <View
       style={{
-        width: '80%',
-        backgroundColor: 'gray',
+        width: '100%',
+        backgroundColor: '#C1C1C7',
         height: 1,
-        marginTop: 18,
+        marginTop: 12,
       }}
     />
   </View>
 );
 
-const ModalBody = ({ children }: { children?: React.ReactNode }) => (
-  <View style={styles.body}>{children}</View>
+const ModalBody = ({ title }: { title: string }) => (
+  <View style={styles.body}>
+    <Text style={styles.textbody}>{title}</Text>
+  </View>
 );
 
 const ModalFooter = ({ children }: { children?: React.ReactNode }) => (
@@ -61,6 +64,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#163859',
     borderStyle: 'solid',
+    padding: 16,
+    maxWidth: 327,
+    //đưa thẻ Container về giữa màn hình
+    alignSelf: 'center',
+    width: '100%',
   },
   header: {
     alignItems: 'center',
@@ -74,17 +82,27 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
     textAlign: 'center',
     color: '#163859',
+    marginTop: 16,
   },
   body: {
+    alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 15,
-    minHeight: 60,
+    marginTop: 16,
+    width: '100%',
+  },
+
+  textbody: {
+    fontFamily: 'Nunito',
+    fontSize: 14,
+    fontWeight: '400',
+    lineHeight: 20,
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: '#636366',
+    width: '100%',
   },
   footer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-    flexDirection: 'row',
+    marginTop: 24,
   },
 });
 

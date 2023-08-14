@@ -1,131 +1,141 @@
+/* eslint-disable react-native/no-inline-styles */
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import HeaderComponent from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconVerify from '../../assets/images/IconVerify.svg';
-import Input from '../../components/Input/Input.component';
 import OTPTextView from 'react-native-otp-textinput';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const OTPScreen = ({ navigation }: any) => {
   return (
-    <View style={styles.container}>
-      <HeaderComponent />
-      <View style={styles.headSession}>
-        <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-          <IconBack
-            style={{
-              alignItems: 'center',
-              marginLeft: 18,
-              width: '100%',
-              marginTop: 2,
-            }}
-          />
-        </TouchableOpacity>
-        <View>
-          <Text style={styles.txtForgotPassword}>Verify with OTP</Text>
-        </View>
-      </View>
-      <View style={styles.inputSession}>
-        <Text
-          style={{
-            marginTop: 18,
-            marginLeft: 18,
-            width: '100%',
-            lineHeight: 20,
-            fontSize: 14,
-            fontWeight: '400',
-            color: '#636366',
-          }}>
-          OTP code has been sent to 0869889453
-        </Text>
-        <View
-          style={{
-            marginTop: 16,
-            width: 300,
-            alignItems: 'center',
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}>
-          <OTPTextView
-            inputCount={5}
-            containerStyle={styles.textInputContainer}
-            textInputStyle={styles.roundedTextInput}
-            tintColor="#636366"
-            keyboardType="numeric"
-          />
-        </View>
-        <TouchableOpacity
-          style={styles.btnSendSession}
-          onPress={() => navigation.navigate('ChangePassword')}>
-          <View style={styles.txtBtnSignup}>
-            <IconVerify />
+    <>
+      <ScrollView>
+        <HeaderComponent />
+        <View style={styles.container}>
+          {/* Title */}
+          <View style={styles.headSession}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('LoginScreen')}>
+              <IconBack />
+            </TouchableOpacity>
+            <View style={{ width: 8 }} />
+            <View>
+              <Text style={styles.txtForgotPassword}>Verify with OTP</Text>
+            </View>
+          </View>
+          {/* Form */}
+          <View style={styles.inputSession}>
             <Text
               style={{
-                fontSize: 16,
-                textAlign: 'center',
-                color: '#FFFFFF',
-                fontWeight: 'bold',
-                marginLeft: 18,
+                fontFamily: 'Nunito',
+                fontSize: 14,
+                fontWeight: '400',
+                lineHeight: 20,
+                letterSpacing: 0,
+                textAlign: 'left',
+                color: '#636366',
+                width: '100%',
               }}>
-              VERIFY
+              OTP code has been sent to 0869889453
             </Text>
+            <View style={{ height: 32 }} />
+            <View style={styles.containerOTP}>
+              <OTPTextView
+                inputCount={5}
+                textInputStyle={styles.roundedTextInput}
+                tintColor="#163859"
+                keyboardType="numeric"
+              />
+            </View>
           </View>
-        </TouchableOpacity>
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          marginTop: 15,
-          width: 400,
-          marginLeft: 28,
-          marginHorizontal: 8,
-        }}>
-        <Text style={{ fontWeight: '400', fontSize: 14, lineHeight: 20 }}>
-          Did not you receive the OTP code?
-        </Text>
-        <TouchableOpacity style={{ marginLeft: 8 }}>
-          <Text
-            style={{
-              color: '#163859',
-              fontWeight: '400',
-              fontSize: 14,
-              lineHeight: 20,
-            }}>
-            Resend code
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          {/* ResendOTP */}
+          <View style={styles.txtBottomFormResend}>
+            <Text
+              style={{
+                fontFamily: 'Nunito',
+                fontSize: 14,
+                fontWeight: '500',
+                lineHeight: 20,
+                letterSpacing: 0,
+                textAlign: 'left',
+                color: '#636366',
+              }}>
+              Did not you receive the OTP?{' '}
+            </Text>
+            <TouchableOpacity>
+              <Text
+                style={{
+                  fontFamily: 'Nunito',
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                  lineHeight: 20,
+                  letterSpacing: 0,
+                  textAlign: 'left',
+                  color: '#163859',
+                }}>
+                Resend
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity
+            style={styles.btnSendSession}
+            onPress={() => navigation.navigate('ChangePassword')}>
+            <View style={styles.txtBtnSignup}>
+              <IconVerify />
+              <View style={{ width: 16 }} />
+              <Text
+                style={{
+                  fontSize: 16,
+                  textAlign: 'center',
+                  color: '#FFFFFF',
+                  fontWeight: 'bold',
+                }}>
+                VERIFY
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </>
   );
 };
 
 export default OTPScreen;
 
 const styles = StyleSheet.create({
+  containerOTP: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
   container: {
     flex: 1,
-    backgroundColor: '#F6F6F6',
     height: '100%',
+    alignItems: 'center',
+    marginTop: 16,
   },
   headSession: {
     flexDirection: 'row',
-    width: '100%',
-    marginTop: 14,
+    width: '90%',
     height: 40,
+    alignContent: 'center',
+    alignItems: 'center',
   },
   txtForgotPassword: {
-    marginLeft: 20,
     fontSize: 20,
     fontWeight: '700',
     color: '#163859',
     lineHeight: 28,
   },
   inputSession: {
-    width: 360,
+    width: '90%',
+    padding: 16,
     height: 170,
     backgroundColor: '#FFFFFF',
     alignSelf: 'center',
-    marginTop: 24,
+    marginTop: 32,
     borderRadius: 15,
     shadowColor: '#000',
     elevation: 4,
@@ -134,26 +144,35 @@ const styles = StyleSheet.create({
     shadowOffset: { width: -2, height: 4 },
   },
   btnSendSession: {
-    marginTop: 86,
-    width: '100%',
+    width: '90%',
     height: 48,
     backgroundColor: '#163859',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   txtBtnSignup: {
-    marginTop: 12,
     justifyContent: 'center',
     flexDirection: 'row',
   },
-  textInputContainer: {
-    marginLeft: 55,
-    marginBottom: 18,
-    marginTop: 18,
-  },
   roundedTextInput: {
-    borderRadius: 10,
-    borderWidth: 4,
+    width: 45,
+    height: 45,
+    borderRadius: 8,
+    borderColor: '#163859',
+    borderWidth: 1,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#163859',
+    fontFamily: 'Nunito',
+  },
+  txtBottomFormResend: {
+    width: '90%',
+    paddingTop: 16,
+    paddingBottom: 32,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import React from 'react';
 import HeaderComponent from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
@@ -7,63 +14,69 @@ import Input from '../../components/Input/Input.component';
 
 const ForgotPassword = ({ navigation }: any) => {
   return (
-    <View style={styles.container}>
-      <HeaderComponent />
-      <View style={styles.headSession}>
-        <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-          <IconBack
-            style={{
-              alignItems: 'center',
-              marginLeft: 18,
-              width: '100%',
-              marginTop: 2,
-            }}
-          />
-        </TouchableOpacity>
-        <View>
-          <Text style={styles.txtForgotPassword}>Forgot your password</Text>
-        </View>
-      </View>
-      <View style={styles.inputSession}>
-        <Text
-          style={{
-            marginTop: 18,
-            lineHeight: 20,
-            fontSize: 14,
-            fontWeight: '400',
-            color: '#636366',
-          }}>
-          Enter your registered phone number below to receive password reset
-          instructions.
-        </Text>
-        <View style={{ marginTop: 16, width: '100%' }}>
-          <Input
-            label="Phone number"
-            placeholder="+ 84"
-            span="*"
-            // onChangeText={nameInput => setName(nameInput)}
-            // error={errorName}
-          />
-        </View>
-        <TouchableOpacity
-          style={styles.btnSendSession}
-          onPress={() => navigation.navigate('OTPScreen')}>
-          <View style={styles.txtBtnSignup}>
-            <IconSend />
+    <>
+      <ScrollView>
+        <HeaderComponent />
+        <View style={styles.container}>
+          {/* Title */}
+          <View style={styles.headSession}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('LoginScreen')}>
+              <IconBack />
+            </TouchableOpacity>
+            <View style={{ width: 8 }} />
+            <View>
+              <Text style={styles.txtForgotPassword}>Forgot your password</Text>
+            </View>
+          </View>
+          {/* Form */}
+          <View style={styles.inputSession}>
             <Text
               style={{
-                fontSize: 16,
-                textAlign: 'center',
-                color: '#FFFFFF',
-                fontWeight: 'bold',
-                marginLeft: 18,
+                fontFamily: 'Nunito',
+                fontSize: 14,
+                fontWeight: '400',
+                lineHeight: 20,
+                letterSpacing: 0,
+                textAlign: 'left',
+                color: '#636366',
+                width: '100%',
               }}>
-              SEND
+              Enter your registered phone number below to receive password reset
+              instructions.
             </Text>
+            <View style={{ height: 32 }} />
+            <Input
+              label="Phone number"
+              placeholder="+ 84"
+              span="*"
+              keyboardType="numeric"
+              // onChangeText={nameInput => setName(nameInput)}
+              // error={errorName}
+            />
           </View>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <View style={{ height: 32 }} />
+          <TouchableOpacity
+            style={styles.btnSendSession}
+            onPress={() => navigation.navigate('OTPScreen')}>
+            <View style={styles.txtBtnSignup}>
+              <IconSend />
+              <View style={{ width: 16 }} />
+              <Text
+                style={{
+                  fontSize: 16,
+                  textAlign: 'center',
+                  color: '#FFFFFF',
+                  fontWeight: 'bold',
+                  marginLeft: 0,
+                }}>
+                SEND
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </>
   );
 };
 
@@ -71,18 +84,19 @@ export default ForgotPassword;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#F6F6F6',
+    marginTop: 16,
+    alignItems: 'center',
     height: '100%',
   },
   headSession: {
     flexDirection: 'row',
-    width: '100%',
-    marginTop: 14,
+    width: '90%',
     height: 40,
+    alignContent: 'center',
+    alignItems: 'center',
   },
+
   txtForgotPassword: {
-    marginLeft: 20,
     fontSize: 20,
     fontWeight: '700',
     color: '#163859',
@@ -90,8 +104,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputSession: {
-    width: 360,
-    height: 170,
+    width: '90%',
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     alignSelf: 'center',
@@ -102,19 +115,21 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
     shadowOffset: { width: -2, height: 4 },
+    padding: 16,
   },
   btnSendSession: {
-    marginTop: 46,
-    width: '100%',
+    width: '90%',
     height: 48,
     backgroundColor: '#163859',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   txtBtnSignup: {
-    marginTop: 12,
     justifyContent: 'center',
     flexDirection: 'row',
+    alignItems: 'center',
   },
 });

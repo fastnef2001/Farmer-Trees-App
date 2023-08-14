@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   SafeAreaView,
@@ -13,7 +14,7 @@ import HeaderComponent from '../../components/Header/Header.component';
 import Input from '../../components/Input/Input.component';
 import IconSignUp from '../../assets/images/IconSignUp.svg';
 import IconGoogle from '../../assets/images/IconGoogle.svg';
-import { Button } from '../../components/Button/Button';
+import { ButtonBack, ButtonLogin } from '../../components/Button/Button';
 import { Modal } from '../../components/Modal/Modal';
 
 const RegistrationScreen = ({ navigation }: any) => {
@@ -137,67 +138,27 @@ const RegistrationScreen = ({ navigation }: any) => {
             </TouchableOpacity>
           </View>
 
-          {/* <View style={{ alignItems: 'center' }}>
-            <TouchableOpacity style={styles.signinBtn} onPress={handleModal}>
-              <View style={styles.txtBtnSignup}>
-                <IconSignUp />
-                <Text
-                  style={{
-                    fontSize: 16,
-                    textAlign: 'center',
-                    color: '#FFF',
-                    fontWeight: 'bold',
-                    marginLeft: 18,
-                  }}>
-                  SIGN UP
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.signupGoogleBtn}>
-              <View style={styles.txtBtnSignup}>
-                <IconGoogle />
-                <Text
-                  style={{
-                    fontSize: 16,
-                    textAlign: 'center',
-                    color: '#163859',
-                    fontWeight: 'bold',
-                    marginLeft: 18,
-                  }}>
-                  Sign up with Google
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View> */}
           <Modal isVisible={isModalVisible}>
             <Modal.Container>
               <Modal.Header title="Successfully" />
-              <Modal.Body>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    textAlign: 'center',
-                    fontWeight: '600',
-                  }}>
-                  You have successfully registered, please login.
-                </Text>
-              </Modal.Body>
+              <Modal.Body title="You have successfully registered, please login." />
               <Modal.Footer>
                 <View
                   style={{
-                    width: '100%',
                     flexDirection: 'row',
                     justifyContent: 'space-between',
+                    paddingHorizontal: 8,
                   }}>
-                  <Button
+                  <ButtonBack
                     isRight={false}
                     isLogin={false}
                     title="CANCEL"
                     onPress={handleModal}
                   />
-                  <Button
+                  <View style={{ width: 16 }} />
+                  <ButtonLogin
                     isRight={true}
-                    isLogin={true}
+                    isLogin={false}
                     title="LOGIN"
                     onPress={() => navigation.navigate('LoginScreen')}
                   />

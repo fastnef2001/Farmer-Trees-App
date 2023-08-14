@@ -1,7 +1,9 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-dupe-keys */
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import IconSignUp from '../../assets/images/IconSignUp.svg';
-import IconBack from '../../assets/images/IconBack.svg';
+import IconBackSmall from '../../assets/images/IconBackSmall.svg';
 
 export type ButtonProps = {
   title: string;
@@ -9,25 +11,41 @@ export type ButtonProps = {
   isLogin?: boolean;
   onPress: () => void;
 };
-export const Button = ({ isLogin, isRight, title, onPress }: ButtonProps) => {
+
+export const ButtonBack = ({ isRight, title, onPress }: ButtonProps) => {
   return (
     <TouchableOpacity
       style={isRight ? styles.button : styles.buttonLeft}
       onPress={onPress}>
-      <View>
-        {isLogin ? (
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <IconSignUp style={{ marginRight: 8 }} />
-            <Text style={isRight ? styles.text : styles.textLeft}>{title}</Text>
-          </View>
-        ) : (
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <IconBack style={{ marginRight: 8 }} />
-            <Text style={isRight ? styles.text : styles.textLeft}>{title}</Text>
-          </View>
-        )}
+      <View
+        style={{
+          flexDirection: 'row',
+          // tôi muốn hai cái icon và text nằm trên cùng một hàng và cách nhau 4px
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        <IconBackSmall />
+        <View style={{ width: 4 }} />
+        <Text style={isRight ? styles.text : styles.textLeft}>{title}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+export const ButtonLogin = ({ isRight, title, onPress }: ButtonProps) => {
+  return (
+    <TouchableOpacity
+      style={isRight ? styles.button : styles.buttonLeft}
+      onPress={onPress}>
+      <View
+        style={{
+          flexDirection: 'row',
+          // tôi muốn hai cái icon và text nằm trên cùng một hàng và cách nhau 4px
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        <IconSignUp />
+        <View style={{ width: 4 }} />
+        <Text style={isRight ? styles.text : styles.textLeft}>{title}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -35,33 +53,46 @@ export const Button = ({ isLogin, isRight, title, onPress }: ButtonProps) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#163859',
-    marginTop: 15,
-    paddingVertical: 15,
-    borderRadius: 15,
-    marginRight: 10,
-    width: '42%',
+    justifyContent: 'center',
     alignItems: 'center',
+    gap: 10,
+    backgroundColor: '#163859',
+    flexDirection: 'row',
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 10,
+    height: 48,
+    flex: 1,
   },
   buttonLeft: {
-    backgroundColor: '#FFFFFF',
-    marginTop: 15,
-    paddingVertical: 15,
-    borderRadius: 15,
-    marginLeft: 10,
-    width: '42%',
+    justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#163859',
+    gap: 10,
     borderWidth: 1,
+    borderColor: '#163859',
+    borderStyle: 'solid',
+    backgroundColor: '#ffffff',
+    flexDirection: 'row',
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 10,
+    height: 48,
+    flex: 1,
   },
   text: {
-    color: 'white',
+    color: '#ffffff',
+    fontFamily: 'Nunito',
+    fontSize: 16,
+    fontStyle: 'normal',
     fontWeight: '700',
-    fontSize: 18,
+    height: '100%',
   },
   textLeft: {
     color: '#163859',
+    fontFamily: 'Nunito',
+    fontSize: 16,
+    fontStyle: 'normal',
     fontWeight: '700',
-    fontSize: 18,
+    height: '100%',
   },
 });
