@@ -14,25 +14,23 @@ import IconContinue from '../../assets/images/IconContinue.svg';
 
 const Farmname = ({ navigation }: any) => {
   return (
-    <View style={styles.container}>
+    <>
       <HeaderComponent />
-      <View style={styles.headSession}>
-        <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-          <IconBack
-            style={{
-              alignItems: 'center',
-              marginLeft: 18,
-              width: '100%',
-              marginTop: 2,
-            }}
-          />
-        </TouchableOpacity>
-        <View>
-          <Text style={styles.txtTitle}>Enter your farm name</Text>
+      <View style={styles.container}>
+        {/* Title */}
+        <View style={styles.headSession}>
+          <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+            <IconBack />
+          </TouchableOpacity>
+          <View style={{ width: 8 }} />
+          <View>
+            <Text style={styles.txtTitle}>Enter your farm name</Text>
+          </View>
         </View>
-      </View>
-      <View style={styles.inputSession}>
-        <View style={{ margin: 16, width: '100%' }}>
+
+        <View style={{ height: 32 }} />
+        {/* Form */}
+        <View style={styles.inputSession}>
           <Input
             label="Farm name"
             placeholder="Enter your farm name"
@@ -41,25 +39,28 @@ const Farmname = ({ navigation }: any) => {
             // error={errorName}
           />
         </View>
+
+        <View style={{ height: 32 }} />
+        {/* Button continue */}
+        <TouchableOpacity
+          style={styles.btnSession}
+          onPress={() => navigation.navigate('AddTree')}>
+          <View style={styles.txtBtn}>
+            <IconContinue />
+            <View style={{ width: 16 }} />
+            <Text
+              style={{
+                fontSize: 16,
+                textAlign: 'center',
+                color: '#FFFFFF',
+                fontWeight: 'bold',
+              }}>
+              CONTINUE
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={styles.btnSession}
-        onPress={() => navigation.navigate('AddTree')}>
-        <View style={styles.txtBtn}>
-          <IconContinue />
-          <Text
-            style={{
-              fontSize: 16,
-              textAlign: 'center',
-              color: '#FFFFFF',
-              fontWeight: 'bold',
-              marginLeft: 18,
-            }}>
-            CONTINUE
-          </Text>
-        </View>
-      </TouchableOpacity>
-    </View>
+    </>
   );
 };
 
@@ -73,17 +74,17 @@ export default Farmname;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
     height: '100%',
+    alignItems: 'center',
+    marginTop: 16,
   },
   headSession: {
     flexDirection: 'row',
-    width: '100%',
-    marginTop: 14,
+    width: '90%',
     height: 40,
+    alignItems: 'center',
   },
   txtTitle: {
-    marginLeft: 20,
     fontSize: 20,
     fontWeight: '700',
     color: '#163859',
@@ -91,12 +92,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputSession: {
-    display: 'flex',
-    marginLeft: 16,
-    marginRight: 16,
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginVertical: 32,
+    width: '90%',
+    padding: 16,
     borderRadius: 12,
     backgroundColor: 'white',
     shadowColor: 'black',
@@ -109,17 +106,16 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   btnSession: {
-    marginLeft: 16,
-    marginRight: 16,
     height: 48,
     backgroundColor: '#163859',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#FFFFFF',
+    width: '90%',
   },
   txtBtn: {
-    marginTop: 12,
     justifyContent: 'center',
     flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
 });
