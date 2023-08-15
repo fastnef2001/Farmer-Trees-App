@@ -16,52 +16,47 @@ import Farmname from '../screens/Setupfarm/Farmname.screen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function MyTabs() {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen
-        name="Login"
-        component={RegistrationScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ color }: any) => {
-            return <Icon name={'ios-home'} size={25} color={color} />;
-          },
-        }}
-      />
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ color }: any) => {
-            return <Icon name={'ios-home'} size={25} color={color} />;
-          },
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({ color }: any) => {
-            return <Icon name={'ios-settings'} size={25} color={color} />;
-          },
-        }}
-      />
-    </Tab.Navigator>
-  );
-}
+// function MyTabs() {
+//   return (
+//     <Tab.Navigator>
+//       <Tab.Screen
+//         name="Login"
+//         component={RegistrationScreen}
+//         options={{
+//           headerShown: false,
+//           tabBarIcon: ({ color }: any) => {
+//             return <Icon name={'ios-home'} size={25} color={color} />;
+//           },
+//         }}
+//       />
+//       <Tab.Screen
+//         name="Home"
+//         component={Home}
+//         options={{
+//           headerShown: false,
+//           tabBarIcon: ({ color }: any) => {
+//             return <Icon name={'ios-home'} size={25} color={color} />;
+//           },
+//         }}
+//       />
+//       <Tab.Screen
+//         name="Profile"
+//         component={Profile}
+//         options={{
+//           headerShown: false,
+//           tabBarIcon: ({ color }: any) => {
+//             return <Icon name={'ios-settings'} size={25} color={color} />;
+//           },
+//         }}
+//       />
+//     </Tab.Navigator>
+//   );
+// }
 
 const MainNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* <Stack.Screen
-          name="HomeBase"
-          options={{ headerShown: false }}
-          component={MyTabs}
-        /> */}
         <Stack.Screen
           name="LoginScreen"
           options={{ headerShown: false }}

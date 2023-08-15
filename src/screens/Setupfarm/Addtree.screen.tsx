@@ -12,7 +12,7 @@ import HeaderComponent from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconAdd from '../../assets/images/IconAdd.svg';
 import { ModalInsert } from '../../components/Modal/ModalInsert';
-import { Button } from '../../components/Button/Button';
+// import { Button } from '../../components/Button/Button';
 
 const Addtree = ({ navigation }: any) => {
   const [isModalVisible, setIsModalVisible] = React.useState(false);
@@ -20,28 +20,25 @@ const Addtree = ({ navigation }: any) => {
   const handleModal = () => setIsModalVisible(() => !isModalVisible);
 
   return (
-    <SafeAreaView style={styleLogin as any}>
+    <>
       <HeaderComponent />
-      <View style={styles.headSession}>
-        <TouchableOpacity onPress={() => navigation.navigate('Farmname')}>
-          <IconBack
-            style={{
-              alignItems: 'center',
-              marginLeft: 18,
-              width: '100%',
-              marginTop: 2,
-            }}
-          />
-        </TouchableOpacity>
-        <View>
-          <Text style={styles.txtTitle}>Add trees for Fastnef Farm</Text>
+      <View style={styles.container}>
+        {/* Title */}
+        <View style={styles.headSession}>
+          <TouchableOpacity onPress={() => navigation.navigate('Farmname')}>
+            <IconBack />
+          </TouchableOpacity>
+          <View style={{ width: 8 }} />
+          <View>
+            <Text style={styles.txtTitle}>Add trees for Farm</Text>
+          </View>
         </View>
+        <TouchableOpacity onPress={handleModal} style={styles.buttonAdd}>
+          <IconAdd />
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={handleModal} style={styles.buttonAdd}>
-        <IconAdd />
-      </TouchableOpacity>
 
-      <ModalInsert isVisible={isModalVisible}>
+      {/* <ModalInsert isVisible={isModalVisible}>
         <ModalInsert.Container>
           <ModalInsert.Header>
             <View style={styles.headSessionModal}>
@@ -60,29 +57,25 @@ const Addtree = ({ navigation }: any) => {
             </View>
           </ModalInsert.Header>
         </ModalInsert.Container>
-      </ModalInsert>
-    </SafeAreaView>
+      </ModalInsert> */}
+    </>
   );
 };
-
-const styleLogin = StyleSheet.create<any>({
-  backgroundColor: '#FFFFFF',
-  height: '100%',
-});
 
 export default Addtree;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
     height: '100%',
+    alignItems: 'center',
+    marginTop: 16,
   },
   headSession: {
     flexDirection: 'row',
-    width: '100%',
-    marginTop: 14,
+    width: '90%',
     height: 40,
+    alignItems: 'center',
   },
   headSessionModal: {
     flexDirection: 'row',
@@ -94,7 +87,6 @@ const styles = StyleSheet.create({
   },
 
   txtTitle: {
-    marginLeft: 20,
     fontSize: 20,
     fontWeight: '700',
     color: '#163859',

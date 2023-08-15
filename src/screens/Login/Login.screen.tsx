@@ -19,7 +19,6 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 const RegistrationScreen = ({ navigation }: any) => {
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor={'#163859'} />
       <HeaderComponent />
       <ScrollView>
         <SafeAreaView style={styleBG as any}>
