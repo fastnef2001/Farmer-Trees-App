@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, Button, TouchableOpacity } from 'react-native';
 import RNModal from 'react-native-modal';
 import IconBack from '../../assets/images/IconBack.svg';
+import { ScrollView } from 'react-native-gesture-handler';
 
 type ModalProps = {
   isVisible: boolean;
@@ -21,7 +22,7 @@ export const ModalInsert = ({
       animationOutTiming={1000}
       backdropTransitionInTiming={800}
       backdropTransitionOutTiming={800}
-      style={{ margin: 0 }}
+      style={{ margin: 0,}}
       {...props}>
       {children}
     </RNModal>
@@ -43,18 +44,15 @@ const ModalInsertFooter = ({ children }: { children?: React.ReactNode }) => (
 
 const styles = StyleSheet.create({
   container: {
-    height: '50%',
     width: '100%',
     backgroundColor: '#ffffff',
-    position: 'absolute', // Tương ứng với top: 364px
-    left: 0,
-    right: 0,
+    position: 'absolute',
     bottom: 0,
-    borderTopLeftRadius: 12, // Tương ứng với border-radius: 12px 12px 0px 0px
+    borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
-    flexDirection: 'column', // Flex direction mặc định của React Native là column
-    alignItems: 'stretch', // Stretch tương ứng với "Hug" trong Figma
-    justifyContent: 'flex-start', // Tương ứng với top alignment trong Figma
+    paddingHorizontal: 8,
+    paddingTop: 8,
+    maxHeight: 500,
   },
   header: {
     alignItems: 'center',
@@ -68,9 +66,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   body: {
-    justifyContent: 'center',
-    paddingHorizontal: 15,
-    minHeight: 60,
+    width: '90%',
+    alignSelf: 'center',
   },
   footer: {
     justifyContent: 'center',
