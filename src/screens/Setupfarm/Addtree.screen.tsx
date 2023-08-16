@@ -1,5 +1,6 @@
+/* eslint-disable no-const-assign */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -8,7 +9,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
 } from 'react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
 import HeaderComponent from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconAdd from '../../assets/images/IconAdd.svg';
@@ -17,12 +20,29 @@ import IconSend from '../../assets/images/IconSend.svg';
 import IconDeleteRed from '../../assets/images/IconDeleteRed.svg';
 import { ModalInsert } from '../../components/Modal/ModalInsert';
 import { ScrollView } from 'react-native-gesture-handler';
+import IconUpload from '../../assets/images/IconUpload.svg';
+
 // import { Button } from '../../components/Button/Button';
 
 const Addtree = ({ navigation }: any) => {
   const [isModalVisible, setIsModalVisible] = React.useState(false);
+  const [selectImage, setSelectImage] = useState('');
 
   const handleModal = () => setIsModalVisible(() => !isModalVisible);
+  const handleModalImagePicker = () => {
+    const option = {
+      storageOptions: {
+        path: 'image',
+      },
+    };
+    launchImageLibrary(option, response => {
+      if (response.assets && response.assets.length > 0) {
+        setSelectImage(response.assets[0].uri);
+      }
+    });
+  };
+
+  const handleDeleteImage = () => setSelectImage(() => !selectImage);
 
   return (
     <>
@@ -64,20 +84,35 @@ const Addtree = ({ navigation }: any) => {
           <ScrollView>
             <ModalInsert.Body>
               <View style={styles.root}>
-                <Image
-                  source={require('../../assets/images/AvatarSquare.png')}
-                />
+                {selectImage ? (
+                  <Image
+                    style={{ height: 80, width: 80, borderRadius: 12 }}
+                    source={{
+                      uri: selectImage,
+                    }}
+                  />
+                ) : (
+                  <Image
+                    style={{ height: 80, width: 80, borderRadius: 12 }}
+                    source={require('../../assets/images/AvatarSquare.png')}
+                  />
+                )}
                 <View style={{ width: 8 }} />
-                <View style={styles.hoverButtonFull}>
+                <TouchableOpacity
+                  style={styles.hoverButtonFull}
+                  onPress={handleModalImagePicker}>
                   <View style={styles.frame625074}>
                     <View style={styles.frame625079}>
-                      <IconSend />
+                      <IconUpload />
+                      <View style={{ width: 16 }} />
                       <Text style={styles.photo}>Photo</Text>
                     </View>
                   </View>
-                </View>
+                </TouchableOpacity>
                 <View style={{ width: 8 }} />
-                <IconDeleteRed />
+                <TouchableOpacity onPress={handleDeleteImage}>
+                  <IconDeleteRed />
+                </TouchableOpacity>
               </View>
               <View style={styles.inputSession}>
                 <Input

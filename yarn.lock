@@ -6797,6 +6797,11 @@ react-native-gradle-plugin@^0.70.3:
   resolved "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.3.tgz"
   integrity sha512-oOanj84fJEXUg9FoEAQomA8ISG+DVIrTZ3qF7m69VQUJyOGYyDZmPqKcjvRku4KXlEH6hWO9i4ACLzNBh8gC0A==
 
+react-native-image-picker@^5.6.1:
+  version "5.6.1"
+  resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-5.6.1.tgz"
+  integrity sha512-LPPlgJi97EzCDY4NWp7z0oUWmCbagnB6HSoKcLJHJD/DaFYN/dJPrqjqKaqqw8K/5Ze6DIsNg9PZohjNEYQQWQ==
+
 react-native-modal@^13.0.1:
   version "13.0.1"
   resolved "https://registry.npmjs.org/react-native-modal/-/react-native-modal-13.0.1.tgz"
