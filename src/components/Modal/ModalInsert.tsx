@@ -22,7 +22,7 @@ export const ModalInsert = ({
       animationOutTiming={1000}
       backdropTransitionInTiming={800}
       backdropTransitionOutTiming={800}
-      style={{ margin: 0,}}
+      style={{ margin: 0 }}
       {...props}>
       {children}
     </RNModal>

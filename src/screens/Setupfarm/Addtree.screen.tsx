@@ -16,17 +16,172 @@ import HeaderComponent from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconAdd from '../../assets/images/IconAdd.svg';
 import Input from '../../components/Input/Input.component';
-import IconSend from '../../assets/images/IconSend.svg';
+import IconSave from '../../assets/images/IconSave.svg';
 import IconDeleteRed from '../../assets/images/IconDeleteRed.svg';
 import { ModalInsert } from '../../components/Modal/ModalInsert';
+import { Modal } from '../../components/Modal/Modal';
 import { ScrollView } from 'react-native-gesture-handler';
 import IconUpload from '../../assets/images/IconUpload.svg';
+import RectangularTree from '../../components/RectangularElement/Tree.component';
 
 // import { Button } from '../../components/Button/Button';
+// const Addtree = ({ navigation }: any) => {
+//   const [isModalVisible, setIsModalVisible] = React.useState(false);
+//   const [selectImage, setSelectImage] = useState('');
+
+//   const [issModalVisible, settIsModalVisible] = React.useState(false);
+
+//   const handleModalSuccess = () => {
+//     settIsModalVisible(() => !issModalVisible);
+//     setIsModalVisible(() => false);
+//   };
+
+//   const handleModal = () => setIsModalVisible(() => !isModalVisible);
+//   const handleModalImagePicker = () => {
+//     const option = {
+//       storageOptions: {
+//         path: 'image',
+//       },
+//     };
+//     launchImageLibrary(option, response => {
+//       if (response.assets && response.assets.length > 0) {
+//         setSelectImage(response.assets[0].uri);
+//       }
+//     });
+//   };
+
+//   const handleDeleteImage = () => setSelectImage(() => !selectImage);
+
+//   return (
+//     <>
+//       <HeaderComponent />
+//       <View style={styles.container}>
+//         {/* Title */}
+//         <View style={styles.headSession}>
+//           <TouchableOpacity onPress={() => navigation.navigate('Farmname')}>
+//             <IconBack />
+//           </TouchableOpacity>
+//           <View style={{ width: 8 }} />
+//           <View>
+//             <Text style={styles.txtTitle}>Add trees for Farm</Text>
+//           </View>
+//         </View>
+//         <TouchableOpacity onPress={handleModal} style={styles.buttonAdd}>
+//           <IconAdd />
+//         </TouchableOpacity>
+//       </View>
+
+//       <ModalInsert isVisible={isModalVisible}>
+//         <ModalInsert.Container>
+//           <ModalInsert.Header>
+//             <View style={styles.headSessionModal}>
+//               <TouchableOpacity onPress={handleModal}>
+//                 <IconBack> </IconBack>
+//               </TouchableOpacity>
+//               <View style={styles.txtContainer}>
+//                 <Text style={styles.txtTitleModal}>Add tree</Text>
+//               </View>
+//               <View
+//                 style={{
+//                   width: 40,
+//                   height: 40,
+//                 }}
+//               />
+//             </View>
+//           </ModalInsert.Header>
+//           <ScrollView>
+//             <ModalInsert.Body>
+//               <View style={styles.root}>
+//                 {selectImage ? (
+//                   <Image
+//                     style={{ height: 80, width: 80, borderRadius: 12 }}
+//                     source={{
+//                       uri: selectImage,
+//                     }}
+//                   />
+//                 ) : (
+//                   <Image
+//                     style={{ height: 80, width: 80, borderRadius: 12 }}
+//                     source={require('../../assets/images/AvatarSquare.png')}
+//                   />
+//                 )}
+//                 <View style={{ width: 8 }} />
+//                 <TouchableOpacity
+//                   style={styles.hoverButtonFull}
+//                   onPress={handleModalImagePicker}>
+//                   <View style={styles.frame625074}>
+//                     <View style={styles.frame625079}>
+//                       <IconUpload />
+//                       <View style={{ width: 16 }} />
+//                       <Text style={styles.photo}>Photo</Text>
+//                     </View>
+//                   </View>
+//                 </TouchableOpacity>
+//                 <View style={{ width: 8 }} />
+//                 <TouchableOpacity onPress={handleDeleteImage}>
+//                   <IconDeleteRed />
+//                 </TouchableOpacity>
+//               </View>
+//               <View style={styles.inputSession}>
+//                 <Input
+//                   label="Tree name"
+//                   span="*"
+//                   placeholder="Enter tree name"
+//                   // onChangeText={nameInput => setName(nameInput)}
+//                   // error={errorName}
+//                 />
+//                 <View style={{ height: 8 }} />
+//                 <Input
+//                   label="Quantity"
+//                   span="*"
+//                   placeholder="Enter quantity"
+//                   keyboardType="numeric"
+//                   // onChangeText={nameInput => setName(nameInput)}
+//                   // error={errorName}
+//                 />
+//               </View>
+//               <TouchableOpacity
+//                 style={styles.btnSendSession}
+//                 onPress={handleModalSuccess}>
+//                 <View style={styles.txtBtnSignup}>
+//                   <IconSave />
+//                   <View style={{ width: 16 }} />
+//                   <Text
+//                     style={{
+//                       fontSize: 16,
+//                       textAlign: 'center',
+//                       color: '#FFFFFF',
+//                       fontWeight: 'bold',
+//                     }}>
+//                     SAVE
+//                   </Text>
+//                 </View>
+//               </TouchableOpacity>
+//             </ModalInsert.Body>
+//           </ScrollView>
+//         </ModalInsert.Container>
+//       </ModalInsert>
+
+//       <Modal isVisible={issModalVisible} onBackdropPress={handleModalSuccess}>
+//         <Modal.Container>
+//           <Modal.Header title="Successfully" />
+//           <Modal.Body title="You have successfully edited the tree." />
+//         </Modal.Container>
+//       </Modal>
+//     </>
+//   );
+// };
 
 const Addtree = ({ navigation }: any) => {
   const [isModalVisible, setIsModalVisible] = React.useState(false);
   const [selectImage, setSelectImage] = useState('');
+
+  const [issModalVisible, settIsModalVisible] = React.useState(false);
+
+  const handleModalSuccess = () => {
+    settIsModalVisible(() => !issModalVisible);
+    setIsModalVisible(() => false);
+  };
 
   const handleModal = () => setIsModalVisible(() => !isModalVisible);
   const handleModalImagePicker = () => {
@@ -44,6 +199,125 @@ const Addtree = ({ navigation }: any) => {
 
   const handleDeleteImage = () => setSelectImage(() => !selectImage);
 
+  // return (
+  //   <>
+  //     <HeaderComponent />
+  //     <View style={styles.container}>
+  //       {/* Title */}
+  //       <View style={styles.headSession}>
+  //         <TouchableOpacity onPress={() => navigation.navigate('Farmname')}>
+  //           <IconBack />
+  //         </TouchableOpacity>
+  //         <View style={{ width: 8 }} />
+  //         <View>
+  //           <Text style={styles.txtTitle}>Add trees for Farm</Text>
+  //         </View>
+  //       </View>
+  //       <RectangularTree />
+  //       <TouchableOpacity onPress={handleModal} style={styles.buttonAdd}>
+  //         <IconAdd />
+  //       </TouchableOpacity>
+  //     </View>
+
+  //     <ModalInsert isVisible={isModalVisible}>
+  //       <ModalInsert.Container>
+  //         <ModalInsert.Header>
+  //           <View style={styles.headSessionModal}>
+  //             <TouchableOpacity onPress={handleModal}>
+  //               <IconBack> </IconBack>
+  //             </TouchableOpacity>
+  //             <View style={styles.txtContainer}>
+  //               <Text style={styles.txtTitleModal}>Add tree</Text>
+  //             </View>
+  //             <View
+  //               style={{
+  //                 width: 40,
+  //                 height: 40,
+  //               }}
+  //             />
+  //           </View>
+  //         </ModalInsert.Header>
+  //         <ScrollView>
+  //           <ModalInsert.Body>
+  //             <View style={styles.root}>
+  //               {selectImage ? (
+  //                 <Image
+  //                   style={{ height: 80, width: 80, borderRadius: 12 }}
+  //                   source={{
+  //                     uri: selectImage,
+  //                   }}
+  //                 />
+  //               ) : (
+  //                 <Image
+  //                   style={{ height: 80, width: 80, borderRadius: 12 }}
+  //                   source={require('../../assets/images/AvatarSquare.png')}
+  //                 />
+  //               )}
+  //               <View style={{ width: 8 }} />
+  //               <TouchableOpacity
+  //                 style={styles.hoverButtonFull}
+  //                 onPress={handleModalImagePicker}>
+  //                 <View style={styles.frame625074}>
+  //                   <View style={styles.frame625079}>
+  //                     <IconUpload />
+  //                     <View style={{ width: 16 }} />
+  //                     <Text style={styles.photo}>Photo</Text>
+  //                   </View>
+  //                 </View>
+  //               </TouchableOpacity>
+  //               <View style={{ width: 8 }} />
+  //               <TouchableOpacity onPress={handleDeleteImage}>
+  //                 <IconDeleteRed />
+  //               </TouchableOpacity>
+  //             </View>
+  //             <View style={styles.inputSession}>
+  //               <Input
+  //                 label="Tree name"
+  //                 span="*"
+  //                 placeholder="Enter tree name"
+  //                 // onChangeText={nameInput => setName(nameInput)}
+  //                 // error={errorName}
+  //               />
+  //               <View style={{ height: 8 }} />
+  //               <Input
+  //                 label="Quantity"
+  //                 span="*"
+  //                 placeholder="Enter quantity"
+  //                 keyboardType="numeric"
+  //                 // onChangeText={nameInput => setName(nameInput)}
+  //                 // error={errorName}
+  //               />
+  //             </View>
+  //             <TouchableOpacity
+  //               style={styles.btnSendSession}
+  //               onPress={handleModalSuccess}>
+  //               <View style={styles.txtBtnSignup}>
+  //                 <IconSave />
+  //                 <View style={{ width: 16 }} />
+  //                 <Text
+  //                   style={{
+  //                     fontSize: 16,
+  //                     textAlign: 'center',
+  //                     color: '#FFFFFF',
+  //                     fontWeight: 'bold',
+  //                   }}>
+  //                   SAVE
+  //                 </Text>
+  //               </View>
+  //             </TouchableOpacity>
+  //           </ModalInsert.Body>
+  //         </ScrollView>
+  //       </ModalInsert.Container>
+  //     </ModalInsert>
+
+  //     <Modal isVisible={issModalVisible} onBackdropPress={handleModalSuccess}>
+  //       <Modal.Container>
+  //         <Modal.Header title="Successfully" />
+  //         <Modal.Body title="You have successfully edited the tree." />
+  //       </Modal.Container>
+  //     </Modal>
+  //   </>
+  // );
   return (
     <>
       <HeaderComponent />
@@ -58,6 +332,7 @@ const Addtree = ({ navigation }: any) => {
             <Text style={styles.txtTitle}>Add trees for Farm</Text>
           </View>
         </View>
+        <RectangularTree nameTree="Coffee" numberTree="200" />
         <TouchableOpacity onPress={handleModal} style={styles.buttonAdd}>
           <IconAdd />
         </TouchableOpacity>
@@ -134,9 +409,9 @@ const Addtree = ({ navigation }: any) => {
               </View>
               <TouchableOpacity
                 style={styles.btnSendSession}
-                onPress={handleModal}>
+                onPress={handleModalSuccess}>
                 <View style={styles.txtBtnSignup}>
-                  <IconSend />
+                  <IconSave />
                   <View style={{ width: 16 }} />
                   <Text
                     style={{
@@ -145,7 +420,7 @@ const Addtree = ({ navigation }: any) => {
                       color: '#FFFFFF',
                       fontWeight: 'bold',
                     }}>
-                    SEND
+                    SAVE
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -153,6 +428,13 @@ const Addtree = ({ navigation }: any) => {
           </ScrollView>
         </ModalInsert.Container>
       </ModalInsert>
+
+      <Modal isVisible={issModalVisible} onBackdropPress={handleModalSuccess}>
+        <Modal.Container>
+          <Modal.Header title="Successfully" />
+          <Modal.Body title="You have successfully edited the tree." />
+        </Modal.Container>
+      </Modal>
     </>
   );
 };
