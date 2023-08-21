@@ -1,5 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import auth from '@react-native-firebase/auth';
 import {
   SafeAreaView,
   View,
@@ -17,6 +18,35 @@ import IconGoogle from '../../assets/images/IconGoogle.svg';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const RegistrationScreen = ({ navigation }: any) => {
+  const [user, setUser] = useState(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  useEffect(() => {
+    const unsubscribe = auth().onAuthStateChanged(newUser => {
+      setUser(newUser);
+    });
+
+    return unsubscribe; // Huỷ đăng ký theo dõi
+  }, []);
+
+  const signIn = async () => {
+    try {
+      const response = await auth().signInWithEmailAndPassword(email, password);
+      setUser(response.user);
+      navigation.navigate('Farmname');
+    } catch (error) {
+      console.error('Sign In Error: ', error);
+    }
+  };
+
+  const signOut = async () => {
+    try {
+      await auth().signOut();
+      setUser(null);
+    } catch (error) {
+      console.error('Sign Out Error: ', error);
+    }
+  };
   return (
     <>
       <HeaderComponent />
@@ -34,6 +64,8 @@ const RegistrationScreen = ({ navigation }: any) => {
                 label="Email"
                 placeholder="Enter your email "
                 span="*"
+                value={email}
+                onChangeText={text => setEmail(text)}
                 // onChangeText={nameInput => setName(nameInput)}
                 // error={errorName}
               />
@@ -41,6 +73,8 @@ const RegistrationScreen = ({ navigation }: any) => {
                 label="Password"
                 placeholder="Enter password"
                 span="*"
+                value={password}
+                onChangeText={text => setPassword(text)}
                 password
                 // onChangeText={nameInput => setName(nameInput)}
                 // error={errorName}
@@ -97,9 +131,7 @@ const RegistrationScreen = ({ navigation }: any) => {
             </View>
 
             {/* Button */}
-            <TouchableOpacity
-              style={styles.signinBtn}
-              onPress={() => navigation.navigate('Farmname')}>
+            <TouchableOpacity style={styles.signinBtn} onPress={signIn}>
               <View style={styles.txtBtnSignup}>
                 <IconSignUp />
                 <Text

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "159898876320",
+    "project_id": "smartfarm-f1433",
+    "storage_bucket": "smartfarm-f1433.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159898876320:android:29514d21aa673d9b8dccc5",
+        "android_client_info": {
+          "package_name": "com.reactnativetypescriptboilerplate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159898876320-h5md614ia821qk45pk7khsnahim9cg7q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACoJuGwN-GE6lt1J0Kqz4xx1WDfLkTKaw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159898876320-h5md614ia821qk45pk7khsnahim9cg7q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
