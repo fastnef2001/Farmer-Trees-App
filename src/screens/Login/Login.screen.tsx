@@ -21,20 +21,43 @@ const RegistrationScreen = ({ navigation }: any) => {
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorText, setErrorText] = useState('');
+
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged(newUser => {
       setUser(newUser);
     });
 
-    return unsubscribe; // Huỷ đăng ký theo dõi
+    return unsubscribe;
   }, []);
 
   const signIn = async () => {
+    if (!email || !password) {
+      setErrorText('Please enter email and password.');
+      return;
+    }
+
+    setErrorText(''); // Clear the error message before attempting to sign in
+
     try {
       const response = await auth().signInWithEmailAndPassword(email, password);
       setUser(response.user);
       navigation.navigate('Farmname');
     } catch (error) {
+      switch (error.code) {
+        case 'auth/invalid-email':
+          setErrorText('Invalid email format.');
+          break;
+        case 'auth/wrong-password':
+          setErrorText('Incorrect password.');
+          break;
+        case 'auth/user-not-found':
+          setErrorText('Email does not exist.');
+          break;
+        default:
+          setErrorText('Sign in failed. Please check again.');
+          break;
+      }
       console.error('Sign In Error: ', error);
     }
   };
@@ -58,6 +81,8 @@ const RegistrationScreen = ({ navigation }: any) => {
             <View>
               <Text style={styles.textTitleContainer}>LOGIN</Text>
             </View>
+            <View style={{ height: 16 }} />
+            <Text style={{ color: 'red' }}>{errorText}</Text>
             {/* Form */}
             <View style={styles.formSectionLogin}>
               <Input

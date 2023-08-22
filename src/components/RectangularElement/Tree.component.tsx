@@ -95,11 +95,12 @@ const RectangularTree = ({
 
 const styles = StyleSheet.create({
   root: {
-    width: '90%',
+    width: '100%',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     padding: 8,
+    marginBottom: 8,
     borderRadius: 12,
   },
   numberTree: {

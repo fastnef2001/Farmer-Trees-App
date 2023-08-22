@@ -23,6 +23,7 @@ import { Modal } from '../../components/Modal/Modal';
 import { ScrollView } from 'react-native-gesture-handler';
 import IconUpload from '../../assets/images/IconUpload.svg';
 import RectangularTree from '../../components/RectangularElement/Tree.component';
+import IconComplete from '../../assets/images/IconComplete.svg';
 
 // import { Button } from '../../components/Button/Button';
 // const Addtree = ({ navigation }: any) => {
@@ -199,6 +200,20 @@ const Addtree = ({ navigation }: any) => {
 
   const handleDeleteImage = () => setSelectImage(() => !selectImage);
 
+  const treeData = [
+    { name: 'Coffee', number: '200' },
+    { name: 'Apple', number: '150' },
+    { name: 'Orange', number: '300' },
+    { name: 'Durian', number: '400' },
+    { name: 'Mango', number: '500' },
+    { name: 'Banana', number: '600' },
+    { name: 'Peach', number: '700' },
+    { name: 'Pineapple', number: '800' },
+    { name: 'Grape', number: '900' },
+    { name: 'Grape', number: '900' },
+    // Thêm các dữ liệu cây khác tại đây
+  ];
+
   // return (
   //   <>
   //     <HeaderComponent />
@@ -213,7 +228,6 @@ const Addtree = ({ navigation }: any) => {
   //           <Text style={styles.txtTitle}>Add trees for Farm</Text>
   //         </View>
   //       </View>
-  //       <RectangularTree />
   //       <TouchableOpacity onPress={handleModal} style={styles.buttonAdd}>
   //         <IconAdd />
   //       </TouchableOpacity>
@@ -318,6 +332,7 @@ const Addtree = ({ navigation }: any) => {
   //     </Modal>
   //   </>
   // );
+
   return (
     <>
       <HeaderComponent />
@@ -332,10 +347,54 @@ const Addtree = ({ navigation }: any) => {
             <Text style={styles.txtTitle}>Add trees for Farm</Text>
           </View>
         </View>
-        <RectangularTree nameTree="Coffee" numberTree="200" />
-        <TouchableOpacity onPress={handleModal} style={styles.buttonAdd}>
-          <IconAdd />
-        </TouchableOpacity>
+
+        {/* Element tree */}
+        <ScrollView
+          showsVerticalScrollIndicator={false} // Tắt thanh cuộn dọc
+          style={{
+            width: '90%',
+            marginTop: 24,
+          }}>
+          {treeData.map((tree, index) => (
+            <RectangularTree
+              key={index}
+              nameTree={tree.name}
+              numberTree={tree.number}
+            />
+          ))}
+        </ScrollView>
+        <View
+          style={{
+            backgroundColor: '#ffffff',
+            height: 88,
+            width: '100%',
+            alignItems: 'center',
+            paddingHorizontal: 16,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
+          <TouchableOpacity
+            style={styles.btnSession}
+            onPress={() => navigation.navigate('AddTree')}>
+            <View style={styles.txtBtn}>
+              <IconComplete />
+              <View style={{ width: 16 }} />
+              <Text
+                style={{
+                  fontSize: 16,
+                  textAlign: 'center',
+                  color: '#FFFFFF',
+                  fontWeight: 'bold',
+                }}>
+                COMPLETE
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <View style={{ width: 16 }} />
+          <TouchableOpacity onPress={handleModal}>
+            <IconAdd />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ModalInsert isVisible={isModalVisible}>
@@ -488,11 +547,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#163859',
   },
-  buttonAdd: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   inputSession: {
     padding: 16,
     alignItems: 'center',
@@ -558,5 +612,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+  },
+  btnSession: {
+    height: 48,
+    backgroundColor: '#163859',
+    borderRadius: 10,
+    borderWidth: 1,
+    flex: 1,
+  },
+  txtBtn: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
 });
