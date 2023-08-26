@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -16,11 +16,72 @@ import IconSignUp from '../../assets/images/IconSignUp.svg';
 import IconGoogle from '../../assets/images/IconGoogle.svg';
 import { ButtonBack, ButtonLogin } from '../../components/Button/Button';
 import { Modal } from '../../components/Modal/Modal';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const RegistrationScreen = ({ navigation }: any) => {
   const [isModalVisible, setIsModalVisible] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleModal = () => setIsModalVisible(() => !isModalVisible);
+
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorText, setErrorText] = useState('');
+
+  const handleRegister = async () => {
+    if (!fullName || !email || !phoneNumber || !password || !confirmPassword) {
+      setErrorText('Please complete all required fields.');
+      return;
+    }
+    if (password !== confirmPassword) {
+      setErrorText('Passwords do not match.');
+      return;
+    }
+    setErrorText('');
+    setIsLoading(true);
+
+    try {
+      const response = await auth().createUserWithEmailAndPassword(
+        email,
+        password,
+      );
+      setIsLoading(false);
+      handleModal();
+      // nếu collection users chưa ton tai thi tao moi
+
+      const user = await firestore()
+        .collection('users')
+        .doc(response.user.uid)
+        .get();
+      if (!user.exists) {
+        await firestore().collection('users').doc(response.user.uid).set({
+          fullName: fullName,
+          phoneNumber: phoneNumber,
+        });
+      }
+    } catch (error: any) {
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          setErrorText('Email already in use.');
+          break;
+        case 'auth/invalid-email':
+          setErrorText('Invalid email format.');
+          break;
+        case 'auth/weak-password':
+          setErrorText('Password is too weak.');
+          break;
+        default:
+          setErrorText('Sign up failed. Please check again.');
+          break;
+      }
+      setIsLoading(false);
+      console.error('Sign Up Error: ', error);
+    }
+  };
 
   return (
     <>
@@ -34,12 +95,21 @@ const RegistrationScreen = ({ navigation }: any) => {
             <View>
               <Text style={styles.textTitleContainer}>SIGN UP</Text>
             </View>
+            {/* nếu errorText  */}
+
+            {errorText ? (
+              <View style={{ marginTop: 16 }}>
+                <Text style={{ color: 'red' }}>{errorText}</Text>
+              </View>
+            ) : null}
+
             {/* Form */}
             <View style={styles.formSectionLogin}>
               <Input
                 label="Full name"
                 placeholder="Enter your full name"
                 span="*"
+                onChangeText={(text: string) => setFullName(text)}
                 // onChangeText={nameInput => setName(nameInput)}
                 // error={errorName}
               />
@@ -47,6 +117,8 @@ const RegistrationScreen = ({ navigation }: any) => {
                 label="Email"
                 placeholder="Enter your email "
                 span="*"
+                onChangeText={(text: string) => setEmail(text)}
+
                 // onChangeText={nameInput => setName(nameInput)}
                 // error={errorName}
               />
@@ -54,6 +126,8 @@ const RegistrationScreen = ({ navigation }: any) => {
                 label="Phone number"
                 placeholder="Enter your phone number "
                 span="*"
+                onChangeText={(text: string) => setPhoneNumber(text)}
+
                 // onChangeText={nameInput => setName(nameInput)}
                 // error={errorName}
               />
@@ -62,6 +136,8 @@ const RegistrationScreen = ({ navigation }: any) => {
                 placeholder="Enter password"
                 span="*"
                 password
+                onChangeText={(text: string) => setPassword(text)}
+
                 // onChangeText={nameInput => setName(nameInput)}
                 // error={errorName}
               />
@@ -70,6 +146,8 @@ const RegistrationScreen = ({ navigation }: any) => {
                 placeholder="Enter password"
                 span="*"
                 password
+                onChangeText={(text: string) => setConfirmPassword(text)}
+
                 // onChangeText={nameInput => setName(nameInput)}
                 // error={errorName}
               />
@@ -106,7 +184,10 @@ const RegistrationScreen = ({ navigation }: any) => {
               </TouchableOpacity>
             </View>
             {/* Button */}
-            <TouchableOpacity style={styles.signinBtn} onPress={handleModal}>
+            <TouchableOpacity
+              style={styles.signinBtn}
+              onPress={handleRegister}
+              disabled={isLoading}>
               <View style={styles.txtBtnSignup}>
                 <IconSignUp />
                 <Text
@@ -117,11 +198,14 @@ const RegistrationScreen = ({ navigation }: any) => {
                     fontWeight: 'bold',
                     marginLeft: 18,
                   }}>
-                  SIGN IN
+                  {isLoading ? 'LOADING...' : 'SIGN UP'}
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.signupGoogleBtn}>
+            <TouchableOpacity
+              style={styles.signupGoogleBtn}
+              // onPress={handleRegisterByGoogle}
+            >
               <View style={styles.txtBtnSignup}>
                 <IconGoogle />
                 <Text
