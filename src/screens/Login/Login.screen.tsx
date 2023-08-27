@@ -23,14 +23,6 @@ const RegistrationScreen = ({ navigation }: any) => {
   const [password, setPassword] = useState('');
   const [errorText, setErrorText] = useState('');
 
-  useEffect(() => {
-    const unsubscribe = auth().onAuthStateChanged(newUser => {
-      setUser(newUser);
-    });
-
-    return unsubscribe;
-  }, []);
-
   const signIn = async () => {
     if (!email || !password) {
       setErrorText('Please enter email and password.');
@@ -40,10 +32,9 @@ const RegistrationScreen = ({ navigation }: any) => {
     setErrorText('');
 
     try {
-      const response = await auth().signInWithEmailAndPassword(email, password);
-      setUser(response.user);
+      await auth().signInWithEmailAndPassword(email, password);
       navigation.navigate('Farmname');
-    } catch (error) {
+    } catch (error: any) {
       switch (error.code) {
         case 'auth/invalid-email':
           setErrorText('Invalid email format.');
@@ -81,8 +72,11 @@ const RegistrationScreen = ({ navigation }: any) => {
             <View>
               <Text style={styles.textTitleContainer}>LOGIN</Text>
             </View>
-            <View style={{ height: 16 }} />
-            <Text style={{ color: 'red' }}>{errorText}</Text>
+            {errorText ? (
+              <View style={{ marginTop: 16 }}>
+                <Text style={{ color: 'red' }}>{errorText}</Text>
+              </View>
+            ) : null}
             {/* Form */}
             <View style={styles.formSectionLogin}>
               <Input
@@ -90,7 +84,7 @@ const RegistrationScreen = ({ navigation }: any) => {
                 placeholder="Enter your email "
                 span="*"
                 value={email}
-                onChangeText={text => setEmail(text)}
+                onChangeText={(text: string) => setEmail(text)}
                 // onChangeText={nameInput => setName(nameInput)}
                 // error={errorName}
               />
@@ -99,7 +93,7 @@ const RegistrationScreen = ({ navigation }: any) => {
                 placeholder="Enter password"
                 span="*"
                 value={password}
-                onChangeText={text => setPassword(text)}
+                onChangeText={(text: string) => setPassword(text)}
                 password
                 // onChangeText={nameInput => setName(nameInput)}
                 // error={errorName}
