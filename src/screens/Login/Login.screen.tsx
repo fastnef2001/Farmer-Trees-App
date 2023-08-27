@@ -37,7 +37,7 @@ const RegistrationScreen = ({ navigation }: any) => {
       return;
     }
 
-    setErrorText(''); // Clear the error message before attempting to sign in
+    setErrorText('');
 
     try {
       const response = await auth().signInWithEmailAndPassword(email, password);
