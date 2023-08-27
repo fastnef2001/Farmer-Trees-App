@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable no-unreachable */
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState, useEffect } from 'react';
 import auth from '@react-native-firebase/auth';
@@ -16,13 +18,15 @@ import Input from '../../components/Input/Input.component';
 import IconSignUp from '../../assets/images/IconSignUp.svg';
 import IconGoogle from '../../assets/images/IconGoogle.svg';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-
+import { getAdditionalUserInfo } from 'firebase/auth';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 const RegistrationScreen = ({ navigation }: any) => {
-  const [user, setUser] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorText, setErrorText] = useState('');
-
   const signIn = async () => {
     if (!email || !password) {
       setErrorText('Please enter email and password.');
@@ -52,13 +56,54 @@ const RegistrationScreen = ({ navigation }: any) => {
       console.error('Sign In Error: ', error);
     }
   };
-
-  const signOut = async () => {
+  GoogleSignin.configure({
+    webClientId:
+      '159898876320-kqda9k08g543vj86cqqq9ck78ismjiog.apps.googleusercontent.com',
+  });
+  const signByGoogle = async () => {
     try {
-      await auth().signOut();
-      setUser(null);
-    } catch (error) {
-      console.error('Sign Out Error: ', error);
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log('userInfo', userInfo);
+      const googleCredential = auth.GoogleAuthProvider.credential(
+        userInfo.idToken,
+      );
+
+      // Kiểm tra xem người dùng đã tồn tại trong Firebase
+      const isUserExist = await auth().fetchSignInMethodsForEmail(
+        userInfo.user.email,
+      );
+      console.log('isUserExist', isUserExist);
+      if (isUserExist.length === 0) {
+        // Nếu chưa tồn tại thì seterror
+        setErrorText('Gmail is not registered.');
+        await GoogleSignin.revokeAccess();
+        await GoogleSignin.signOut();
+        return;
+      }
+      // Nếu tồn tại thì signIn
+      await auth().signInWithCredential(googleCredential);
+      navigation.navigate('Farmname');
+    } catch (error: any) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log('user cancelled the login flow');
+
+        // alert('Cancel');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        console.log('operation (e.g. sign in) is in progress already');
+
+        // alert('In Progress');
+
+        // alert('In Progress');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        console.log('play services not available or outdated');
+
+        // alert('Play services not available or outdated');
+      } else {
+        console.log('some other error happened');
+
+        // alert('Some other error happened');
+      }
     }
   };
   return (
@@ -165,7 +210,9 @@ const RegistrationScreen = ({ navigation }: any) => {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.signupGoogleBtn}>
+            <TouchableOpacity
+              style={styles.signupGoogleBtn}
+              onPress={signByGoogle}>
               <View style={styles.txtBtnSignup}>
                 <IconGoogle />
                 <Text
