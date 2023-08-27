@@ -16,9 +16,9 @@ import Input from '../../components/Input/Input.component';
 import IconSignUp from '../../assets/images/IconSignUp.svg';
 import IconGoogle from '../../assets/images/IconGoogle.svg';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const RegistrationScreen = ({ navigation }: any) => {
-  const [user, setUser] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorText, setErrorText] = useState('');
@@ -52,15 +52,20 @@ const RegistrationScreen = ({ navigation }: any) => {
       console.error('Sign In Error: ', error);
     }
   };
-
-  const signOut = async () => {
+  GoogleSignin.configure({
+    webClientId:
+      '159898876320-21ut5drmb6fa1hokqs28r79qi0ibjcfu.apps.googleusercontent.com',
+  });
+  const signByGoogle = async () => {
     try {
-      await auth().signOut();
-      setUser(null);
-    } catch (error) {
-      console.error('Sign Out Error: ', error);
+      const { idToken } = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      return auth().signInWithCredential(googleCredential);
+    } catch (error: any) {
+      console.error('Sign In Error: ', error);
     }
   };
+
   return (
     <>
       <HeaderComponent />
@@ -165,7 +170,9 @@ const RegistrationScreen = ({ navigation }: any) => {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.signupGoogleBtn}>
+            <TouchableOpacity
+              style={styles.signupGoogleBtn}
+              onPress={signByGoogle}>
               <View style={styles.txtBtnSignup}>
                 <IconGoogle />
                 <Text
