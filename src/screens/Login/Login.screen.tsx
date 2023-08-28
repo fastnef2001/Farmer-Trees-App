@@ -1,13 +1,10 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable no-unreachable */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import auth from '@react-native-firebase/auth';
 import {
   SafeAreaView,
   View,
   Text,
-  StatusBar,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
@@ -17,8 +14,6 @@ import HeaderComponent from '../../components/Header/Header.component';
 import Input from '../../components/Input/Input.component';
 import IconSignUp from '../../assets/images/IconSignUp.svg';
 import IconGoogle from '../../assets/images/IconGoogle.svg';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { getAdditionalUserInfo } from 'firebase/auth';
 import {
   GoogleSignin,
   statusCodes,
@@ -56,11 +51,17 @@ const RegistrationScreen = ({ navigation }: any) => {
       console.error('Sign In Error: ', error);
     }
   };
+
   GoogleSignin.configure({
     webClientId:
       '159898876320-kqda9k08g543vj86cqqq9ck78ismjiog.apps.googleusercontent.com',
   });
+
   const signByGoogle = async () => {
+    const user = auth().currentUser;
+    if (user) {
+      await GoogleSignin.signOut();
+    }
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
