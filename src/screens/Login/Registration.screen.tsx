@@ -1,5 +1,4 @@
-/* eslint-disable react-native/no-inline-styles */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -24,65 +23,93 @@ import {
 } from '@react-native-google-signin/google-signin';
 
 const RegistrationScreen = ({ navigation }: any) => {
-  const [isModalVisible, setIsModalVisible] = React.useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleModal = () => setIsModalVisible(() => !isModalVisible);
-
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [errorText, setErrorText] = useState('');
 
-  const handleRegister = async () => {
-    if (!fullName || !email || !phoneNumber || !password || !confirmPassword) {
-      setErrorText('Please complete all required fields.');
-      return;
-    }
-    if (password !== confirmPassword) {
-      setErrorText('Passwords do not match.');
-      return;
-    }
-    setErrorText('');
-    setIsLoading(true);
+  const [inputs, setInputs] = useState([
+    { label: 'Full name', value: '', error: '', password: false },
+    { label: 'Email', value: '', error: '', password: false },
+    { label: 'Phone number', value: '', error: '', password: false },
+    { label: 'Password', value: '', error: '', password: true },
+    { label: 'Confirm Password', value: '', error: '', password: true },
+  ]);
 
-    try {
-      const response = await auth().createUserWithEmailAndPassword(
-        email,
-        password,
+  const handleInputChange = (index: any, value: any) => {
+    const newInputs = [...inputs];
+    newInputs[index].value = value;
+    newInputs[index].error = '';
+    setInputs(newInputs);
+  };
+
+  const handleRegister = async () => {
+    let hasError = false;
+
+    inputs.forEach((input, index) => {
+      const passwordInput = inputs.find(input => input.label === 'Password');
+      const confirmPasswordInput = inputs.find(input => input.label === 'Confirm Password');
+      console.log('passwordInput', passwordInput);
+      console.log('confirmPasswordInput', confirmPasswordInput);
+      if (!input.value) {
+        inputs[index].error = `Please enter ${input.label}`;
+        hasError = true;
+      } else if (passwordInput?.value !== confirmPasswordInput?.value) {
+        inputs[4].error = 'Password does not match.';
+        hasError = true;
+      } else {
+        inputs[index].error = '';
+      }
+    });
+
+    if (!hasError) {
+      const emailInput = inputs.find(input => input.label === 'Email');
+      const passwordInput = inputs.find(input => input.label === 'Password');
+      const fullNameInput = inputs.find(input => input.label === 'Full name');
+      const phoneNumberInput = inputs.find(
+        input => input.label === 'Phone number',
       );
-      setIsLoading(false);
-      handleModal();
-      const user = await firestore()
-        .collection('users')
-        .doc(response.user.uid)
-        .get();
-      if (!user.exists) {
-        await firestore().collection('users').doc(response.user.uid).set({
-          fullName: fullName,
-          phoneNumber: phoneNumber,
-        });
+      if (emailInput && passwordInput && fullNameInput && phoneNumberInput) {
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        const fullName = fullNameInput.value;
+        const phoneNumber = phoneNumberInput.value;
+        try {
+          const response = await auth().createUserWithEmailAndPassword(
+            email,
+            password,
+          );
+          setIsLoading(false);
+          handleModal();
+          const user = await firestore()
+            .collection('users')
+            .doc(response.user.uid)
+            .get();
+          if (!user.exists) {
+            await firestore().collection('users').doc(response.user.uid).set({
+              fullName: fullName,
+              phoneNumber: phoneNumber,
+            });
+          }
+        } catch (error: any) {
+          switch (error.code) {
+            case 'auth/email-already-in-use':
+              emailInput.error = 'Email already in use.';
+              break;
+            case 'auth/invalid-email':
+              emailInput.error = 'Invalid email format.';
+              break;
+            case 'auth/weak-password':
+              passwordInput.error = 'Password is too weak.';
+              break;
+            default:
+              setErrorText('Sign up failed. Please check again.');
+              break;
+          }
+          setIsLoading(false);
+        }
       }
-    } catch (error: any) {
-      switch (error.code) {
-        case 'auth/email-already-in-use':
-          setErrorText('Email already in use.');
-          break;
-        case 'auth/invalid-email':
-          setErrorText('Invalid email format.');
-          break;
-        case 'auth/weak-password':
-          setErrorText('Password is too weak.');
-          break;
-        default:
-          setErrorText('Sign up failed. Please check again.');
-          break;
-      }
-      setIsLoading(false);
-      console.error('Sign Up Error: ', error);
     }
+    setInputs([...inputs]);
   };
 
   const handleRegisterByGoogle = async () => {
@@ -137,12 +164,14 @@ const RegistrationScreen = ({ navigation }: any) => {
     }
   };
 
+  const handleModal = () => setIsModalVisible(prev => !prev);
+
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={'#163859'} />
       <HeaderComponent />
       <ScrollView>
-        <SafeAreaView style={styleBG as any}>
+        <SafeAreaView>
           {/* Body */}
           <View style={styles.container}>
             {/* Title */}
@@ -159,52 +188,21 @@ const RegistrationScreen = ({ navigation }: any) => {
 
             {/* Form */}
             <View style={styles.formSectionLogin}>
-              <Input
-                label="Full name"
-                placeholder="Enter your full name"
-                span="*"
-                onChangeText={(text: string) => setFullName(text)}
-                // onChangeText={nameInput => setName(nameInput)}
-                // error={errorName}
-              />
-              <Input
-                label="Email"
-                placeholder="Enter your email "
-                span="*"
-                onChangeText={(text: string) => setEmail(text)}
-
-                // onChangeText={nameInput => setName(nameInput)}
-                // error={errorName}
-              />
-              <Input
-                label="Phone number"
-                placeholder="Enter your phone number "
-                span="*"
-                onChangeText={(text: string) => setPhoneNumber(text)}
-
-                // onChangeText={nameInput => setName(nameInput)}
-                // error={errorName}
-              />
-              <Input
-                label="Password"
-                placeholder="Enter password"
-                span="*"
-                password
-                onChangeText={(text: string) => setPassword(text)}
-
-                // onChangeText={nameInput => setName(nameInput)}
-                // error={errorName}
-              />
-              <Input
-                label="Confirm Password"
-                placeholder="Enter password"
-                span="*"
-                password
-                onChangeText={(text: string) => setConfirmPassword(text)}
-
-                // onChangeText={nameInput => setName(nameInput)}
-                // error={errorName}
-              />
+              {inputs.map((input, index) => (
+                <View key={index}>
+                  <Input
+                    label={input.label}
+                    placeholder={`Enter your ${input.label.toLowerCase()}`}
+                    value={input.value}
+                    onChangeText={(text: string) =>
+                      handleInputChange(index, text)
+                    }
+                    error={input.error}
+                    password={input.password}
+                    span="*"
+                  />
+                </View>
+              ))}
             </View>
 
             {/* Login */}
@@ -308,10 +306,5 @@ const RegistrationScreen = ({ navigation }: any) => {
     </>
   );
 };
-
-const styleBG = StyleSheet.create<any>({
-  backgroundColor: '#F6F6F6',
-  height: '100%',
-});
 
 export default RegistrationScreen;
