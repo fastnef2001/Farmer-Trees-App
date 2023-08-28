@@ -18,6 +18,10 @@ import { ButtonBack, ButtonLogin } from '../../components/Button/Button';
 import { Modal } from '../../components/Modal/Modal';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 const RegistrationScreen = ({ navigation }: any) => {
   const [isModalVisible, setIsModalVisible] = React.useState(false);
@@ -51,8 +55,6 @@ const RegistrationScreen = ({ navigation }: any) => {
       );
       setIsLoading(false);
       handleModal();
-      // nếu collection users chưa ton tai thi tao moi
-
       const user = await firestore()
         .collection('users')
         .doc(response.user.uid)
@@ -80,6 +82,58 @@ const RegistrationScreen = ({ navigation }: any) => {
       }
       setIsLoading(false);
       console.error('Sign Up Error: ', error);
+    }
+  };
+
+  const handleRegisterByGoogle = async () => {
+    await GoogleSignin.signOut();
+
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log('userInfo', userInfo);
+      const googleCredential = auth.GoogleAuthProvider.credential(
+        userInfo.idToken,
+      );
+      const isUserExist = await auth().fetchSignInMethodsForEmail(
+        userInfo.user.email,
+      );
+      if (isUserExist.length === 0) {
+        await auth().signInWithCredential(googleCredential);
+        const fullNameGoogle = userInfo.user.name;
+        //save fullNameGoogle to firestore
+        const user = await firestore()
+          .collection('users')
+          .doc(auth().currentUser?.uid)
+          .get();
+        if (!user.exists) {
+          await firestore()
+            .collection('users')
+            .doc(auth().currentUser?.uid)
+            .set({
+              fullName: fullNameGoogle,
+            });
+        }
+        handleModal();
+        return;
+      }
+      // If exist, then set error
+      else {
+        setErrorText('Gmail is already registered.');
+        await GoogleSignin.revokeAccess();
+        await GoogleSignin.signOut();
+        return;
+      }
+    } catch (error: any) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log('user cancelled the login flow');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        console.log('operation (e.g. sign in) is in progress already');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        console.log('play services not available or outdated');
+      } else {
+        console.log('some other error happened');
+      }
     }
   };
 
@@ -204,8 +258,7 @@ const RegistrationScreen = ({ navigation }: any) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.signupGoogleBtn}
-              // onPress={handleRegisterByGoogle}
-            >
+              onPress={handleRegisterByGoogle}>
               <View style={styles.txtBtnSignup}>
                 <IconGoogle />
                 <Text
@@ -216,7 +269,7 @@ const RegistrationScreen = ({ navigation }: any) => {
                     fontWeight: 'bold',
                     marginLeft: 18,
                   }}>
-                  Login with Google
+                  Sign up with Google
                 </Text>
               </View>
             </TouchableOpacity>

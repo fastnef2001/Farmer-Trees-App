@@ -14,6 +14,8 @@ import HeaderComponent from '../../components/Header/Header.component';
 import Input from '../../components/Input/Input.component';
 import IconSignUp from '../../assets/images/IconSignUp.svg';
 import IconGoogle from '../../assets/images/IconGoogle.svg';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { getAdditionalUserInfo } from 'firebase/auth';
 import {
   GoogleSignin,
   statusCodes,
@@ -70,19 +72,19 @@ const RegistrationScreen = ({ navigation }: any) => {
         userInfo.idToken,
       );
 
-      // Kiểm tra xem người dùng đã tồn tại trong Firebase
+      // Check if user already exists in Firebase
       const isUserExist = await auth().fetchSignInMethodsForEmail(
         userInfo.user.email,
       );
       console.log('isUserExist', isUserExist);
       if (isUserExist.length === 0) {
-        // Nếu chưa tồn tại thì seterror
+        // If not exist, then set error
         setErrorText('Gmail is not registered.');
         await GoogleSignin.revokeAccess();
         await GoogleSignin.signOut();
         return;
       }
-      // Nếu tồn tại thì signIn
+      // If exist, then sign in
       await auth().signInWithCredential(googleCredential);
       navigation.navigate('Farmname');
     } catch (error: any) {
