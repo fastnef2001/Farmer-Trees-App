@@ -96,7 +96,7 @@ export default StyleSheet.create({
   btnText: {
     fontSize: 16,
     textAlign: 'center',
-    // color: '#FFF',
+    color: '#FFF',
     fontWeight: 'bold',
     marginLeft: 18,
   },
