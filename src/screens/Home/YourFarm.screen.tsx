@@ -1,36 +1,34 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable no-const-assign */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import auth from '@react-native-firebase/auth';
 import {
-  SafeAreaView,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-  StyleSheet,
   Image,
-  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { launchImageLibrary, MediaType } from 'react-native-image-picker';
 import HeaderComponent from '../../components/Header/Header.component';
-import IconBack from '../../assets/images/IconBack.svg';
+import { ButtonMenu } from '../../components/Button/ButtonMenu';
+import WeatherComponent from '../../components/Weather/Weather.component';
+import firestore from '@react-native-firebase/firestore';
+import RectangularTree from '../../components/RectangularElement/Tree.component';
 import IconAdd from '../../assets/images/IconAdd.svg';
-import Input from '../../components/Input/Input.component';
+import { MediaType, launchImageLibrary } from 'react-native-image-picker';
+import storage from '@react-native-firebase/storage';
+import styles from '../Setupfarm/Addtree.style';
+import { ModalInsert } from '../../components/Modal/ModalInsert';
+import IconBack from '../../assets/images/IconBack.svg';
 import IconSave from '../../assets/images/IconSave.svg';
 import IconDeleteRed from '../../assets/images/IconDeleteRed.svg';
-import { ModalInsert } from '../../components/Modal/ModalInsert';
-import { Modal } from '../../components/Modal/Modal';
-import { ScrollView } from 'react-native-gesture-handler';
 import IconUpload from '../../assets/images/IconUpload.svg';
-import RectangularTree from '../../components/RectangularElement/Tree.component';
-import IconComplete from '../../assets/images/IconComplete.svg';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
-import styles from './Addtree.style';
+import Input from '../../components/Input/Input.component';
+import { Modal } from '../../components/Modal/Modal';
+import IconAdd36 from '../../assets/images/IconAdd36.svg';
 
-const Addtree = ({ navigation }: any) => {
+const YourFarm = ({ navigation }: any) => {
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);
   const [selectImage, setSelectImage] = useState('');
   const [isModalSuccess, setIsModalSuccess] = React.useState(false);
@@ -157,19 +155,32 @@ const Addtree = ({ navigation }: any) => {
     return () => subscriber();
   }, []);
 
+  // lấy tên farm của user collection users, field farmName
+  const [farmName, setFarmName] = useState('');
+  React.useEffect(() => {
+    const subscriber = firestore()
+      .collection('users')
+      .doc(auth().currentUser?.uid)
+      .onSnapshot(documentSnapshot => {
+        const farmName = documentSnapshot.data()?.farmName;
+        setFarmName(farmName);
+      });
+    return () => subscriber();
+  }, []);
+
   return (
     <>
       <HeaderComponent />
-      <View style={styles.container}>
+      <WeatherComponent />
+      <View style={styles1.container}>
         {/* Title */}
-        <View style={styles.headSession}>
-          <TouchableOpacity onPress={() => navigation.navigate('Farmname')}>
-            <IconBack />
-          </TouchableOpacity>
-          <View style={{ width: 8 }} />
+        <View style={styles1.headSession}>
           <View>
-            <Text style={styles.txtTitle}>Add trees for Farm</Text>
+            <Text style={styles1.txtTitle}>{farmName} farm</Text>
           </View>
+          <TouchableOpacity onPress={handleModal} style={{ marginRight: 8 }}>
+            <IconAdd36 />
+          </TouchableOpacity>
         </View>
 
         {trees.length > 0 ? (
@@ -178,7 +189,7 @@ const Addtree = ({ navigation }: any) => {
               showsVerticalScrollIndicator={false}
               style={{
                 width: '90%',
-                marginTop: 24,
+                marginTop: 12,
               }}>
               {trees.map((tree, index) => (
                 <RectangularTree
@@ -189,46 +200,18 @@ const Addtree = ({ navigation }: any) => {
                 />
               ))}
             </ScrollView>
-            <View
-              style={{
-                backgroundColor: '#ffffff',
-                height: 88,
-                width: '100%',
-                alignItems: 'center',
-                paddingHorizontal: 16,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}>
-              <TouchableOpacity
-                style={styles.btnSession}
-                onPress={() => navigation.navigate('YourFarm')}>
-                <View style={styles.txtBtn}>
-                  <IconComplete />
-                  <View style={{ width: 16 }} />
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      textAlign: 'center',
-                      color: '#FFFFFF',
-                      fontWeight: 'bold',
-                    }}>
-                    COMPLETE
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <View style={{ width: 16 }} />
-              <TouchableOpacity onPress={handleModal}>
-                <IconAdd />
-              </TouchableOpacity>
-            </View>
           </>
         ) : (
-          <TouchableOpacity onPress={handleModal} style={styles.txtBtn}>
-            <IconAdd />
-          </TouchableOpacity>
+          <Text> không có cây</Text>
         )}
       </View>
-
+      <View style={styles1.root}>
+        <View style={styles1.menu}>
+          <ButtonMenu isPick={true} text="Your Farm" />
+          <ButtonMenu isPick={false} text="Statistic" />
+          <ButtonMenu isPick={false} text="Chat AI" />
+        </View>
+      </View>
       <ModalInsert isVisible={isModalAddTree}>
         <ModalInsert.Container>
           <ModalInsert.Header>
@@ -331,4 +314,87 @@ const Addtree = ({ navigation }: any) => {
   );
 };
 
-export default Addtree;
+export default YourFarm;
+
+const styles1 = StyleSheet.create({
+  container: {
+    flex: 1,
+    height: '100%',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  root: {
+    width: '100%',
+    height: 72,
+    flexShrink: 0,
+    elevation: 8, // Áp dụng shadow cho Android
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 8, // Độ cong của shadow
+    backgroundColor: '#ffffff',
+  },
+  menu: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    marginTop: 8,
+    backgroundColor: '#ffffff',
+  },
+
+  frame48095: {
+    width: '134rem',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    gap: '4rem',
+  },
+  textTime: {
+    fontFamily: 'Nunito',
+    fontSize: 16,
+    fontStyle: 'italic',
+    fontWeight: '500',
+    lineHeight: 22,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#636366',
+  },
+  textLocation: {
+    fontFamily: 'Nunito',
+    fontSize: 18,
+    fontWeight: '700',
+    lineHeight: 25,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#163859',
+  },
+  textWeather: {
+    fontFamily: 'Nunito',
+    fontSize: 14,
+    fontWeight: '500',
+    lineHeight: 19,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#636366',
+  },
+  txtTitle: {
+    fontFamily: 'Nunito',
+    fontSize: 20,
+    fontWeight: '600',
+    lineHeight: 27,
+    letterSpacing: 0,
+    textAlign: 'left',
+    color: '#163859',
+    marginLeft: 8,
+  },
+  headSession: {
+    flexDirection: 'row',
+    width: '90%',
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+});

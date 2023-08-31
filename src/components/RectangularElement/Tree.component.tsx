@@ -6,8 +6,6 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import IconDelete20 from '../../assets/images/IconDelete20.svg';
 import IconCalculate20 from '../../assets/images/IconCalculate20.svg';
 import IconEdit20 from '../../assets/images/IconEdit20.svg';
-const abc =
-  'https://firebasestorage.googleapis.com/v0/b/smartfarm-f1433.appspot.com/o/imageTree%2F1C1yy9ir2DZ5U4Zldo6QadAjeic2A?alt=media&token=147af072-f267-4003-8b17-4b7fac571118';
 
 const RectangularTree = ({
   nameTree,
@@ -18,13 +16,21 @@ const RectangularTree = ({
 }: any) => {
   return (
     <View style={styles.root}>
-      <Image
-        // đọc url từ firebase
-        source={{
-          uri: urlImage,
-        }}
-        style={{ width: 60, height: 60 }}
-      />
+      {urlImage.length <= 0 ? (
+        <Image
+          source={require('../../assets/images/AvatarSquare.png')}
+          style={{ width: 60, height: 60 }}
+        />
+      ) : (
+        <Image
+          // đọc url từ firebase
+          source={{
+            uri: urlImage,
+          }}
+          style={{ width: 60, height: 60, borderRadius: 8 }}
+        />
+      )}
+
       <View style={{ width: 8 }} />
       <View style={styles.group8182}>
         <Text style={styles.nameTree}>{nameTree}</Text>

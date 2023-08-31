@@ -1,21 +1,33 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  headerStyle: {
-    flex: 1,
-    display: 'flex',
+  cover: {
+    width: '100%',
+    paddingHorizontal: 16,
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 10,
-    borderRadius: 10,
-    marginLeft: 10,
-    width: 100,
-    height: 40,
+    justifyContent: 'space-between',
   },
   logoRightStyle: {
     width: 40,
-    backgroundColor: '#163859',
     alignItems: 'center',
     marginTop: 10,
+  },
+  root: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  ellipse59: {
+    borderRadius: 100,
+    width: 40,
+    height: 40,
+  },
+  username: {
+    color: '#ffffff',
+    textAlign: 'center',
+    fontFamily: 'Nunito',
+    fontSize: 20,
+    fontStyle: 'normal',
+    fontWeight: '400',
   },
 });

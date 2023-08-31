@@ -22,7 +22,6 @@ const RegistrationScreen = ({ navigation }: any) => {
     { label: 'Password', value: '', error: '' },
   ]);
 
-  //đưa các input error về rỗng khi từ màn hình khác quay lại
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       setErrorText('');
@@ -139,6 +138,16 @@ const RegistrationScreen = ({ navigation }: any) => {
       setErrorText('Sign in failed. Please check again.');
     }
   };
+
+  // const handleLogout = async () => {
+  //   try {
+  //     await auth().signOut();
+  //     // thực hiện refresh lại trang
+  //     navigation.navigate('LoginScreen');
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <>
