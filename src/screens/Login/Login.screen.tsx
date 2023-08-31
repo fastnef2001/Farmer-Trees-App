@@ -1,66 +1,117 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable no-unreachable */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import auth from '@react-native-firebase/auth';
 import {
   SafeAreaView,
   View,
   Text,
-  StatusBar,
   TouchableOpacity,
-  StyleSheet,
   ScrollView,
 } from 'react-native';
-import styles from './Login.style';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import HeaderComponent from '../../components/Header/Header.component';
 import Input from '../../components/Input/Input.component';
 import IconSignUp from '../../assets/images/IconSignUp.svg';
 import IconGoogle from '../../assets/images/IconGoogle.svg';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { getAdditionalUserInfo } from 'firebase/auth';
-import {
-  GoogleSignin,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
+import styles from './Login.style';
+
 const RegistrationScreen = ({ navigation }: any) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [errorText, setErrorText] = useState('');
-  const signIn = async () => {
-    if (!email || !password) {
-      setErrorText('Please enter email and password.');
-      return;
-    }
+  const [inputs, setInputs] = useState([
+    { label: 'Email', value: '', error: '' },
+    { label: 'Password', value: '', error: '' },
+  ]);
 
-    setErrorText('');
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setErrorText('');
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error: '',
+        })),
+      );
+    });
+    return unsubscribe;
+  }, [inputs, navigation]);
 
-    try {
-      await auth().signInWithEmailAndPassword(email, password);
-      navigation.navigate('Farmname');
-    } catch (error: any) {
-      switch (error.code) {
-        case 'auth/invalid-email':
-          setErrorText('Invalid email format.');
-          break;
-        case 'auth/wrong-password':
-          setErrorText('Incorrect password.');
-          break;
-        case 'auth/user-not-found':
-          setErrorText('Email does not exist.');
-          break;
-        default:
-          setErrorText('Sign in failed. Please check again.');
-          break;
-      }
-      console.error('Sign In Error: ', error);
-    }
+  const handleInputChange = (index: any, value: any) => {
+    const newInputs = [...inputs];
+    newInputs[index].value = value;
+    newInputs[index].error = '';
+    setInputs(newInputs);
   };
+
   GoogleSignin.configure({
     webClientId:
       '159898876320-kqda9k08g543vj86cqqq9ck78ismjiog.apps.googleusercontent.com',
   });
+
+  const signIn = async () => {
+    setErrorText('');
+    const emailInput = inputs.find(input => input.label === 'Email');
+    const passwordInput = inputs.find(input => input.label === 'Password');
+    // Check if any input is empty
+    if (!emailInput?.value || !passwordInput?.value) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error: !input.value ? `Please enter ${input.label}` : '',
+        })),
+      );
+      return;
+    }
+    // Check if email is valid. validate email format strongly. badly formatted email
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!emailRegex.test(emailInput?.value) || emailInput.value.endsWith('.')) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error: input.label === 'Email' ? 'Email is invalid.' : '',
+        })),
+      );
+      return;
+    }
+    // check mail not exist
+    const isUserExist = await auth().fetchSignInMethodsForEmail(
+      emailInput?.value,
+    );
+    if (isUserExist.length === 0) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error: input.label === 'Email' ? 'Email does not exist.' : '',
+        })),
+      );
+      return;
+    }
+
+    try {
+      await auth().signInWithEmailAndPassword(
+        emailInput?.value,
+        passwordInput?.value,
+      );
+      navigation.navigate('Farmname');
+    } catch (error: any) {
+      if (error.code === 'auth/wrong-password') {
+        setInputs(
+          inputs.map(input => ({
+            ...input,
+            error: input.label === 'Password' ? 'Wrong password.' : '',
+          })),
+        );
+      } else {
+        setErrorText('Sign in failed. Please check again.');
+      }
+    }
+  };
+
   const signByGoogle = async () => {
+    const user = auth().currentUser;
+    if (user) {
+      await GoogleSignin.signOut();
+    }
+
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
@@ -69,174 +120,94 @@ const RegistrationScreen = ({ navigation }: any) => {
         userInfo.idToken,
       );
 
-      // Kiểm tra xem người dùng đã tồn tại trong Firebase
+      // Check if user already exists in Firebase
       const isUserExist = await auth().fetchSignInMethodsForEmail(
         userInfo.user.email,
       );
-      console.log('isUserExist', isUserExist);
       if (isUserExist.length === 0) {
-        // Nếu chưa tồn tại thì seterror
+        // If not exist, then set error
         setErrorText('Gmail is not registered.');
         await GoogleSignin.revokeAccess();
         await GoogleSignin.signOut();
         return;
       }
-      // Nếu tồn tại thì signIn
+      // If exist, then sign in
       await auth().signInWithCredential(googleCredential);
       navigation.navigate('Farmname');
-    } catch (error: any) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log('user cancelled the login flow');
-
-        // alert('Cancel');
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        console.log('operation (e.g. sign in) is in progress already');
-
-        // alert('In Progress');
-
-        // alert('In Progress');
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        console.log('play services not available or outdated');
-
-        // alert('Play services not available or outdated');
-      } else {
-        console.log('some other error happened');
-
-        // alert('Some other error happened');
-      }
+    } catch {
+      setErrorText('Sign in failed. Please check again.');
     }
   };
+
+  // const handleLogout = async () => {
+  //   try {
+  //     await auth().signOut();
+  //     // thực hiện refresh lại trang
+  //     navigation.navigate('LoginScreen');
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   return (
     <>
       <HeaderComponent />
       <ScrollView>
-        <SafeAreaView style={styleBG as any}>
-          {/* Body */}
-          <View style={styles.container}>
-            {/* Title */}
-            <View>
-              <Text style={styles.textTitleContainer}>LOGIN</Text>
-            </View>
-            {errorText ? (
-              <View style={{ marginTop: 16 }}>
-                <Text style={{ color: 'red' }}>{errorText}</Text>
-              </View>
-            ) : null}
-            {/* Form */}
-            <View style={styles.formSectionLogin}>
-              <Input
-                label="Email"
-                placeholder="Enter your email "
-                span="*"
-                value={email}
-                onChangeText={(text: string) => setEmail(text)}
-                // onChangeText={nameInput => setName(nameInput)}
-                // error={errorName}
-              />
-              <Input
-                label="Password"
-                placeholder="Enter password"
-                span="*"
-                value={password}
-                onChangeText={(text: string) => setPassword(text)}
-                password
-                // onChangeText={nameInput => setName(nameInput)}
-                // error={errorName}
-              />
-              <View
-                style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('ForgotPasswordScreen')}>
-                  <Text
-                    style={{
-                      paddingTop: 4,
-                      fontFamily: 'Nunito',
-                      fontSize: 12,
-                      fontWeight: '400',
-                      lineHeight: 16,
-                      letterSpacing: 0,
-                      textAlign: 'right',
-                      color: '#163859',
-                    }}>
-                    Did you forget your password ?
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            {/* Register */}
-            <View style={styles.txtBottomFormSignin}>
-              <Text
-                style={{
-                  fontFamily: 'Nunito',
-                  fontSize: 14,
-                  fontWeight: '500',
-                  lineHeight: 20,
-                  letterSpacing: 0,
-                  textAlign: 'left',
-                  color: '#636366',
-                }}>
-                Do not have an account?{' '}
-              </Text>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('RegistrationScreen')}>
-                <Text
-                  style={{
-                    fontFamily: 'Nunito',
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    lineHeight: 20,
-                    letterSpacing: 0,
-                    textAlign: 'left',
-                    color: '#163859',
-                  }}>
-                  Register
-                </Text>
-              </TouchableOpacity>
-            </View>
+        <SafeAreaView style={styles.container}>
+          <Text style={styles.textTitleContainer}>LOGIN</Text>
 
-            {/* Button */}
-            <TouchableOpacity style={styles.signinBtn} onPress={signIn}>
-              <View style={styles.txtBtnSignup}>
-                <IconSignUp />
-                <Text
-                  style={{
-                    fontSize: 16,
-                    textAlign: 'center',
-                    color: '#FFF',
-                    fontWeight: 'bold',
-                    marginLeft: 18,
-                  }}>
-                  LOGIN
-                </Text>
+          {errorText ? (
+            <Text style={{ marginTop: 16, color: 'red' }}>{errorText}</Text>
+          ) : null}
+
+          <View style={styles.formSectionLogin}>
+            {inputs.map((input, index) => (
+              <View key={index}>
+                <Input
+                  label={input.label}
+                  placeholder={`Enter your ${input.label.toLowerCase()}`}
+                  value={input.value}
+                  onChangeText={(text: string) =>
+                    handleInputChange(index, text)
+                  }
+                  error={input.error}
+                  password={input.label === 'Password' ? true : false}
+                  span="*"
+                />
               </View>
-            </TouchableOpacity>
+            ))}
+          </View>
+
+          <View style={styles.txtBottomFormSignin}>
+            <Text style={styles.createAccountText}>
+              Do not have an account?
+            </Text>
+            <View style={{ width: 8 }} />
             <TouchableOpacity
-              style={styles.signupGoogleBtn}
-              onPress={signByGoogle}>
-              <View style={styles.txtBtnSignup}>
-                <IconGoogle />
-                <Text
-                  style={{
-                    fontSize: 16,
-                    textAlign: 'center',
-                    color: '#163859',
-                    fontWeight: 'bold',
-                    marginLeft: 18,
-                  }}>
-                  Login with Google
-                </Text>
-              </View>
+              onPress={() => navigation.navigate('RegistrationScreen')}>
+              <Text style={styles.registerText}>Register</Text>
             </TouchableOpacity>
           </View>
+
+          <TouchableOpacity style={styles.signinBtn} onPress={signIn}>
+            <View style={styles.txtBtnSignup}>
+              <IconSignUp />
+              <Text style={styles.btnText}>LOGIN</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.signupGoogleBtn}
+            onPress={signByGoogle}>
+            <View style={styles.txtBtnSignup}>
+              <IconGoogle />
+              <Text style={styles.btnTextBlue}>Login with Google</Text>
+            </View>
+          </TouchableOpacity>
         </SafeAreaView>
       </ScrollView>
     </>
   );
 };
-
-const styleBG = StyleSheet.create<any>({
-  backgroundColor: '#F6F6F6',
-  height: '100%',
-});
 
 export default RegistrationScreen;

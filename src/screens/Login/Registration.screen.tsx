@@ -1,15 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   View,
   Text,
   StatusBar,
   TouchableOpacity,
-  StyleSheet,
   ScrollView,
 } from 'react-native';
-import styles from './Login.style';
 import HeaderComponent from '../../components/Header/Header.component';
 import Input from '../../components/Input/Input.component';
 import IconSignUp from '../../assets/images/IconSignUp.svg';
@@ -18,84 +16,229 @@ import { ButtonBack, ButtonLogin } from '../../components/Button/Button';
 import { Modal } from '../../components/Modal/Modal';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+import styles from './Login.style';
 
 const RegistrationScreen = ({ navigation }: any) => {
-  const [isModalVisible, setIsModalVisible] = React.useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleModal = () => setIsModalVisible(() => !isModalVisible);
-
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [errorText, setErrorText] = useState('');
 
-  const handleRegister = async () => {
-    if (!fullName || !email || !phoneNumber || !password || !confirmPassword) {
-      setErrorText('Please complete all required fields.');
-      return;
-    }
-    if (password !== confirmPassword) {
-      setErrorText('Passwords do not match.');
-      return;
-    }
-    setErrorText('');
-    setIsLoading(true);
+  const [inputs, setInputs] = useState([
+    { label: 'Full name', value: '', error: '' },
+    { label: 'Email', value: '', error: '' },
+    { label: 'Phone number', value: '', error: '' },
+    { label: 'Password', value: '', error: '' },
+    { label: 'Confirm Password', value: '', error: '' },
+  ]);
 
+  const handleInputChange = (index: any, value: any) => {
+    const newInputs = [...inputs];
+    newInputs[index].value = value;
+    newInputs[index].error = '';
+    setInputs(newInputs);
+  };
+
+  const handleRegister = async () => {
+    setErrorText('');
+    const passwordInput = inputs.find(input => input.label === 'Password');
+    const confirmPasswordInput = inputs.find(
+      input => input.label === 'Confirm Password',
+    );
+    const emailInput = inputs.find(input => input.label === 'Email');
+    const fullNameInput = inputs.find(input => input.label === 'Full name');
+    const phoneNumberInput = inputs.find(
+      input => input.label === 'Phone number',
+    );
+    // Check if any input is empty
+    if (
+      !emailInput?.value ||
+      !passwordInput?.value ||
+      !fullNameInput?.value ||
+      !phoneNumberInput?.value
+    ) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error: !input.value ? `Please enter ${input.label}` : '',
+        })),
+      );
+      return;
+    }
+    // Check if email is valid
+    if (!/\S+@\S+\.\S+/.test(emailInput?.value)) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error: input.label === 'Email' ? 'Invalid email format..' : '',
+        })),
+      );
+      return;
+    }
+    // check email is already in use
+    const isUserExist = await auth().fetchSignInMethodsForEmail(
+      emailInput.value,
+    );
+    if (isUserExist.length > 0) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error: input.label === 'Email' ? 'Email already in use..' : '',
+        })),
+      );
+      return;
+    }
+    //check phone number valid vietnam phone number
+    if (!/((09|03|07|08|05)+([0-9]{8})\b)/g.test(phoneNumberInput?.value)) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error:
+            input.label === 'Phone number'
+              ? 'Invalid phone number format.'
+              : '',
+        })),
+      );
+      return;
+    }
+    //check phone number is already in use
+    const isPhoneNumberExist = await firestore()
+      .collection('users')
+      .where('phoneNumber', '==', phoneNumberInput?.value)
+      .get();
+    if (isPhoneNumberExist.size > 0) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error:
+            input.label === 'Phone number'
+              ? 'Phone number already in use.'
+              : '',
+        })),
+      );
+      return;
+    }
+    // Check if password is strong enough (at least 6 characters, 1 uppercase, 1 lowercase, 1 number)
+    if (
+      !/(?=.*[a-z])/.test(passwordInput?.value) ||
+      !/(?=.*[A-Z])/.test(passwordInput?.value) ||
+      !/(?=.*[0-9])/.test(passwordInput?.value) ||
+      passwordInput?.value.length < 6
+    ) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error:
+            input.label === 'Password'
+              ? 'Password must be at least 6 characters, 1 uppercase, 1 lowercase, 1 number.'
+              : '',
+        })),
+      );
+      return;
+    }
+    // Check if password and confirm password match
+    if (passwordInput?.value !== confirmPasswordInput?.value) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error:
+            input.label === 'Confirm Password'
+              ? 'Password does not match.'
+              : '',
+        })),
+      );
+      return;
+    }
+    // register
     try {
       const response = await auth().createUserWithEmailAndPassword(
-        email,
-        password,
+        emailInput.value,
+        passwordInput.value,
       );
-      setIsLoading(false);
       handleModal();
-      // nếu collection users chưa ton tai thi tao moi
-
       const user = await firestore()
         .collection('users')
         .doc(response.user.uid)
         .get();
       if (!user.exists) {
         await firestore().collection('users').doc(response.user.uid).set({
-          fullName: fullName,
-          phoneNumber: phoneNumber,
+          fullName: fullNameInput.value,
+          phoneNumber: phoneNumberInput.value,
         });
       }
     } catch (error: any) {
-      switch (error.code) {
-        case 'auth/email-already-in-use':
-          setErrorText('Email already in use.');
-          break;
-        case 'auth/invalid-email':
-          setErrorText('Invalid email format.');
-          break;
-        case 'auth/weak-password':
-          setErrorText('Password is too weak.');
-          break;
-        default:
-          setErrorText('Sign up failed. Please check again.');
-          break;
-      }
-      setIsLoading(false);
-      console.error('Sign Up Error: ', error);
+      setErrorText('Sign up failed. Please check again.');
     }
   };
 
+  const handleRegisterByGoogle = async () => {
+    await GoogleSignin.signOut();
+
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      const googleCredential = auth.GoogleAuthProvider.credential(
+        userInfo.idToken,
+      );
+
+      const isUserExist = await auth().fetchSignInMethodsForEmail(
+        userInfo.user.email,
+      );
+
+      if (isUserExist.length === 0) {
+        await auth().signInWithCredential(googleCredential);
+        const fullNameGoogle = userInfo.user.name;
+        //save fullNameGoogle to firestore
+        const user = await firestore()
+          .collection('users')
+          .doc(auth().currentUser?.uid)
+          .get();
+        if (!user.exists) {
+          await firestore()
+            .collection('users')
+            .doc(auth().currentUser?.uid)
+            .set({
+              fullName: fullNameGoogle,
+            });
+        }
+        handleModal();
+        return;
+      }
+      // If exist, then set error
+      else {
+        setErrorText('Gmail is already registered.');
+        await GoogleSignin.revokeAccess();
+        await GoogleSignin.signOut();
+      }
+    } catch (error: any) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log('user cancelled the login flow');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        console.log('operation (e.g. sign in) is in progress already');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        console.log('play services not available or outdated');
+      } else {
+        console.log('some other error happened');
+      }
+    }
+  };
+
+  const handleModal = () => setIsModalVisible(prev => !prev);
+
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor={'#163859'} />
       <HeaderComponent />
       <ScrollView>
-        <SafeAreaView style={styleBG as any}>
+        <SafeAreaView>
           {/* Body */}
           <View style={styles.container}>
             {/* Title */}
             <View>
               <Text style={styles.textTitleContainer}>SIGN UP</Text>
             </View>
-            {/* nếu errorText  */}
+            {/* errorText  */}
 
             {errorText ? (
               <View style={{ marginTop: 16 }}>
@@ -105,123 +248,55 @@ const RegistrationScreen = ({ navigation }: any) => {
 
             {/* Form */}
             <View style={styles.formSectionLogin}>
-              <Input
-                label="Full name"
-                placeholder="Enter your full name"
-                span="*"
-                onChangeText={(text: string) => setFullName(text)}
-                // onChangeText={nameInput => setName(nameInput)}
-                // error={errorName}
-              />
-              <Input
-                label="Email"
-                placeholder="Enter your email "
-                span="*"
-                onChangeText={(text: string) => setEmail(text)}
-
-                // onChangeText={nameInput => setName(nameInput)}
-                // error={errorName}
-              />
-              <Input
-                label="Phone number"
-                placeholder="Enter your phone number "
-                span="*"
-                onChangeText={(text: string) => setPhoneNumber(text)}
-
-                // onChangeText={nameInput => setName(nameInput)}
-                // error={errorName}
-              />
-              <Input
-                label="Password"
-                placeholder="Enter password"
-                span="*"
-                password
-                onChangeText={(text: string) => setPassword(text)}
-
-                // onChangeText={nameInput => setName(nameInput)}
-                // error={errorName}
-              />
-              <Input
-                label="Confirm Password"
-                placeholder="Enter password"
-                span="*"
-                password
-                onChangeText={(text: string) => setConfirmPassword(text)}
-
-                // onChangeText={nameInput => setName(nameInput)}
-                // error={errorName}
-              />
+              {inputs.map((input, index) => (
+                <View key={index}>
+                  <Input
+                    label={input.label}
+                    placeholder={`Enter your ${input.label.toLowerCase()}`}
+                    value={input.value}
+                    onChangeText={(text: string) =>
+                      handleInputChange(index, text)
+                    }
+                    error={input.error}
+                    password={
+                      input.label === 'Password' ||
+                      input.label === 'Confirm Password'
+                        ? true
+                        : false
+                    }
+                    span="*"
+                    keyboardType={
+                      input.label === 'Phone number' ? 'numeric' : 'default'
+                    }
+                  />
+                </View>
+              ))}
             </View>
-
-            {/* Login */}
             <View style={styles.txtBottomFormSignin}>
-              <Text
-                style={{
-                  fontFamily: 'Nunito',
-                  fontSize: 14,
-                  fontWeight: '500',
-                  lineHeight: 20,
-                  letterSpacing: 0,
-                  textAlign: 'left',
-                  color: '#636366',
-                }}>
-                Do you already have an account?{' '}
+              <Text style={styles.createAccountText}>
+                Do you already have an account?
               </Text>
+              <View style={{ width: 8 }} />
               <TouchableOpacity
                 onPress={() => navigation.navigate('LoginScreen')}>
-                <Text
-                  style={{
-                    fontFamily: 'Nunito',
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    lineHeight: 20,
-                    letterSpacing: 0,
-                    textAlign: 'left',
-                    color: '#163859',
-                  }}>
-                  Login
-                </Text>
+                <Text style={styles.registerText}>Login</Text>
               </TouchableOpacity>
             </View>
-            {/* Button */}
-            <TouchableOpacity
-              style={styles.signinBtn}
-              onPress={handleRegister}
-              disabled={isLoading}>
+            <TouchableOpacity style={styles.signinBtn} onPress={handleRegister}>
               <View style={styles.txtBtnSignup}>
                 <IconSignUp />
-                <Text
-                  style={{
-                    fontSize: 16,
-                    textAlign: 'center',
-                    color: '#FFF',
-                    fontWeight: 'bold',
-                    marginLeft: 18,
-                  }}>
-                  {isLoading ? 'LOADING...' : 'SIGN UP'}
-                </Text>
+                <Text style={styles.btnText}>SIGN UP</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.signupGoogleBtn}
-              // onPress={handleRegisterByGoogle}
-            >
+              onPress={handleRegisterByGoogle}>
               <View style={styles.txtBtnSignup}>
                 <IconGoogle />
-                <Text
-                  style={{
-                    fontSize: 16,
-                    textAlign: 'center',
-                    color: '#163859',
-                    fontWeight: 'bold',
-                    marginLeft: 18,
-                  }}>
-                  Login with Google
-                </Text>
+                <Text style={styles.btnTextBlue}>Sign up with Google</Text>
               </View>
             </TouchableOpacity>
           </View>
-
           <Modal isVisible={isModalVisible}>
             <Modal.Container>
               <Modal.Header title="Successfully" />
@@ -255,10 +330,5 @@ const RegistrationScreen = ({ navigation }: any) => {
     </>
   );
 };
-
-const styleBG = StyleSheet.create<any>({
-  backgroundColor: '#F6F6F6',
-  height: '100%',
-});
 
 export default RegistrationScreen;

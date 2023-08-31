@@ -10,15 +10,27 @@ import IconEdit20 from '../../assets/images/IconEdit20.svg';
 const RectangularTree = ({
   nameTree,
   numberTree,
+  urlImage,
   onFocus = () => {},
   ...props
 }: any) => {
   return (
     <View style={styles.root}>
-      <Image
-        source={require('../../assets/images/Tree.png')}
-        style={{ width: 60, height: 60 }}
-      />
+      {urlImage.length <= 0 ? (
+        <Image
+          source={require('../../assets/images/AvatarSquare.png')}
+          style={{ width: 60, height: 60 }}
+        />
+      ) : (
+        <Image
+          // đọc url từ firebase
+          source={{
+            uri: urlImage,
+          }}
+          style={{ width: 60, height: 60, borderRadius: 8 }}
+        />
+      )}
+
       <View style={{ width: 8 }} />
       <View style={styles.group8182}>
         <Text style={styles.nameTree}>{nameTree}</Text>

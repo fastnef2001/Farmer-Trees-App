@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import {
   SafeAreaView,
   View,
@@ -11,8 +11,17 @@ import HeaderComponent from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import Input from '../../components/Input/Input.component';
 import IconContinue from '../../assets/images/IconContinue.svg';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const Farmname = ({ navigation }: any) => {
+  const [farmName, setFarmName] = useState('');
+  const saveFarmName = async () => {
+    await firestore().collection('users').doc(auth().currentUser?.uid).update({
+      farmName: farmName,
+    });
+  };
+
   return (
     <>
       <HeaderComponent />
@@ -35,6 +44,7 @@ const Farmname = ({ navigation }: any) => {
             label="Farm name"
             placeholder="Enter your farm name"
             span="*"
+            onChangeText={(text: string) => setFarmName(text)}
             //onChangeText={nameInput => setName(nameInput)}
             // error={errorName}
           />
@@ -44,7 +54,10 @@ const Farmname = ({ navigation }: any) => {
         {/* Button continue */}
         <TouchableOpacity
           style={styles.btnSession}
-          onPress={() => navigation.navigate('AddTree')}>
+          onPress={() => {
+            saveFarmName();
+            navigation.navigate('AddTree');
+          }}>
           <View style={styles.txtBtn}>
             <IconContinue />
             <View style={{ width: 16 }} />

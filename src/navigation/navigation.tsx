@@ -12,6 +12,7 @@ import ChangePassword from '../screens/Password/ChangePassword.screen';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AddTree from '../screens/Setupfarm/Addtree.screen';
 import Farmname from '../screens/Setupfarm/Farmname.screen';
+import YourFarm from '../screens/Home/YourFarm.screen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -91,6 +92,11 @@ const MainNavigation = () => {
           name="Farmname"
           options={{ headerShown: false }}
           component={Farmname}
+        />
+        <Stack.Screen
+          name="YourFarm"
+          options={{ headerShown: false }}
+          component={YourFarm}
         />
         {/* add your another screen here using -> Stack.Screen */}
       </Stack.Navigator>
