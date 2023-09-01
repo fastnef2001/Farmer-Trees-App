@@ -1,17 +1,37 @@
-import { StyleSheet, Text, View, StatusBar, Image } from 'react-native';
-import React from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
 import styles from './Header.styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Logo from '../../assets/images/Logo.svg';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
-// import avatarUser from '../../assets/images/avatarUser.png';
+export type ButtonProps = {
+  onPress?: () => void;
+};
 
-// xác thực xem có hành động đăng nhập thành công hay không
-const user = auth().currentUser;
-console.log(user);
+const HeaderComponent = ({ onPress }: ButtonProps) => {
+  const user = auth().currentUser;
+  const [fullName, setFullName] = useState('');
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('users')
+      .doc(user?.uid)
+      .onSnapshot(documentSnapshot => {
+        setFullName(documentSnapshot.data()?.fullName);
+      });
+    return () => subscriber();
+  }, [user]);
+  const fullNameClipped =
+    fullName.length > 20 ? `${fullName.slice(0, 20)}...` : fullName;
 
-const HeaderComponent = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={'#163859'} />
@@ -19,14 +39,14 @@ const HeaderComponent = () => {
         <View style={styles.cover}>
           <Logo />
           {user ? (
-            <View style={styles.root}>
-              <Text style={styles.username}>username</Text>
+            <TouchableOpacity style={styles.root} onPress={onPress}>
+              <Text style={styles.username}>{fullNameClipped}</Text>
               <View style={{ width: 8 }} />
               <Image
                 source={require('../../assets/images/avatarUser.png')}
                 style={styles.ellipse59}
               />
-            </View>
+            </TouchableOpacity>
           ) : null}
         </View>
       </SafeAreaView>

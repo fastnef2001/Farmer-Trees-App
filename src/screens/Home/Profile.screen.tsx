@@ -12,7 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { fetchUser, selectAll } from '../../stores/user.reducer';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 
-const Home = ({ navigation }: any) => {
+const Profile = ({ navigation }: any) => {
   const dispatch = useAppDispatch();
   const users = useAppSelector(selectAll);
 
@@ -67,4 +67,4 @@ const styleUser = StyleSheet.create<any>({
   marginTop: 10,
 });
 
-export default Home;
+export default Profile;

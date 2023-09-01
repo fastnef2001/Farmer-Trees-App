@@ -170,7 +170,7 @@ const YourFarm = ({ navigation }: any) => {
 
   return (
     <>
-      <HeaderComponent />
+      <HeaderComponent onPress={() => navigation.navigate('Profile')} />
       <WeatherComponent />
       <View style={styles1.container}>
         {/* Title */}
@@ -205,13 +205,13 @@ const YourFarm = ({ navigation }: any) => {
           <Text> không có cây</Text>
         )}
       </View>
-      <View style={styles1.root}>
+      {/* <View style={styles1.root}>
         <View style={styles1.menu}>
           <ButtonMenu isPick={true} text="Your Farm" />
           <ButtonMenu isPick={false} text="Statistic" />
           <ButtonMenu isPick={false} text="Chat AI" />
         </View>
-      </View>
+      </View> */}
       <ModalInsert isVisible={isModalAddTree}>
         <ModalInsert.Container>
           <ModalInsert.Header>

@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Image,
   Alert,
+  AppRegistry,
 } from 'react-native';
 import { launchImageLibrary, MediaType } from 'react-native-image-picker';
 import HeaderComponent from '../../components/Header/Header.component';
@@ -29,6 +30,9 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import styles from './Addtree.style';
+import RNRestart from 'react-native-restart';
+import { useNavigation } from '@react-navigation/native';
+import { MyTabs } from '../../navigation/navigation';
 
 const Addtree = ({ navigation }: any) => {
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);
@@ -201,7 +205,7 @@ const Addtree = ({ navigation }: any) => {
               }}>
               <TouchableOpacity
                 style={styles.btnSession}
-                onPress={() => navigation.navigate('YourFarm')}>
+                onPress={() => navigation.navigate('Tabs')}>
                 <View style={styles.txtBtn}>
                   <IconComplete />
                   <View style={{ width: 16 }} />

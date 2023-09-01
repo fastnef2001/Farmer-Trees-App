@@ -14,9 +14,12 @@ import Input from '../../components/Input/Input.component';
 import IconSignUp from '../../assets/images/IconSignUp.svg';
 import IconGoogle from '../../assets/images/IconGoogle.svg';
 import styles from './Login.style';
+import firestore from '@react-native-firebase/firestore';
+import RNRestart from 'react-native-restart';
 
 const RegistrationScreen = ({ navigation }: any) => {
   const [errorText, setErrorText] = useState('');
+  const [isFarmName, setFarmName] = useState('');
   const [inputs, setInputs] = useState([
     { label: 'Email', value: '', error: '' },
     { label: 'Password', value: '', error: '' },
@@ -91,7 +94,7 @@ const RegistrationScreen = ({ navigation }: any) => {
         emailInput?.value,
         passwordInput?.value,
       );
-      navigation.navigate('Farmname');
+      checkFarmName();
     } catch (error: any) {
       if (error.code === 'auth/wrong-password') {
         setInputs(
@@ -133,9 +136,31 @@ const RegistrationScreen = ({ navigation }: any) => {
       }
       // If exist, then sign in
       await auth().signInWithCredential(googleCredential);
-      navigation.navigate('Farmname');
+      checkFarmName();
     } catch {
       setErrorText('Sign in failed. Please check again.');
+    }
+  };
+
+  const checkFarmName = async () => {
+    // check xem farm name trong firebase collection là users có tồn tại hay không
+    const user = auth().currentUser;
+    // dựa theo user để lấy farm name từ firebase
+
+    await firestore()
+      .collection('users')
+      .doc(user?.uid)
+      .get()
+      .then(documentSnapshot => {
+        if (documentSnapshot.exists) {
+          setFarmName(documentSnapshot.data()?.farmName);
+        }
+      });
+
+    if (isFarmName) {
+      navigation.navigate('Tabs');
+    } else {
+      navigation.navigate('Farmname');
     }
   };
 
