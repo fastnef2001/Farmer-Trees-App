@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import {
   StyleSheet,
   Text,
@@ -20,17 +21,19 @@ export type ButtonProps = {
 const HeaderComponent = ({ onPress }: ButtonProps) => {
   const user = auth().currentUser;
   const [fullName, setFullName] = useState('');
-  useEffect(() => {
-    const subscriber = firestore()
-      .collection('users')
-      .doc(user?.uid)
-      .onSnapshot(documentSnapshot => {
-        setFullName(documentSnapshot.data()?.fullName);
-      });
-    return () => subscriber();
-  }, [user]);
+  if (user) {
+    useEffect(() => {
+      const subscriber = firestore()
+        .collection('users')
+        .doc(user?.uid)
+        .onSnapshot(documentSnapshot => {
+          setFullName(documentSnapshot.data()?.fullName);
+        });
+      return () => subscriber();
+    }, [user]);
+  }
   const fullNameClipped =
-    fullName.length > 20 ? `${fullName.slice(0, 20)}...` : fullName;
+    fullName.length > 20 ? `${fullName.slice(0, 10)}...` : fullName;
 
   return (
     <>

@@ -21,6 +21,7 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import styles from './Login.style';
+import Logo55 from '../../assets/images/Logo55.svg';
 
 const RegistrationScreen = ({ navigation }: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -229,11 +230,12 @@ const RegistrationScreen = ({ navigation }: any) => {
 
   return (
     <>
-      <HeaderComponent />
-      <ScrollView>
+      <StatusBar barStyle="dark-content" backgroundColor={'#f9f9f9'} />
+      <ScrollView style={{ paddingTop: '10%' }}>
         <SafeAreaView>
           {/* Body */}
           <View style={styles.container}>
+            <Logo55 />
             {/* Title */}
             <View>
               <Text style={styles.textTitleContainer}>SIGN UP</Text>

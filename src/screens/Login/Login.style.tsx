@@ -3,12 +3,12 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginTop: 16,
   },
   textTitleContainer: {
     fontSize: 26,
     fontWeight: 'bold',
     color: '#163859',
+    marginTop: 32,
   },
   textRightLogo: { fontSize: 14, color: '#FFFFFF', fontWeight: 'bold' },
   formSection: {
@@ -22,7 +22,7 @@ export default StyleSheet.create({
   },
   formSectionLogin: {
     backgroundColor: '#FFFFFF',
-    marginTop: 34,
+    marginTop: 8,
     borderRadius: 15,
     shadowColor: '#000',
     elevation: 4,
@@ -31,6 +31,7 @@ export default StyleSheet.create({
     shadowOffset: { width: -2, height: 4 },
     padding: 16,
     width: '90%',
+    alignSelf: 'center',
   },
   txtBottomFormSignin: {
     width: '90%',
@@ -39,12 +40,14 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
   },
   signinBtn: {
     width: '90%',
     height: 48,
     backgroundColor: '#163859',
     borderRadius: 10,
+    alignSelf: 'center',
   },
   signupGoogleBtn: {
     marginTop: 12,
@@ -55,6 +58,7 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderColor: '#163859',
     marginBottom: 24,
+    alignSelf: 'center',
   },
   txtBtnSignup: {
     marginTop: 12,

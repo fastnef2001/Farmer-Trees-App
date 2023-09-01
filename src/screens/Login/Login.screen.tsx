@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  StatusBar,
 } from 'react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import HeaderComponent from '../../components/Header/Header.component';
@@ -16,6 +17,7 @@ import IconGoogle from '../../assets/images/IconGoogle.svg';
 import styles from './Login.style';
 import firestore from '@react-native-firebase/firestore';
 import RNRestart from 'react-native-restart';
+import Logo55 from '../../assets/images/Logo55.svg';
 
 const RegistrationScreen = ({ navigation }: any) => {
   const [errorText, setErrorText] = useState('');
@@ -110,12 +112,8 @@ const RegistrationScreen = ({ navigation }: any) => {
   };
 
   const signByGoogle = async () => {
-    const user = auth().currentUser;
-    if (user) {
-      await GoogleSignin.signOut();
-    }
-
     try {
+      await GoogleSignin.revokeAccess();
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log('userInfo', userInfo);
@@ -142,11 +140,13 @@ const RegistrationScreen = ({ navigation }: any) => {
     }
   };
 
-  const checkFarmName = async () => {
-    // check xem farm name trong firebase collection là users có tồn tại hay không
+  const checkUser = async () => {
     const user = auth().currentUser;
-    // dựa theo user để lấy farm name từ firebase
+    console.log('user11111111111111111', user);
+  };
 
+  const checkFarmName = async () => {
+    const user = auth().currentUser;
     await firestore()
       .collection('users')
       .doc(user?.uid)
@@ -164,21 +164,12 @@ const RegistrationScreen = ({ navigation }: any) => {
     }
   };
 
-  // const handleLogout = async () => {
-  //   try {
-  //     await auth().signOut();
-  //     // thực hiện refresh lại trang
-  //     navigation.navigate('LoginScreen');
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   return (
     <>
-      <HeaderComponent />
-      <ScrollView>
+      <StatusBar barStyle="dark-content" backgroundColor={'#f9f9f9'} />
+      <ScrollView style={{ paddingTop: '20%' }}>
         <SafeAreaView style={styles.container}>
+          <Logo55 />
           <Text style={styles.textTitleContainer}>LOGIN</Text>
 
           {errorText ? (
@@ -201,6 +192,10 @@ const RegistrationScreen = ({ navigation }: any) => {
                 />
               </View>
             ))}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ForgotPasswordScreen')}>
+              <Text style={styles.forgotPasswordText}>Forgot password?</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.txtBottomFormSignin}>

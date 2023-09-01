@@ -11,26 +11,18 @@ import styles from './Home.style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { fetchUser, selectAll } from '../../stores/user.reducer';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import auth from '@react-native-firebase/auth';
 
 const Profile = ({ navigation }: any) => {
-  const dispatch = useAppDispatch();
-  const users = useAppSelector(selectAll);
-
-  function ListUser() {
-    return (
-      <>
-        {users.map((data: any) => {
-          return (
-            <View key={data?.id} style={styleUser as any}>
-              <Text style={{ fontSize: 15 }}>
-                {data?.id}. {data?.name}
-              </Text>
-            </View>
-          );
-        })}
-      </>
-    );
-  }
+  const handleLogOut = async () => {
+    try {
+      await auth().signOut();
+    } catch (error) {
+      console.log(error);
+    }
+    console.log(`user2222222${auth().currentUser}`);
+    navigation.navigate('LoginScreen');
+  };
 
   return (
     <>
@@ -38,21 +30,10 @@ const Profile = ({ navigation }: any) => {
       <SafeAreaView style={styles.SafeAreaView1} />
       <SafeAreaView style={styles.SafeAreaView2}>
         <View style={styles.outerWrapper}>
-          <Icon name={'ios-person'} size={100} color={'purple'} />
-          <Icon name={'ios-home'} size={100} color={'purple'} />
-
           <View>
-            <TouchableOpacity
-              style={styles.buttonStyle}
-              onPress={() => dispatch(fetchUser())}>
-              <Text style={styles.text}>Click here to show User data:</Text>
+            <TouchableOpacity style={styles.buttonStyle} onPress={handleLogOut}>
+              <Text style={styles.text}>Log out</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.buttonStyle}
-              onPress={() => dispatch(fetchUser())}>
-              <Text style={styles.text}>Click here to show tree:</Text>
-            </TouchableOpacity>
-            <ListUser />
           </View>
         </View>
       </SafeAreaView>

@@ -13,6 +13,7 @@ import AddTree from '../screens/Setupfarm/Addtree.screen';
 import Farmname from '../screens/Setupfarm/Farmname.screen';
 import YourFarm from '../screens/Home/YourFarm.screen';
 import { Text, View } from 'react-native';
+import auth from '@react-native-firebase/auth';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -135,14 +136,38 @@ export const MainNavigation = () => {
 };
 
 const AppNavigator = () => {
+  const user = auth().currentUser;
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="LoginScreen">
-        <Stack.Screen
-          name="LoginScreen"
-          options={{ headerShown: false }}
-          component={LoginScreen}
-        />
+        {user ? (
+          <>
+            <Stack.Screen
+              name="YourFarm"
+              options={{ headerShown: false }}
+              component={YourFarm}
+            />
+            <Stack.Screen
+              name="LoginScreen"
+              options={{ headerShown: false }}
+              component={LoginScreen}
+            />
+          </>
+        ) : (
+          <>
+            <Stack.Screen
+              name="LoginScreen"
+              options={{ headerShown: false }}
+              component={LoginScreen}
+            />
+            <Stack.Screen
+              name="YourFarm"
+              options={{ headerShown: false }}
+              component={YourFarm}
+            />
+          </>
+        )}
+
         <Stack.Screen
           name="RegistrationScreen"
           options={{ headerShown: false }}
@@ -172,11 +197,6 @@ const AppNavigator = () => {
           name="Farmname"
           options={{ headerShown: false }}
           component={Farmname}
-        />
-        <Stack.Screen
-          name="YourFarm"
-          options={{ headerShown: false }}
-          component={YourFarm}
         />
         <Stack.Screen
           name="Profile"
