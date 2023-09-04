@@ -1,4 +1,4 @@
-package com.reactnativetypescriptboilerplate.newarchitecture.components;
+package com.SMAFA.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

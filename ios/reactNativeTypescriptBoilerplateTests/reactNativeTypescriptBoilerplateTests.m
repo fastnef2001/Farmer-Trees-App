@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface reactNativeTypescriptBoilerplateTests : XCTestCase
+@interface SMAFATests : XCTestCase
 
 @end
 
-@implementation reactNativeTypescriptBoilerplateTests
+@implementation SMAFATests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {

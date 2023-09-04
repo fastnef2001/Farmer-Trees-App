@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:159898876320:android:9883d7c35c1758b68dccc5",
         "android_client_info": {
-          "package_name": "com.reactnativetypescriptboilerplate"
+          "package_name": "com.SMAFA"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "159898876320-rbvu5ivae99gqc9rfhnacehj9d4jr5ht.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.reactnativetypescriptboilerplate",
+            "package_name": "com.SMAFA",
             "certificate_hash": "b05b262942cb3b97af0b65b90446f983c12dc6cb"
           }
         },
