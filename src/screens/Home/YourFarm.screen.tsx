@@ -27,6 +27,7 @@ import IconUpload from '../../assets/images/IconUpload.svg';
 import Input from '../../components/Input/Input.component';
 import { Modal } from '../../components/Modal/Modal';
 import IconAdd36 from '../../assets/images/IconAdd36.svg';
+import { COLORS } from '../../theme/color';
 
 const YourFarm = ({ navigation }: any) => {
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);

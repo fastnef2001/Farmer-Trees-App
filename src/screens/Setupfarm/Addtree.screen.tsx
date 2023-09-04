@@ -96,11 +96,6 @@ const Addtree = ({ navigation }: any) => {
       const quanlity = quanlityInput?.value;
       const image = selectImage;
       const timeAdd = new Date().getTime();
-
-      // nếu image không có gì thì set imageUrl  rỗng, nếu có thì lưu vào storage và lấy url
-      // 1. check image có tồn tại hay không
-      // 2. nếu có thì lưu vào storage và lấy url
-      // 3. nếu không thì set imageUrl rỗng
       let imageUrl = '';
       const userId = auth().currentUser?.uid;
       if (image) {
@@ -142,6 +137,7 @@ const Addtree = ({ navigation }: any) => {
   }
 
   const [trees, setTrees] = useState<Tree[]>([]);
+
   React.useEffect(() => {
     const subscriber = firestore()
       .collection('trees')
@@ -149,15 +145,20 @@ const Addtree = ({ navigation }: any) => {
       .collection('tree')
       .orderBy('timeAdd', 'desc')
       .onSnapshot(querySnapshot => {
-        const trees: any = [];
-        querySnapshot.forEach(documentSnapshot => {
-          trees.push({
-            ...documentSnapshot.data(),
-            key: documentSnapshot.id,
+        if (querySnapshot && !querySnapshot.empty) {
+          const trees: any = [];
+          querySnapshot.forEach(documentSnapshot => {
+            trees.push({
+              ...documentSnapshot.data(),
+              key: documentSnapshot.id,
+            });
           });
-        });
-        setTrees(trees);
+          setTrees(trees);
+        } else {
+          setTrees([]);
+        }
       });
+
     return () => subscriber();
   }, []);
 

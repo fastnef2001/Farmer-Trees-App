@@ -31,7 +31,7 @@ const Farmname = ({ navigation }: any) => {
         .update({
           farmName: farmName,
         });
-      navigation.navigate('YourFarm');
+      navigation.navigate('AddTree');
     } catch (error) {
       console.log(error);
     }

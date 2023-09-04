@@ -18,6 +18,9 @@ import styles from './Login.style';
 import firestore from '@react-native-firebase/firestore';
 import RNRestart from 'react-native-restart';
 import Logo55 from '../../assets/images/Logo55.svg';
+import { COLORS } from '../../theme/color';
+import { TabBar } from 'react-native-tab-view';
+import { Appbar } from 'react-native-paper';
 
 const RegistrationScreen = ({ navigation }: any) => {
   const [errorText, setErrorText] = useState('');
@@ -158,14 +161,21 @@ const RegistrationScreen = ({ navigation }: any) => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor={'#f9f9f9'} />
+      <StatusBar barStyle="dark-content" backgroundColor={'#F2F2F2'} />
       <ScrollView style={{ paddingTop: '20%' }}>
         <SafeAreaView style={styles.container}>
           <Logo55 />
           <Text style={styles.textTitleContainer}>LOGIN</Text>
 
           {errorText ? (
-            <Text style={{ marginTop: 16, color: 'red' }}>{errorText}</Text>
+            <Text
+              style={{
+                marginTop: 16,
+                color: 'red',
+                fontFamily: 'Nunito-Italic',
+              }}>
+              {errorText}
+            </Text>
           ) : null}
 
           <View style={styles.formSectionLogin}>
@@ -173,12 +183,12 @@ const RegistrationScreen = ({ navigation }: any) => {
               <View key={index}>
                 <Input
                   label={input.label}
-                  placeholder={`Enter your ${input.label.toLowerCase()}`}
+                  textPlaceholder={`Enter your ${input.label.toLowerCase()}`}
                   value={input.value}
                   onChangeText={(text: string) =>
                     handleInputChange(index, text)
                   }
-                  error={input.error}
+                  textError={input.error}
                   password={input.label === 'Password' ? true : false}
                   span="*"
                 />

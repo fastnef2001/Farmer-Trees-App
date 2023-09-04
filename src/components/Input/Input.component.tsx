@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-dupe-keys */
 import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
@@ -8,7 +9,8 @@ import UnHidePass from '../../assets/images/iconUnHidePass.svg';
 const Input = ({
   label,
   span,
-  error,
+  textPlaceholder,
+  textError,
   value,
   password,
   onFocus = () => {},
@@ -18,7 +20,7 @@ const Input = ({
   const [hidePassword, setHidePassword] = React.useState(password);
 
   return (
-    <View>
+    <View style={{ marginBottom: 8 }}>
       <View style={{ flexDirection: 'row' }}>
         <Text style={style.label}>{label}</Text>
         <Text style={style.span}>{span}</Text>
@@ -27,7 +29,7 @@ const Input = ({
         style={[
           style.inputContainer,
           {
-            borderColor: error
+            borderColor: textError
               ? COLORS.red
               : isFocused
               ? COLORS.blue
@@ -44,6 +46,7 @@ const Input = ({
             height: 48,
           }}>
           <TextInput
+            placeholder={textPlaceholder}
             placeholderTextColor="#C1C1C1"
             autoCorrect={false}
             onFocus={() => {
@@ -55,6 +58,8 @@ const Input = ({
               color: COLORS.black,
               height: '100%',
               flex: 1,
+              fontFamily: 'Nunito-Regular',
+              fontSize: 16,
             }}
             onChangeText={props.onChangeText}
             value={value}
@@ -78,9 +83,15 @@ const Input = ({
           )}
         </View>
       </View>
-      {error && (
-        <Text style={{ marginTop: 2, color: COLORS.red, fontSize: 12 }}>
-          {error}
+      {textError && (
+        <Text
+          style={{
+            marginTop: 2,
+            color: COLORS.red,
+            fontSize: 12,
+            fontFamily: 'Nunito-Italic',
+          }}>
+          {textError}
         </Text>
       )}
     </View>
@@ -92,12 +103,14 @@ const style = StyleSheet.create({
     marginVertical: 2,
     fontSize: 12,
     color: COLORS.blue,
+    fontFamily: 'Nunito-SemiBold',
   },
   span: {
     marginVertical: 2,
     fontSize: 14,
     color: COLORS.red,
     marginLeft: 4,
+    fontFamily: 'Nunito-SemiBold',
   },
   inputContainer: {
     height: 48,

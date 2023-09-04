@@ -38,7 +38,7 @@ const HeaderComponent = ({ onPress }: ButtonProps) => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor={'#163859'} />
+      <StatusBar barStyle="light-content" backgroundColor={'#163859'} />
       <SafeAreaView style={styleLogin as any}>
         <View style={styles.cover}>
           <Logo />
