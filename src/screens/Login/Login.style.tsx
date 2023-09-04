@@ -80,7 +80,7 @@ export default StyleSheet.create({
     color: '#163859',
   },
   createAccountText: {
-    fontFamily: 'Nunito',
+    fontFamily: 'Nunito-Italic',
     fontSize: 14,
     fontWeight: '500',
     lineHeight: 20,

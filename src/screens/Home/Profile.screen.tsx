@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { fetchUser, selectAll } from '../../stores/user.reducer';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import auth from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Profile = ({ navigation }: any) => {
   const handleLogOut = async () => {
@@ -20,8 +21,8 @@ const Profile = ({ navigation }: any) => {
     } catch (error) {
       console.log(error);
     }
-    console.log(`user2222222${auth().currentUser}`);
     navigation.navigate('LoginScreen');
+    await GoogleSignin.revokeAccess();
   };
 
   return (

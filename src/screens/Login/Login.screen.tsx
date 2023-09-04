@@ -21,7 +21,6 @@ import Logo55 from '../../assets/images/Logo55.svg';
 
 const RegistrationScreen = ({ navigation }: any) => {
   const [errorText, setErrorText] = useState('');
-  const [isFarmName, setFarmName] = useState('');
   const [inputs, setInputs] = useState([
     { label: 'Email', value: '', error: '' },
     { label: 'Password', value: '', error: '' },
@@ -113,10 +112,12 @@ const RegistrationScreen = ({ navigation }: any) => {
 
   const signByGoogle = async () => {
     try {
-      await GoogleSignin.revokeAccess();
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      console.log('userInfo', userInfo);
+      if (!userInfo) {
+        setErrorText('Gmail is not registered.');
+        return;
+      }
       const googleCredential = auth.GoogleAuthProvider.credential(
         userInfo.idToken,
       );
@@ -140,24 +141,15 @@ const RegistrationScreen = ({ navigation }: any) => {
     }
   };
 
-  const checkUser = async () => {
-    const user = auth().currentUser;
-    console.log('user11111111111111111', user);
-  };
-
   const checkFarmName = async () => {
     const user = auth().currentUser;
-    await firestore()
+    const documentSnapshot = await firestore()
       .collection('users')
       .doc(user?.uid)
-      .get()
-      .then(documentSnapshot => {
-        if (documentSnapshot.exists) {
-          setFarmName(documentSnapshot.data()?.farmName);
-        }
-      });
+      .get();
+    const dataFarmName = documentSnapshot.data()?.farmName;
 
-    if (isFarmName) {
+    if (dataFarmName) {
       navigation.navigate('Tabs');
     } else {
       navigation.navigate('Farmname');

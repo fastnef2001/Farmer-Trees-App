@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Logo from '../../assets/images/Logo.svg';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import { COLORS } from '../../theme/color';
 
 export type ButtonProps = {
   onPress?: () => void;

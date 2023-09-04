@@ -4,6 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import RegistrationScreen from '../screens/Login/Registration.screen';
 import LoginScreen from '../screens/Login/Login.screen';
+import ChatAIScreen from '../screens/Home/ChatAI.screen';
+import Statistics from '../screens/Home/Statistics.screen';
 import ForgotPassword from '../screens/Password/ForgotPassword.sceen';
 import Profile from '../screens/Home/Profile.screen';
 import OTPScreen from '../screens/Password/OTP.screen';
@@ -66,14 +68,14 @@ export function MyTabs() {
       />
       <Tab.Screen
         name="Statistics"
-        component={YourFarm}
+        component={Statistics}
         options={{
           headerShown: false,
         }}
       />
       <Tab.Screen
         name="Chat AI"
-        component={YourFarm}
+        component={ChatAIScreen}
         options={{
           headerShown: false,
         }}

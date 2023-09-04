@@ -25,9 +25,9 @@ export default StyleSheet.create({
   username: {
     color: '#ffffff',
     textAlign: 'center',
-    fontFamily: 'Nunito',
     fontSize: 20,
     fontStyle: 'normal',
     fontWeight: '400',
+    fontFamily: 'Nunito-VariableFont_wght',
   },
 });
