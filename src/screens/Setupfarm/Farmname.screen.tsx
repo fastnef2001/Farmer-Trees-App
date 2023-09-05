@@ -91,7 +91,7 @@ const Farmname = ({ navigation }: any) => {
                 fontSize: 16,
                 textAlign: 'center',
                 color: '#FFFFFF',
-                fontWeight: 'bold',
+                fontFamily: 'Nunito-Bold',
               }}>
               CONTINUE
             </Text>
@@ -124,10 +124,10 @@ const styles = StyleSheet.create({
   },
   txtTitle: {
     fontSize: 20,
-    fontWeight: '700',
     color: '#163859',
     lineHeight: 28,
     textAlign: 'center',
+    fontFamily: 'Nunito-Bold',
   },
   inputSession: {
     width: '90%',

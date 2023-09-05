@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -33,8 +34,8 @@ export function MyTabs() {
           const isSelected = focused;
           const borderBottomWidth = isSelected ? 2 : 0; // Độ dày thanh ngang khi tab được chọn
           const borderColor = isSelected ? '#163859' : 'transparent'; // Màu thanh ngang khi tab được chọn
+
           const colorText = isSelected ? '#163859' : '#636366';
-          const fontWeight = isSelected ? 'bold' : 'normal'; // Kiểu chữ in đậm khi tab được chọn
 
           return (
             <View
@@ -51,7 +52,11 @@ export function MyTabs() {
                   paddingBottom: 5,
                 }}>
                 <Text
-                  style={{ color: colorText, fontWeight, textAlign: 'center' }}>
+                  style={{
+                    color: colorText,
+                    textAlign: 'center',
+                    fontFamily: 'Nunito-Bold',
+                  }}>
                   {route.name}
                 </Text>
               </View>

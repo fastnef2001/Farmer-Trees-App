@@ -189,7 +189,7 @@ const YourFarm = ({ navigation }: any) => {
             <ScrollView
               showsVerticalScrollIndicator={false}
               style={{
-                width: '90%',
+                width: '95%',
                 marginTop: 12,
               }}>
               {trees.map((tree, index) => (
@@ -382,14 +382,13 @@ const styles1 = StyleSheet.create({
     color: '#636366',
   },
   txtTitle: {
-    fontFamily: 'Nunito',
     fontSize: 20,
-    fontWeight: '600',
     lineHeight: 27,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#163859',
     marginLeft: 8,
+    fontFamily: 'Nunito-SemiBold',
   },
   headSession: {
     flexDirection: 'row',

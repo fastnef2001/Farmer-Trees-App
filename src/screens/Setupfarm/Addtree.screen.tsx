@@ -176,13 +176,12 @@ const Addtree = ({ navigation }: any) => {
             <Text style={styles.txtTitle}>Add trees for Farm</Text>
           </View>
         </View>
-
         {trees.length > 0 ? (
           <>
             <ScrollView
               showsVerticalScrollIndicator={false}
               style={{
-                width: '90%',
+                width: '95%',
                 marginTop: 24,
               }}>
               {trees.map((tree, index) => (
@@ -215,7 +214,7 @@ const Addtree = ({ navigation }: any) => {
                       fontSize: 16,
                       textAlign: 'center',
                       color: '#FFFFFF',
-                      fontWeight: 'bold',
+                      fontFamily: 'Nunito-Bold',
                     }}>
                     COMPLETE
                   </Text>
@@ -239,7 +238,7 @@ const Addtree = ({ navigation }: any) => {
           <ModalInsert.Header>
             <View style={styles.headSessionModal}>
               <TouchableOpacity onPress={handleModal}>
-                <IconBack> </IconBack>
+                <IconBack />
               </TouchableOpacity>
               <View style={styles.txtContainer}>
                 <Text style={styles.txtTitleModal}>Add tree</Text>
@@ -290,12 +289,12 @@ const Addtree = ({ navigation }: any) => {
                   <View key={index}>
                     <Input
                       label={input.label}
-                      placeholder={`Enter your ${input.label.toLowerCase()}`}
+                      textPlaceholder={`Enter your ${input.label.toLowerCase()}`}
                       value={input.value}
                       onChangeText={(text: string) =>
                         handleInputChange(index, text)
                       }
-                      error={input.error}
+                      textError={input.error}
                       keyboardType={
                         input.label === 'Quanlity' ? 'numeric' : 'default'
                       }
@@ -315,7 +314,7 @@ const Addtree = ({ navigation }: any) => {
                       fontSize: 16,
                       textAlign: 'center',
                       color: '#FFFFFF',
-                      fontWeight: 'bold',
+                      fontFamily: 'Nunito-Bold',
                     }}>
                     SAVE
                   </Text>
