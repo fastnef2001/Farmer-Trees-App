@@ -1,9 +1,12 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import RegistrationScreen from '../screens/Login/Registration.screen';
 import LoginScreen from '../screens/Login/Login.screen';
+import ChatAIScreen from '../screens/Home/ChatAI.screen';
+import Statistics from '../screens/Home/Statistics.screen';
 import ForgotPassword from '../screens/Password/ForgotPassword.sceen';
 import Profile from '../screens/Home/Profile.screen';
 import OTPScreen from '../screens/Password/OTP.screen';
@@ -12,7 +15,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AddTree from '../screens/Setupfarm/Addtree.screen';
 import Farmname from '../screens/Setupfarm/Farmname.screen';
 import YourFarm from '../screens/Home/YourFarm.screen';
-import { Text, View } from 'react-native';
+import { StatusBar, Text, View } from 'react-native';
+import auth from '@react-native-firebase/auth';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -30,8 +34,8 @@ export function MyTabs() {
           const isSelected = focused;
           const borderBottomWidth = isSelected ? 2 : 0; // Độ dày thanh ngang khi tab được chọn
           const borderColor = isSelected ? '#163859' : 'transparent'; // Màu thanh ngang khi tab được chọn
+
           const colorText = isSelected ? '#163859' : '#636366';
-          const fontWeight = isSelected ? 'bold' : 'normal'; // Kiểu chữ in đậm khi tab được chọn
 
           return (
             <View
@@ -48,7 +52,11 @@ export function MyTabs() {
                   paddingBottom: 5,
                 }}>
                 <Text
-                  style={{ color: colorText, fontWeight, textAlign: 'center' }}>
+                  style={{
+                    color: colorText,
+                    textAlign: 'center',
+                    fontFamily: 'Nunito-Bold',
+                  }}>
                   {route.name}
                 </Text>
               </View>
@@ -65,14 +73,14 @@ export function MyTabs() {
       />
       <Tab.Screen
         name="Statistics"
-        component={YourFarm}
+        component={Statistics}
         options={{
           headerShown: false,
         }}
       />
       <Tab.Screen
         name="Chat AI"
-        component={YourFarm}
+        component={ChatAIScreen}
         options={{
           headerShown: false,
         }}
@@ -135,14 +143,38 @@ export const MainNavigation = () => {
 };
 
 const AppNavigator = () => {
+  const user = auth().currentUser;
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="LoginScreen">
-        <Stack.Screen
-          name="LoginScreen"
-          options={{ headerShown: false }}
-          component={LoginScreen}
-        />
+        {user ? (
+          <>
+            <Stack.Screen
+              name="YourFarm"
+              options={{ headerShown: false }}
+              component={YourFarm}
+            />
+            <Stack.Screen
+              name="LoginScreen"
+              options={{ headerShown: false }}
+              component={LoginScreen}
+            />
+          </>
+        ) : (
+          <>
+            <Stack.Screen
+              name="LoginScreen"
+              options={{ headerShown: false }}
+              component={LoginScreen}
+            />
+            <Stack.Screen
+              name="YourFarm"
+              options={{ headerShown: false }}
+              component={YourFarm}
+            />
+          </>
+        )}
+
         <Stack.Screen
           name="RegistrationScreen"
           options={{ headerShown: false }}
@@ -172,11 +204,6 @@ const AppNavigator = () => {
           name="Farmname"
           options={{ headerShown: false }}
           component={Farmname}
-        />
-        <Stack.Screen
-          name="YourFarm"
-          options={{ headerShown: false }}
-          component={YourFarm}
         />
         <Stack.Screen
           name="Profile"

@@ -11,12 +11,37 @@ import HeaderComponent from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconSend from '../../assets/images/IconSend.svg';
 import Input from '../../components/Input/Input.component';
+import { firebase } from '@react-native-firebase/auth';
 
 const ForgotPassword = ({ navigation }: any) => {
+  const [phoneNumber, setPhoneNumber] = React.useState('');
+  const handleVerifyPhoneNumber = () => {
+    firebase
+      .auth()
+      .verifyPhoneNumber(phoneNumber)
+      .on('state_changed', phoneAuthSnapshot => {
+        switch (phoneAuthSnapshot.state) {
+          case firebase.auth.PhoneAuthState.CODE_SENT:
+            console.log('code sent');
+            break;
+          case firebase.auth.PhoneAuthState.ERROR:
+            console.log('verification error');
+            console.log(phoneAuthSnapshot.error);
+            break;
+          case firebase.auth.PhoneAuthState.AUTO_VERIFY_TIMEOUT:
+            console.log('auto verify on android timed out');
+            break;
+          case firebase.auth.PhoneAuthState.AUTO_VERIFIED:
+            console.log('auto verified on android');
+            console.log(phoneAuthSnapshot);
+            break;
+        }
+      });
+  };
+
   return (
     <>
       <ScrollView>
-        <HeaderComponent />
         <View style={styles.container}>
           {/* Title */}
           <View style={styles.headSession}>
@@ -33,9 +58,8 @@ const ForgotPassword = ({ navigation }: any) => {
           <View style={styles.inputSession}>
             <Text
               style={{
-                fontFamily: 'Nunito',
+                fontFamily: 'Nunito-Regular',
                 fontSize: 14,
-                fontWeight: '400',
                 lineHeight: 20,
                 letterSpacing: 0,
                 textAlign: 'left',
@@ -51,14 +75,14 @@ const ForgotPassword = ({ navigation }: any) => {
               placeholder="+ 84"
               span="*"
               keyboardType="numeric"
-              // onChangeText={nameInput => setName(nameInput)}
+              onChangeText={(nameInput: any) => setPhoneNumber(nameInput)}
               // error={errorName}
             />
           </View>
           <View style={{ height: 32 }} />
           <TouchableOpacity
             style={styles.btnSendSession}
-            onPress={() => navigation.navigate('OTPScreen')}>
+            onPress={handleVerifyPhoneNumber}>
             <View style={styles.txtBtnSignup}>
               <IconSend />
               <View style={{ width: 16 }} />
@@ -67,8 +91,8 @@ const ForgotPassword = ({ navigation }: any) => {
                   fontSize: 16,
                   textAlign: 'center',
                   color: '#FFFFFF',
-                  fontWeight: 'bold',
                   marginLeft: 0,
+                  fontFamily: 'Nunito-Bold',
                 }}>
                 SEND
               </Text>
@@ -98,10 +122,10 @@ const styles = StyleSheet.create({
 
   txtForgotPassword: {
     fontSize: 20,
-    fontWeight: '700',
     color: '#163859',
     lineHeight: 28,
     textAlign: 'center',
+    fontFamily: 'Nunito-Bold',
   },
   inputSession: {
     width: '90%',

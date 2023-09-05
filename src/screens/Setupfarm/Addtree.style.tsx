@@ -24,10 +24,10 @@ export default StyleSheet.create({
 
   txtTitle: {
     fontSize: 20,
-    fontWeight: '700',
     color: '#163859',
     lineHeight: 28,
     textAlign: 'center',
+    fontFamily: 'Nunito-Bold',
   },
 
   txtContainer: {
@@ -39,13 +39,12 @@ export default StyleSheet.create({
   },
 
   txtTitleModal: {
-    fontFamily: 'Nunito',
     fontSize: 20,
-    fontWeight: '700',
     lineHeight: 27,
     letterSpacing: 0,
     textAlign: 'center',
     color: '#163859',
+    fontFamily: 'Nunito-Bold',
   },
   inputSession: {
     padding: 16,
@@ -86,10 +85,9 @@ export default StyleSheet.create({
   photo: {
     color: '#fff',
     textAlign: 'center',
-    fontFamily: 'Nunito',
     fontSize: 16,
     fontStyle: 'normal',
-    fontWeight: '700',
+    fontFamily: 'Nunito-Bold',
   },
   hoverButtonFull: {
     width: 143,

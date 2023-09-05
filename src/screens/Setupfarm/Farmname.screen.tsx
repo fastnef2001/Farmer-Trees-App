@@ -16,11 +16,39 @@ import firestore from '@react-native-firebase/firestore';
 
 const Farmname = ({ navigation }: any) => {
   const [farmName, setFarmName] = useState('');
+  const [errorName, setErrorName] = useState('');
+
   const saveFarmName = async () => {
-    await firestore().collection('users').doc(auth().currentUser?.uid).update({
-      farmName: farmName,
-    });
+    // Check if any input is empty
+    if (!farmName) {
+      setErrorName('Please enter your farm name');
+      return;
+    }
+    try {
+      await firestore()
+        .collection('users')
+        .doc(auth().currentUser?.uid)
+        .update({
+          farmName: farmName,
+        });
+      navigation.navigate('AddTree');
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  const handleLogOut = async () => {
+    try {
+      await auth().signOut();
+    } catch (error) {
+      console.log(error);
+    }
+    navigation.navigate('LoginScreen');
+  };
+
+  // const handleInputChange = (text: any) => {
+  //   setFarmName(text);
+  // };
 
   return (
     <>
@@ -28,7 +56,7 @@ const Farmname = ({ navigation }: any) => {
       <View style={styles.container}>
         {/* Title */}
         <View style={styles.headSession}>
-          <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+          <TouchableOpacity onPress={handleLogOut}>
             <IconBack />
           </TouchableOpacity>
           <View style={{ width: 8 }} />
@@ -44,20 +72,17 @@ const Farmname = ({ navigation }: any) => {
             label="Farm name"
             placeholder="Enter your farm name"
             span="*"
-            onChangeText={(text: string) => setFarmName(text)}
-            //onChangeText={nameInput => setName(nameInput)}
-            // error={errorName}
+            onChangeText={(text: string) => {
+              setErrorName('');
+              setFarmName(text);
+            }}
+            error={errorName}
           />
         </View>
 
         <View style={{ height: 32 }} />
         {/* Button continue */}
-        <TouchableOpacity
-          style={styles.btnSession}
-          onPress={() => {
-            saveFarmName();
-            navigation.navigate('AddTree');
-          }}>
+        <TouchableOpacity style={styles.btnSession} onPress={saveFarmName}>
           <View style={styles.txtBtn}>
             <IconContinue />
             <View style={{ width: 16 }} />
@@ -66,7 +91,7 @@ const Farmname = ({ navigation }: any) => {
                 fontSize: 16,
                 textAlign: 'center',
                 color: '#FFFFFF',
-                fontWeight: 'bold',
+                fontFamily: 'Nunito-Bold',
               }}>
               CONTINUE
             </Text>
@@ -99,10 +124,10 @@ const styles = StyleSheet.create({
   },
   txtTitle: {
     fontSize: 20,
-    fontWeight: '700',
     color: '#163859',
     lineHeight: 28,
     textAlign: 'center',
+    fontFamily: 'Nunito-Bold',
   },
   inputSession: {
     width: '90%',

@@ -21,6 +21,7 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import styles from './Login.style';
+import Logo55 from '../../assets/images/Logo55.svg';
 
 const RegistrationScreen = ({ navigation }: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -68,11 +69,12 @@ const RegistrationScreen = ({ navigation }: any) => {
       return;
     }
     // Check if email is valid
-    if (!/\S+@\S+\.\S+/.test(emailInput?.value)) {
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    if (!emailRegex.test(emailInput?.value)) {
       setInputs(
         inputs.map(input => ({
           ...input,
-          error: input.label === 'Email' ? 'Invalid email format..' : '',
+          error: input.label === 'Email' ? 'Invalid email format.' : '',
         })),
       );
       return;
@@ -85,7 +87,7 @@ const RegistrationScreen = ({ navigation }: any) => {
       setInputs(
         inputs.map(input => ({
           ...input,
-          error: input.label === 'Email' ? 'Email already in use..' : '',
+          error: input.label === 'Email' ? 'Email already in use.' : '',
         })),
       );
       return;
@@ -158,12 +160,19 @@ const RegistrationScreen = ({ navigation }: any) => {
         passwordInput.value,
       );
       handleModal();
+
+      console.log('responseText', response);
+      // lấy id của user vừa tạo
       const user = await firestore()
         .collection('users')
         .doc(response.user.uid)
         .get();
-      if (!user.exists) {
-        await firestore().collection('users').doc(response.user.uid).set({
+      console.log('userText', user);
+      const idUser = response.user.uid;
+      console.log('idUser', idUser);
+
+      if (idUser) {
+        await firestore().collection('users').doc(idUser).set({
           fullName: fullNameInput.value,
           phoneNumber: phoneNumberInput.value,
         });
@@ -229,11 +238,12 @@ const RegistrationScreen = ({ navigation }: any) => {
 
   return (
     <>
-      <HeaderComponent />
-      <ScrollView>
+      <StatusBar barStyle="dark-content" backgroundColor={'#F2F2F2'} />
+      <ScrollView style={{ paddingTop: 16 }}>
         <SafeAreaView>
           {/* Body */}
           <View style={styles.container}>
+            <Logo55 />
             {/* Title */}
             <View>
               <Text style={styles.textTitleContainer}>SIGN UP</Text>
@@ -252,12 +262,13 @@ const RegistrationScreen = ({ navigation }: any) => {
                 <View key={index}>
                   <Input
                     label={input.label}
-                    placeholder={`Enter your ${input.label.toLowerCase()}`}
+                    textPlaceholder={`Enter your ${input.label.toLowerCase()}`}
                     value={input.value}
                     onChangeText={(text: string) =>
                       handleInputChange(index, text)
                     }
-                    error={input.error}
+                    textError={input.error}
+                    // password and confirm
                     password={
                       input.label === 'Password' ||
                       input.label === 'Confirm Password'

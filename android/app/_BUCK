@@ -35,12 +35,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "com.reactnativetypescriptboilerplate",
+    package = "com.SMAFA",
 )
 
 android_resource(
     name = "res",
-    package = "com.reactnativetypescriptboilerplate",
+    package = "com.SMAFA",
     res = "src/main/res",
 )
 

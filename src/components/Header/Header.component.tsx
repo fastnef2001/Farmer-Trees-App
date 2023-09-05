@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import {
   StyleSheet,
   Text,
@@ -12,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Logo from '../../assets/images/Logo.svg';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import { COLORS } from '../../theme/color';
 
 export type ButtonProps = {
   onPress?: () => void;
@@ -20,21 +22,23 @@ export type ButtonProps = {
 const HeaderComponent = ({ onPress }: ButtonProps) => {
   const user = auth().currentUser;
   const [fullName, setFullName] = useState('');
-  useEffect(() => {
-    const subscriber = firestore()
-      .collection('users')
-      .doc(user?.uid)
-      .onSnapshot(documentSnapshot => {
-        setFullName(documentSnapshot.data()?.fullName);
-      });
-    return () => subscriber();
-  }, [user]);
+  if (user) {
+    useEffect(() => {
+      const subscriber = firestore()
+        .collection('users')
+        .doc(user?.uid)
+        .onSnapshot(documentSnapshot => {
+          setFullName(documentSnapshot.data()?.fullName);
+        });
+      return () => subscriber();
+    }, [user]);
+  }
   const fullNameClipped =
-    fullName.length > 20 ? `${fullName.slice(0, 20)}...` : fullName;
+    fullName.length > 20 ? `${fullName.slice(0, 10)}...` : fullName;
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor={'#163859'} />
+      <StatusBar barStyle="light-content" backgroundColor={'#163859'} />
       <SafeAreaView style={styleLogin as any}>
         <View style={styles.cover}>
           <Logo />

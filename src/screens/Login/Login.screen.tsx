@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  StatusBar,
 } from 'react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import HeaderComponent from '../../components/Header/Header.component';
@@ -16,10 +17,13 @@ import IconGoogle from '../../assets/images/IconGoogle.svg';
 import styles from './Login.style';
 import firestore from '@react-native-firebase/firestore';
 import RNRestart from 'react-native-restart';
+import Logo55 from '../../assets/images/Logo55.svg';
+import { COLORS } from '../../theme/color';
+import { TabBar } from 'react-native-tab-view';
+import { Appbar } from 'react-native-paper';
 
 const RegistrationScreen = ({ navigation }: any) => {
   const [errorText, setErrorText] = useState('');
-  const [isFarmName, setFarmName] = useState('');
   const [inputs, setInputs] = useState([
     { label: 'Email', value: '', error: '' },
     { label: 'Password', value: '', error: '' },
@@ -110,15 +114,13 @@ const RegistrationScreen = ({ navigation }: any) => {
   };
 
   const signByGoogle = async () => {
-    const user = auth().currentUser;
-    if (user) {
-      await GoogleSignin.signOut();
-    }
-
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      console.log('userInfo', userInfo);
+      if (!userInfo) {
+        setErrorText('Gmail is not registered.');
+        return;
+      }
       const googleCredential = auth.GoogleAuthProvider.credential(
         userInfo.idToken,
       );
@@ -143,46 +145,37 @@ const RegistrationScreen = ({ navigation }: any) => {
   };
 
   const checkFarmName = async () => {
-    // check xem farm name trong firebase collection là users có tồn tại hay không
     const user = auth().currentUser;
-    // dựa theo user để lấy farm name từ firebase
-
-    await firestore()
+    const documentSnapshot = await firestore()
       .collection('users')
       .doc(user?.uid)
-      .get()
-      .then(documentSnapshot => {
-        if (documentSnapshot.exists) {
-          setFarmName(documentSnapshot.data()?.farmName);
-        }
-      });
+      .get();
+    const dataFarmName = documentSnapshot.data()?.farmName;
 
-    if (isFarmName) {
+    if (dataFarmName) {
       navigation.navigate('Tabs');
     } else {
       navigation.navigate('Farmname');
     }
   };
 
-  // const handleLogout = async () => {
-  //   try {
-  //     await auth().signOut();
-  //     // thực hiện refresh lại trang
-  //     navigation.navigate('LoginScreen');
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   return (
     <>
-      <HeaderComponent />
-      <ScrollView>
+      <StatusBar barStyle="dark-content" backgroundColor={'#F2F2F2'} />
+      <ScrollView style={{ paddingTop: '20%' }}>
         <SafeAreaView style={styles.container}>
+          <Logo55 />
           <Text style={styles.textTitleContainer}>LOGIN</Text>
 
           {errorText ? (
-            <Text style={{ marginTop: 16, color: 'red' }}>{errorText}</Text>
+            <Text
+              style={{
+                marginTop: 16,
+                color: 'red',
+                fontFamily: 'Nunito-Italic',
+              }}>
+              {errorText}
+            </Text>
           ) : null}
 
           <View style={styles.formSectionLogin}>
@@ -190,17 +183,21 @@ const RegistrationScreen = ({ navigation }: any) => {
               <View key={index}>
                 <Input
                   label={input.label}
-                  placeholder={`Enter your ${input.label.toLowerCase()}`}
+                  textPlaceholder={`Enter your ${input.label.toLowerCase()}`}
                   value={input.value}
                   onChangeText={(text: string) =>
                     handleInputChange(index, text)
                   }
-                  error={input.error}
+                  textError={input.error}
                   password={input.label === 'Password' ? true : false}
                   span="*"
                 />
               </View>
             ))}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ForgotPasswordScreen')}>
+              <Text style={styles.forgotPasswordText}>Forgot password?</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.txtBottomFormSignin}>

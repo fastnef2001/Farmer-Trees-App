@@ -35,7 +35,7 @@ const RectangularTree = ({
       <View style={styles.group8182}>
         <Text style={styles.nameTree}>{nameTree}</Text>
         <View style={{ height: 8 }} />
-        <Text style={styles.numberTree}>{numberTree}</Text>
+        <Text style={styles.numberTree}>{numberTree} Trees</Text>
       </View>
       <View style={{ width: 8 }} />
       <View style={styles.frame48183}>
@@ -117,9 +117,9 @@ const styles = StyleSheet.create({
   },
   numberTree: {
     color: '#636366',
-    fontFamily: 'Nunito',
     fontSize: 14,
     fontStyle: 'normal',
+    fontFamily: 'Nunito-Regular',
   },
   group8182: {
     width: '100%',
@@ -129,11 +129,10 @@ const styles = StyleSheet.create({
   nameTree: {
     width: '100%',
     color: '#163859',
-    fontFamily: 'Nunito',
     fontSize: 16,
     fontStyle: 'normal',
-    fontWeight: '600',
     height: 22,
+    fontFamily: 'Nunito-SemiBold',
   },
   frame48183: {
     justifyContent: 'center',

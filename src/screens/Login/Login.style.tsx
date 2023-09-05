@@ -3,12 +3,12 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   container: {
     alignItems: 'center',
-    marginTop: 16,
   },
   textTitleContainer: {
     fontSize: 26,
-    fontWeight: 'bold',
     color: '#163859',
+    marginTop: 32,
+    fontFamily: 'Nunito-Bold',
   },
   textRightLogo: { fontSize: 14, color: '#FFFFFF', fontWeight: 'bold' },
   formSection: {
@@ -22,7 +22,7 @@ export default StyleSheet.create({
   },
   formSectionLogin: {
     backgroundColor: '#FFFFFF',
-    marginTop: 34,
+    marginTop: 8,
     borderRadius: 15,
     shadowColor: '#000',
     elevation: 4,
@@ -31,6 +31,7 @@ export default StyleSheet.create({
     shadowOffset: { width: -2, height: 4 },
     padding: 16,
     width: '90%',
+    alignSelf: 'center',
   },
   txtBottomFormSignin: {
     width: '90%',
@@ -39,12 +40,14 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
   },
   signinBtn: {
     width: '90%',
     height: 48,
     backgroundColor: '#163859',
     borderRadius: 10,
+    alignSelf: 'center',
   },
   signupGoogleBtn: {
     marginTop: 12,
@@ -55,6 +58,7 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderColor: '#163859',
     marginBottom: 24,
+    alignSelf: 'center',
   },
   txtBtnSignup: {
     marginTop: 12,
@@ -67,44 +71,40 @@ export default StyleSheet.create({
   },
   forgotPasswordText: {
     paddingTop: 8,
-    fontFamily: 'Nunito',
+    fontFamily: 'Nunito-SemiBold',
     fontSize: 12,
-    fontWeight: '400',
-    lineHeight: 16,
     letterSpacing: 0,
     textAlign: 'right',
     color: '#163859',
   },
   createAccountText: {
-    fontFamily: 'Nunito',
+    fontFamily: 'Nunito-MediumItalic',
     fontSize: 14,
-    fontWeight: '500',
     lineHeight: 20,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#636366',
   },
   registerText: {
-    fontFamily: 'Nunito',
+    fontFamily: 'Nunito-Bold',
     fontSize: 14,
-    fontWeight: 'bold',
     lineHeight: 20,
     letterSpacing: 0,
     textAlign: 'left',
     color: '#163859',
   },
   btnText: {
+    fontFamily: 'Nunito-Bold',
     fontSize: 16,
     textAlign: 'center',
     color: '#FFF',
-    fontWeight: 'bold',
     marginLeft: 18,
   },
   btnTextBlue: {
+    fontFamily: 'Nunito-Bold',
     fontSize: 16,
     textAlign: 'center',
     color: '#163859',
-    fontWeight: 'bold',
     marginLeft: 18,
   },
 });
