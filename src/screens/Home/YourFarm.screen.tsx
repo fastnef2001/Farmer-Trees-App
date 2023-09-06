@@ -28,11 +28,14 @@ import Input from '../../components/Input/Input.component';
 import { Modal } from '../../components/Modal/Modal';
 import IconAdd36 from '../../assets/images/IconAdd36.svg';
 import { COLORS } from '../../theme/color';
+import { ButtonBack, ButtonDelete } from '../../components/Button/Button';
 
 const YourFarm = ({ navigation }: any) => {
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);
   const [selectImage, setSelectImage] = useState('');
   const [isModalSuccess, setIsModalSuccess] = React.useState(false);
+  const [isModalDelete, setIsModalDelete] = React.useState(false);
+  const [key, setKey] = React.useState('');
   const [isTrees, setIsTrees] = useState(false);
   const [inputs, setInputs] = useState([
     { label: 'Tree name', value: '', error: '' },
@@ -47,6 +50,11 @@ const YourFarm = ({ navigation }: any) => {
   //trong hàm handle modal thì set lại các giá trị về ban đầu
   const handleModal = () => {
     setIsModalAddTree(() => !isModalAddTree);
+  };
+
+  const handleModalDelete = (key: string) => {
+    setKey(key);
+    setIsModalDelete(() => !isModalDelete);
   };
 
   const handleModalImagePicker = () => {
@@ -131,8 +139,9 @@ const YourFarm = ({ navigation }: any) => {
     );
   };
   interface Tree {
+    [x: string]: string;
     name: string;
-    quanlity: number;
+    quanlity: string;
     imageUrl: string;
   }
 
@@ -150,13 +159,14 @@ const YourFarm = ({ navigation }: any) => {
             ...documentSnapshot.data(),
             key: documentSnapshot.id,
           });
+          console.log('treeProperties', trees);
         });
         setTrees(trees);
+        console.log('trees', trees);
       });
     return () => subscriber();
   }, []);
 
-  // lấy tên farm của user collection users, field farmName
   const [farmName, setFarmName] = useState('');
   React.useEffect(() => {
     const subscriber = firestore()
@@ -168,6 +178,16 @@ const YourFarm = ({ navigation }: any) => {
       });
     return () => subscriber();
   }, []);
+
+  const handleDeleteTree = (key: string) => {
+    firestore()
+      .collection('trees')
+      .doc(auth().currentUser?.uid)
+      .collection('tree')
+      .doc(key)
+      .delete();
+    setIsModalDelete(() => false);
+  };
 
   return (
     <>
@@ -198,6 +218,7 @@ const YourFarm = ({ navigation }: any) => {
                   nameTree={tree.name}
                   numberTree={tree.quanlity}
                   urlImage={tree.imageUrl}
+                  onPress={() => handleModalDelete(tree.key)}
                 />
               ))}
             </ScrollView>
@@ -206,13 +227,6 @@ const YourFarm = ({ navigation }: any) => {
           <Text> không có cây</Text>
         )}
       </View>
-      {/* <View style={styles1.root}>
-        <View style={styles1.menu}>
-          <ButtonMenu isPick={true} text="Your Farm" />
-          <ButtonMenu isPick={false} text="Statistic" />
-          <ButtonMenu isPick={false} text="Chat AI" />
-        </View>
-      </View> */}
       <ModalInsert isVisible={isModalAddTree}>
         <ModalInsert.Container>
           <ModalInsert.Header>
@@ -309,6 +323,35 @@ const YourFarm = ({ navigation }: any) => {
         <Modal.Container>
           <Modal.Header title="Successfully" />
           <Modal.Body title="You have successfully edited the tree." />
+        </Modal.Container>
+      </Modal>
+
+      <Modal isVisible={isModalDelete}>
+        <Modal.Container>
+          <Modal.Header title="Successfully" />
+          <Modal.Body title="You have successfully registered, please login." />
+          <Modal.Footer>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingHorizontal: 8,
+              }}>
+              <ButtonBack
+                isRight={false}
+                isLogin={false}
+                title="CANCEL"
+                onPress={handleModal}
+              />
+              <View style={{ width: 16 }} />
+              <ButtonDelete
+                isRight={true}
+                isLogin={false}
+                title="LOGIN"
+                onPress={() => handleDeleteTree(key)}
+              />
+            </View>
+          </Modal.Footer>
         </Modal.Container>
       </Modal>
     </>
