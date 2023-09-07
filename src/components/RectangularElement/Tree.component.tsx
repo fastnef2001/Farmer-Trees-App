@@ -7,13 +7,20 @@ import IconDelete20 from '../../assets/images/IconDelete20.svg';
 import IconCalculate20 from '../../assets/images/IconCalculate20.svg';
 import IconEdit20 from '../../assets/images/IconEdit20.svg';
 
+export type ButtonProps = {
+  nameTree: string;
+  numberTree: string;
+  urlImage: string;
+  onPress: () => void;
+};
+
 const RectangularTree = ({
+  onPress,
   nameTree,
   numberTree,
   urlImage,
-  onFocus = () => {},
   ...props
-}: any) => {
+}: ButtonProps) => {
   return (
     <View style={styles.root}>
       {urlImage.length <= 0 ? (
@@ -75,6 +82,7 @@ const RectangularTree = ({
           </TouchableOpacity>
           <View style={{ width: 8 }} />
           <TouchableOpacity
+            onPress={onPress}
             style={{
               height: 40,
               width: 40,
@@ -90,15 +98,6 @@ const RectangularTree = ({
             }}>
             <IconDelete20 />
           </TouchableOpacity>
-          {/* <View style={{ backgroundColor: '#636366' }}>
-            <IconCalculate36 />
-          </View>
-          <View>
-            <IconEdit36 style={{ backgroundColor: '#636366' }} />
-          </View>
-          <View style={{ backgroundColor: '#636366' }}>
-            <IconDelete36 />
-          </View> */}
         </View>
       </View>
     </View>
