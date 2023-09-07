@@ -339,14 +339,14 @@ const YourFarm = ({ navigation }: any) => {
               }}>
               <ButtonBack
                 isRight={false}
-                isLogin={false}
+                isDelete={false}
                 title="CANCEL"
                 onPress={handleModal}
               />
               <View style={{ width: 16 }} />
               <ButtonDelete
                 isRight={true}
-                isLogin={false}
+                isDelete={true}
                 title="LOGIN"
                 onPress={() => handleDeleteTree(key)}
               />
