@@ -29,6 +29,7 @@ import { Modal } from '../../components/Modal/Modal';
 import IconAdd36 from '../../assets/images/IconAdd36.svg';
 import { COLORS } from '../../theme/color';
 import { ButtonBack, ButtonDelete } from '../../components/Button/Button';
+import LottieView from 'lottie-react-native';
 
 const YourFarm = ({ navigation }: any) => {
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);
@@ -224,7 +225,12 @@ const YourFarm = ({ navigation }: any) => {
             </ScrollView>
           </>
         ) : (
-         <Text> sdhfkhsdgf </Text>
+          <LottieView
+            style={{ width: 200, height: 200 }}
+            source={require('../../assets/images/animation_lma6s33i.json')}
+            autoPlay
+            loop
+          />
         )}
       </View>
       <ModalInsert isVisible={isModalAddTree}>
