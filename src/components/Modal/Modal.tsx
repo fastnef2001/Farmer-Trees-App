@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleSheet, View, Text, Button } from 'react-native';
 import RNModal from 'react-native-modal';
 import IconDone from '../../assets/images/IconDone.svg';
+import IconQuestion from '../../assets/images/IconQuestion48.svg';
 
 type ModalProps = {
   isVisible: boolean;
@@ -34,7 +35,8 @@ const ModalContainer = ({ children }: { children: React.ReactNode }) => (
 
 const ModalHeader = ({ title }: { title: string }) => (
   <View style={styles.header}>
-    <IconDone />
+    {title === 'Successfully' ? <IconDone /> : null}
+    {title === 'Delete' ? <IconQuestion /> : null}
     <Text style={styles.text}>{title}</Text>
     <View
       style={{
@@ -75,14 +77,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-    fontFamily: 'Nunito',
     fontSize: 20,
-    fontWeight: '700',
     lineHeight: 28,
     letterSpacing: 0,
     textAlign: 'center',
     color: '#163859',
     marginTop: 16,
+    fontFamily: 'Nunito-Bold',
   },
   body: {
     alignItems: 'center',
@@ -92,14 +93,13 @@ const styles = StyleSheet.create({
   },
 
   textbody: {
-    fontFamily: 'Nunito',
     fontSize: 14,
-    fontWeight: '400',
     lineHeight: 20,
     letterSpacing: 0,
     textAlign: 'center',
     color: '#636366',
     width: '100%',
+    fontFamily: 'Nunito-Regular',
   },
   footer: {
     marginTop: 24,

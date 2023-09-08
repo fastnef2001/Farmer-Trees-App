@@ -11,14 +11,18 @@ export type ButtonProps = {
   nameTree: string;
   numberTree: string;
   urlImage: string;
-  onPress: () => void;
+  caculate: boolean;
+  onPressDelete: () => void;
+  onPressEdit: () => void;
 };
 
 const RectangularTree = ({
-  onPress,
+  onPressDelete,
+  onPressEdit,
   nameTree,
   numberTree,
   urlImage,
+  caculate,
   ...props
 }: ButtonProps) => {
   return (
@@ -47,24 +51,27 @@ const RectangularTree = ({
       <View style={{ width: 8 }} />
       <View style={styles.frame48183}>
         <View style={styles.frame48295}>
-          <TouchableOpacity
-            style={{
-              height: 40,
-              width: 40,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: '#FFFFFF',
-              borderRadius: 12,
-              shadowColor: '#000000',
-              shadowOffset: { width: 0, height: 0 },
-              shadowOpacity: 0.2,
-              shadowRadius: 4,
-              elevation: 2,
-            }}>
-            <IconCalculate20 />
-          </TouchableOpacity>
+          {caculate ? (
+            <TouchableOpacity
+              style={{
+                height: 40,
+                width: 40,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: '#FFFFFF',
+                borderRadius: 12,
+                shadowColor: '#000000',
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.2,
+                shadowRadius: 4,
+                elevation: 2,
+              }}>
+              <IconCalculate20 />
+            </TouchableOpacity>
+          ) : null}
           <View style={{ width: 8 }} />
           <TouchableOpacity
+            onPress={onPressEdit}
             style={{
               height: 40,
               width: 40,
@@ -82,7 +89,7 @@ const RectangularTree = ({
           </TouchableOpacity>
           <View style={{ width: 8 }} />
           <TouchableOpacity
-            onPress={onPress}
+            onPress={onPressDelete}
             style={{
               height: 40,
               width: 40,

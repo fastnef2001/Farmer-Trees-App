@@ -227,7 +227,7 @@ const YourFarm = ({ navigation }: any) => {
         ) : (
           <LottieView
             style={{ width: 200, height: 200 }}
-            source={require('../../assets/images/animation_lma6s33i.json')}
+            source={require('../../assets/animations/animation_lma6s33i.json')}
             autoPlay
             loop
           />
