@@ -224,7 +224,7 @@ const YourFarm = ({ navigation }: any) => {
             </ScrollView>
           </>
         ) : (
-          <Text> không có cây</Text>
+         <Text> sdhfkhsdgf </Text>
         )}
       </View>
       <ModalInsert isVisible={isModalAddTree}>
