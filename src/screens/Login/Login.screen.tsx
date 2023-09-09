@@ -21,6 +21,7 @@ import Logo55 from '../../assets/images/Logo55.svg';
 import { COLORS } from '../../theme/color';
 import { TabBar } from 'react-native-tab-view';
 import { Appbar } from 'react-native-paper';
+import { ModalLoading } from '../../components/Modal/ModalLoading';
 
 const RegistrationScreen = ({ navigation }: any) => {
   const [errorText, setErrorText] = useState('');
@@ -94,11 +95,13 @@ const RegistrationScreen = ({ navigation }: any) => {
     }
 
     try {
+      handleModalLoading();
       await auth().signInWithEmailAndPassword(
         emailInput?.value,
         passwordInput?.value,
       );
       checkFarmName();
+      handleModalLoading();
     } catch (error: any) {
       if (error.code === 'auth/wrong-password') {
         setInputs(
@@ -110,6 +113,7 @@ const RegistrationScreen = ({ navigation }: any) => {
       } else {
         setErrorText('Sign in failed. Please check again.');
       }
+      handleModalLoading();
     }
   };
 
@@ -157,6 +161,11 @@ const RegistrationScreen = ({ navigation }: any) => {
     } else {
       navigation.navigate('Farmname');
     }
+  };
+
+  const [isModalVisibleLoading, setIsModalVisibleLoading] = useState(false);
+  const handleModalLoading = () => {
+    setIsModalVisibleLoading(prev => !prev);
   };
 
   return (
@@ -228,6 +237,10 @@ const RegistrationScreen = ({ navigation }: any) => {
           </TouchableOpacity>
         </SafeAreaView>
       </ScrollView>
+      <ModalLoading isVisible={isModalVisibleLoading}>
+        <StatusBar backgroundColor={'#494949'} />
+        <ModalLoading.Container />
+      </ModalLoading>
     </>
   );
 };

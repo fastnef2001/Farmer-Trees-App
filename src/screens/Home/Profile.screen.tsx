@@ -16,13 +16,13 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Profile = ({ navigation }: any) => {
   const handleLogOut = async () => {
+    navigation.navigate('LoginScreen');
+    await GoogleSignin.revokeAccess();
     try {
       await auth().signOut();
     } catch (error) {
       console.log(error);
     }
-    navigation.navigate('LoginScreen');
-    await GoogleSignin.revokeAccess();
   };
 
   return (

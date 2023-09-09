@@ -193,8 +193,6 @@ const Addtree = ({ navigation }: any) => {
   // Edit tree
   // 1. Modal edit tree
   const [isModalEditTree, setIsModalEditTree] = React.useState(false);
-  const [treeName, setTreeName] = React.useState('');
-  const [quanlityTree, setQuanlityTree] = React.useState('');
   const handleModalEditTree = (key: any) => {
     setSelectImage('');
     setInputs(
@@ -213,18 +211,11 @@ const Addtree = ({ navigation }: any) => {
         { label: 'Quanlity', value: tree.quanlity, error: '' },
       ]);
       setKey(key);
-      setTreeName(tree.name);
-      setQuanlityTree(tree.quanlity);
     }
     setIsModalEditTree(() => !isModalEditTree);
   };
 
-  // upadte tree với dữ liệu mới
   const handleEditTree = async () => {
-    // const [urlImage, setUrlImage] = React.useState('');
-    // const [nameTree, setName] = React.useState('');
-    // const [quanlityTree, setQuanlity] = React.useState('');
-
     const treeNameInput = inputs.find(input => input.label === 'Tree name');
     const quanlityInput = inputs.find(input => input.label === 'Quanlity');
 
@@ -263,6 +254,7 @@ const Addtree = ({ navigation }: any) => {
         await storageRef.putFile(image);
         imageUrl = await storageRef.getDownloadURL();
       }
+
       firestore()
         .collection('trees')
         .doc(userId)

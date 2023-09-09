@@ -18,13 +18,16 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {
   GoogleSignin,
+  GoogleSigninButton,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import styles from './Login.style';
 import Logo55 from '../../assets/images/Logo55.svg';
+import { ModalLoading } from '../../components/Modal/ModalLoading';
 
 const RegistrationScreen = ({ navigation }: any) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisibleLoading, setIsModalVisibleLoading] = useState(false);
   const [errorText, setErrorText] = useState('');
 
   const [inputs, setInputs] = useState([
@@ -153,14 +156,14 @@ const RegistrationScreen = ({ navigation }: any) => {
       );
       return;
     }
+
     // register
+    handleModalLoading();
     try {
       const response = await auth().createUserWithEmailAndPassword(
         emailInput.value,
         passwordInput.value,
       );
-      handleModal();
-
       console.log('responseText', response);
       // lấy id của user vừa tạo
       const user = await firestore()
@@ -177,6 +180,8 @@ const RegistrationScreen = ({ navigation }: any) => {
           phoneNumber: phoneNumberInput.value,
         });
       }
+      handleModal();
+      handleModalLoading();
     } catch (error: any) {
       setErrorText('Sign up failed. Please check again.');
     }
@@ -184,7 +189,6 @@ const RegistrationScreen = ({ navigation }: any) => {
 
   const handleRegisterByGoogle = async () => {
     await GoogleSignin.signOut();
-
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
@@ -197,9 +201,9 @@ const RegistrationScreen = ({ navigation }: any) => {
       );
 
       if (isUserExist.length === 0) {
+        handleModalLoading();
         await auth().signInWithCredential(googleCredential);
         const fullNameGoogle = userInfo.user.name;
-        //save fullNameGoogle to firestore
         const user = await firestore()
           .collection('users')
           .doc(auth().currentUser?.uid)
@@ -212,6 +216,7 @@ const RegistrationScreen = ({ navigation }: any) => {
               fullName: fullNameGoogle,
             });
         }
+        handleModalLoading();
         handleModal();
         return;
       }
@@ -232,6 +237,10 @@ const RegistrationScreen = ({ navigation }: any) => {
         console.log('some other error happened');
       }
     }
+  };
+
+  const handleModalLoading = () => {
+    setIsModalVisibleLoading(prev => !prev);
   };
 
   const handleModal = () => setIsModalVisible(prev => !prev);
@@ -308,7 +317,9 @@ const RegistrationScreen = ({ navigation }: any) => {
               </View>
             </TouchableOpacity>
           </View>
+
           <Modal isVisible={isModalVisible}>
+            <StatusBar backgroundColor={'#494949'} />
             <Modal.Container>
               <Modal.Header title="Successfully" />
               <Modal.Body title="You have successfully registered, please login." />
@@ -321,14 +332,14 @@ const RegistrationScreen = ({ navigation }: any) => {
                   }}>
                   <ButtonBack
                     isRight={false}
-                    isLogin={false}
+                    isDelete={false}
                     title="CANCEL"
                     onPress={handleModal}
                   />
                   <View style={{ width: 16 }} />
                   <ButtonLogin
                     isRight={true}
-                    isLogin={false}
+                    isDelete={false}
                     title="LOGIN"
                     onPress={() => navigation.navigate('LoginScreen')}
                   />
@@ -336,6 +347,11 @@ const RegistrationScreen = ({ navigation }: any) => {
               </Modal.Footer>
             </Modal.Container>
           </Modal>
+
+          <ModalLoading isVisible={isModalVisibleLoading}>
+            <StatusBar backgroundColor={'#494949'} />
+            <ModalLoading.Container />
+          </ModalLoading>
         </SafeAreaView>
       </ScrollView>
     </>

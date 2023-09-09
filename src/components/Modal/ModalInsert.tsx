@@ -1,5 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, Text, Button, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Button,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import RNModal from 'react-native-modal';
 import IconBack from '../../assets/images/IconBack.svg';
 import { ScrollView } from 'react-native-gesture-handler';
