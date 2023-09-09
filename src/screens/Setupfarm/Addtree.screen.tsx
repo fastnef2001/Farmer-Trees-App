@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable no-const-assign */
 /* eslint-disable react-native/no-inline-styles */
@@ -96,6 +97,7 @@ const Addtree = ({ navigation }: any) => {
       const name = treeNameInput?.value;
       const quanlity = quanlityInput?.value;
       const image = selectImage;
+      console.log('image', image);
       const timeAdd = new Date().getTime();
       let imageUrl = '';
       const userId = auth().currentUser?.uid;
@@ -172,6 +174,13 @@ const Addtree = ({ navigation }: any) => {
   };
 
   const handleDeleteTree = (key: string) => {
+    // xoas ảnh trong storage
+    const tree = trees.find(tree => tree.key === (key as any));
+    if (tree) {
+      const filename = auth().currentUser?.uid + tree.name;
+      const storageRef = storage().ref(`imageTree/${filename}`);
+      storageRef.delete();
+    }
     firestore()
       .collection('trees')
       .doc(auth().currentUser?.uid)
@@ -184,6 +193,8 @@ const Addtree = ({ navigation }: any) => {
   // Edit tree
   // 1. Modal edit tree
   const [isModalEditTree, setIsModalEditTree] = React.useState(false);
+  const [treeName, setTreeName] = React.useState('');
+  const [quanlityTree, setQuanlityTree] = React.useState('');
   const handleModalEditTree = (key: any) => {
     setSelectImage('');
     setInputs(
@@ -193,9 +204,8 @@ const Addtree = ({ navigation }: any) => {
         error: '',
       })),
     );
-    setIsModalEditTree(() => !isModalEditTree);
-    // lấy dữ liệu của tree cần edit bằng key
-    const tree = trees.find(tree => tree.key === key);
+
+    const tree = trees.find(tree => tree.key === (key as any));
     if (tree) {
       setSelectImage(tree.imageUrl);
       setInputs([
@@ -203,13 +213,21 @@ const Addtree = ({ navigation }: any) => {
         { label: 'Quanlity', value: tree.quanlity, error: '' },
       ]);
       setKey(key);
+      setTreeName(tree.name);
+      setQuanlityTree(tree.quanlity);
     }
+    setIsModalEditTree(() => !isModalEditTree);
   };
 
   // upadte tree với dữ liệu mới
   const handleEditTree = async () => {
+    // const [urlImage, setUrlImage] = React.useState('');
+    // const [nameTree, setName] = React.useState('');
+    // const [quanlityTree, setQuanlity] = React.useState('');
+
     const treeNameInput = inputs.find(input => input.label === 'Tree name');
     const quanlityInput = inputs.find(input => input.label === 'Quanlity');
+
     if (!treeNameInput?.value || !quanlityInput?.value) {
       setInputs(
         inputs.map(input => ({
@@ -219,6 +237,7 @@ const Addtree = ({ navigation }: any) => {
       );
       return;
     }
+
     try {
       const name = treeNameInput?.value;
       const quanlity = quanlityInput?.value;
@@ -226,7 +245,19 @@ const Addtree = ({ navigation }: any) => {
       const timeAdd = new Date().getTime();
       let imageUrl = '';
       const userId = auth().currentUser?.uid;
-      if (image) {
+      console.log('userId', image);
+      // if image là url với http thì không cần thay đổi ảnh
+      if (image && image.includes('http')) {
+        imageUrl = image;
+      } else if (image) {
+        // xóa ảnh cũ trong storage
+        const tree = trees.find(tree => tree.key === (key as any));
+        if (tree) {
+          const filename = auth().currentUser?.uid + tree.name;
+          const storageRef = storage().ref(`imageTree/${filename}`);
+          storageRef.delete();
+        }
+
         const filename = userId + name;
         const storageRef = storage().ref(`imageTree/${filename}`);
         await storageRef.putFile(image);
@@ -241,23 +272,23 @@ const Addtree = ({ navigation }: any) => {
           name,
           quanlity,
           imageUrl,
-          timeAdd,
         })
         .then(() => {
           setIsModalEditTree(() => false);
           setIsModalSuccess(() => true);
         });
+
+      setSelectImage('');
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          value: '',
+          error: '',
+        })),
+      );
     } catch (error: any) {
       console.log('error', error);
     }
-    setSelectImage('');
-    setInputs(
-      inputs.map(input => ({
-        ...input,
-        value: '',
-        error: '',
-      })),
-    );
   };
 
   return (
@@ -523,7 +554,9 @@ const Addtree = ({ navigation }: any) => {
         </ModalInsert.Container>
       </ModalInsert>
 
-      <Modal isVisible={isModalSuccess} onBackdropPress={handleModalSuccess}>
+      <Modal
+        isVisible={isModalSuccess}
+        onBackdropPress={() => setIsModalSuccess(false)}>
         <Modal.Container>
           <Modal.Header title="Successfully" />
           <Modal.Body title="You have successfully edited the tree." />
