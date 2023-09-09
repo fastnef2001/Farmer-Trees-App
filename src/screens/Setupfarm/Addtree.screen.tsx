@@ -33,27 +33,28 @@ import styles from './Addtree.style';
 import RNRestart from 'react-native-restart';
 import { useNavigation } from '@react-navigation/native';
 import { MyTabs } from '../../navigation/navigation';
+import { ButtonBack, ButtonDelete } from '../../components/Button/Button';
+import LottieView from 'lottie-react-native';
 
 const Addtree = ({ navigation }: any) => {
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);
-  const [selectImage, setSelectImage] = useState('');
   const [isModalSuccess, setIsModalSuccess] = React.useState(false);
-  const [isTrees, setIsTrees] = useState(false);
+  const [isModalDelete, setIsModalDelete] = React.useState(false);
+  const [selectImage, setSelectImage] = useState('');
+  const [key, setKey] = React.useState('');
   const [inputs, setInputs] = useState([
     { label: 'Tree name', value: '', error: '' },
     { label: 'Quanlity', value: '', error: '' },
   ]);
+  const [trees, setTrees] = useState<Tree[]>([]);
 
-  //đưa các giá trị về ban đầu
-  const handleModalSuccess = () => {
-    setIsModalSuccess(() => !isModalSuccess);
-  };
-
-  //trong hàm handle modal thì set lại các giá trị về ban đầu
-  const handleModal = () => {
+  // Add tree
+  // 1. Modal add tree
+  const handleModalAddTree = () => {
     setIsModalAddTree(() => !isModalAddTree);
   };
 
+  // 2. Modal pick image and delete image
   const handleModalImagePicker = () => {
     const option = {
       mediaType: 'photo' as MediaType,
@@ -70,8 +71,8 @@ const Addtree = ({ navigation }: any) => {
       }
     });
   };
-
   const handleDeleteImage = () => setSelectImage('');
+  // 3. Add tree
   const handleInputChange = (index: any, value: any) => {
     const newInputs = [...inputs];
     newInputs[index].value = value;
@@ -130,13 +131,18 @@ const Addtree = ({ navigation }: any) => {
       })),
     );
   };
+
+  const handleModalSuccess = () => {
+    setIsModalSuccess(() => !isModalSuccess);
+  };
+
+  //Get all tree
   interface Tree {
+    key(key: any): void;
     name: string;
-    quanlity: number;
+    quanlity: string;
     imageUrl: string;
   }
-
-  const [trees, setTrees] = useState<Tree[]>([]);
 
   React.useEffect(() => {
     const subscriber = firestore()
@@ -145,22 +151,114 @@ const Addtree = ({ navigation }: any) => {
       .collection('tree')
       .orderBy('timeAdd', 'desc')
       .onSnapshot(querySnapshot => {
-        if (querySnapshot && !querySnapshot.empty) {
-          const trees: any = [];
-          querySnapshot.forEach(documentSnapshot => {
-            trees.push({
-              ...documentSnapshot.data(),
-              key: documentSnapshot.id,
-            });
+        const trees: any = [];
+        querySnapshot.forEach(documentSnapshot => {
+          trees.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
           });
-          setTrees(trees);
-        } else {
-          setTrees([]);
-        }
+          console.log('treeProperties', trees);
+        });
+        setTrees(trees);
+        console.log('trees', trees);
       });
-
     return () => subscriber();
   }, []);
+
+  // Delete tree
+  const handleModalDelete = (key: any) => {
+    setKey(key);
+    setIsModalDelete(() => !isModalDelete);
+  };
+
+  const handleDeleteTree = (key: string) => {
+    firestore()
+      .collection('trees')
+      .doc(auth().currentUser?.uid)
+      .collection('tree')
+      .doc(key)
+      .delete();
+    setIsModalDelete(() => false);
+  };
+
+  // Edit tree
+  // 1. Modal edit tree
+  const [isModalEditTree, setIsModalEditTree] = React.useState(false);
+  const handleModalEditTree = (key: any) => {
+    setSelectImage('');
+    setInputs(
+      inputs.map(input => ({
+        ...input,
+        value: '',
+        error: '',
+      })),
+    );
+    setIsModalEditTree(() => !isModalEditTree);
+    // lấy dữ liệu của tree cần edit bằng key
+    const tree = trees.find(tree => tree.key === key);
+    if (tree) {
+      setSelectImage(tree.imageUrl);
+      setInputs([
+        { label: 'Tree name', value: tree.name, error: '' },
+        { label: 'Quanlity', value: tree.quanlity, error: '' },
+      ]);
+      setKey(key);
+    }
+  };
+
+  // upadte tree với dữ liệu mới
+  const handleEditTree = async () => {
+    const treeNameInput = inputs.find(input => input.label === 'Tree name');
+    const quanlityInput = inputs.find(input => input.label === 'Quanlity');
+    if (!treeNameInput?.value || !quanlityInput?.value) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error: !input.value ? `Please enter ${input.label}` : '',
+        })),
+      );
+      return;
+    }
+    try {
+      const name = treeNameInput?.value;
+      const quanlity = quanlityInput?.value;
+      const image = selectImage;
+      const timeAdd = new Date().getTime();
+      let imageUrl = '';
+      const userId = auth().currentUser?.uid;
+      if (image) {
+        const filename = userId + name;
+        const storageRef = storage().ref(`imageTree/${filename}`);
+        await storageRef.putFile(image);
+        imageUrl = await storageRef.getDownloadURL();
+      }
+      firestore()
+        .collection('trees')
+        .doc(userId)
+        .collection('tree')
+        .doc(key)
+        .update({
+          name,
+          quanlity,
+          imageUrl,
+          timeAdd,
+        })
+        .then(() => {
+          setIsModalEditTree(() => false);
+          setIsModalSuccess(() => true);
+        });
+    } catch (error: any) {
+      console.log('error', error);
+    }
+    setSelectImage('');
+    setInputs(
+      inputs.map(input => ({
+        ...input,
+        value: '',
+        error: '',
+      })),
+    );
+  };
 
   return (
     <>
@@ -190,6 +288,9 @@ const Addtree = ({ navigation }: any) => {
                   nameTree={tree.name}
                   numberTree={tree.quanlity}
                   urlImage={tree.imageUrl}
+                  onPressDelete={() => handleModalDelete(tree.key)}
+                  onPressEdit={() => handleModalEditTree(tree.key)}
+                  caculate={false}
                 />
               ))}
             </ScrollView>
@@ -221,14 +322,19 @@ const Addtree = ({ navigation }: any) => {
                 </View>
               </TouchableOpacity>
               <View style={{ width: 16 }} />
-              <TouchableOpacity onPress={handleModal}>
+              <TouchableOpacity onPress={handleModalAddTree}>
                 <IconAdd />
               </TouchableOpacity>
             </View>
           </>
         ) : (
-          <TouchableOpacity onPress={handleModal} style={styles.txtBtn}>
-            <IconAdd />
+          <TouchableOpacity onPress={handleModalAddTree} style={styles.txtBtn}>
+            <LottieView
+              style={{ width: 68, height: 68 }}
+              source={require('../../assets/animations/ButtonAddGif.json')}
+              autoPlay
+              loop
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -237,7 +343,7 @@ const Addtree = ({ navigation }: any) => {
         <ModalInsert.Container>
           <ModalInsert.Header>
             <View style={styles.headSessionModal}>
-              <TouchableOpacity onPress={handleModal}>
+              <TouchableOpacity onPress={handleModalAddTree}>
                 <IconBack />
               </TouchableOpacity>
               <View style={styles.txtContainer}>
@@ -325,10 +431,131 @@ const Addtree = ({ navigation }: any) => {
         </ModalInsert.Container>
       </ModalInsert>
 
+      <ModalInsert isVisible={isModalEditTree}>
+        <ModalInsert.Container>
+          <ModalInsert.Header>
+            <View style={styles.headSessionModal}>
+              <TouchableOpacity onPress={handleModalEditTree}>
+                <IconBack />
+              </TouchableOpacity>
+              <View style={styles.txtContainer}>
+                <Text style={styles.txtTitleModal}>Edit tree</Text>
+              </View>
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                }}
+              />
+            </View>
+          </ModalInsert.Header>
+          <ScrollView>
+            <ModalInsert.Body>
+              <View style={styles.root}>
+                {selectImage ? (
+                  <Image
+                    style={{ height: 80, width: 80, borderRadius: 12 }}
+                    source={{
+                      uri: selectImage,
+                    }}
+                  />
+                ) : (
+                  <Image
+                    style={{ height: 80, width: 80, borderRadius: 12 }}
+                    source={require('../../assets/images/AvatarSquare.png')}
+                  />
+                )}
+                <View style={{ width: 8 }} />
+                <TouchableOpacity
+                  style={styles.hoverButtonFull}
+                  onPress={handleModalImagePicker}>
+                  <View style={styles.frame625074}>
+                    <View style={styles.frame625079}>
+                      <IconUpload />
+                      <View style={{ width: 16 }} />
+                      <Text style={styles.photo}>Photo</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+                <View style={{ width: 8 }} />
+                <TouchableOpacity onPress={handleDeleteImage}>
+                  <IconDeleteRed />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.inputSession}>
+                {inputs.map((input, index) => (
+                  <View key={index}>
+                    <Input
+                      label={input.label}
+                      textPlaceholder={`Enter your ${input.label.toLowerCase()}`}
+                      value={input.value}
+                      onChangeText={(text: string) =>
+                        handleInputChange(index, text)
+                      }
+                      textError={input.error}
+                      keyboardType={
+                        input.label === 'Quanlity' ? 'numeric' : 'default'
+                      }
+                      span="*"
+                    />
+                  </View>
+                ))}
+              </View>
+              <TouchableOpacity
+                style={styles.btnSendSession}
+                onPress={handleEditTree}>
+                <View style={styles.txtBtnSignup}>
+                  <IconSave />
+                  <View style={{ width: 16 }} />
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      textAlign: 'center',
+                      color: '#FFFFFF',
+                      fontFamily: 'Nunito-Bold',
+                    }}>
+                    SAVE
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </ModalInsert.Body>
+          </ScrollView>
+        </ModalInsert.Container>
+      </ModalInsert>
+
       <Modal isVisible={isModalSuccess} onBackdropPress={handleModalSuccess}>
         <Modal.Container>
           <Modal.Header title="Successfully" />
           <Modal.Body title="You have successfully edited the tree." />
+        </Modal.Container>
+      </Modal>
+
+      <Modal isVisible={isModalDelete}>
+        <Modal.Container>
+          <Modal.Header title="Delete" />
+          <Modal.Body title="Do you want to delete this tree?" />
+          <Modal.Footer>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingHorizontal: 8,
+              }}>
+              <ButtonBack
+                isRight={false}
+                isDelete={false}
+                title="CANCEL"
+                onPress={() => setIsModalDelete(false)}
+              />
+              <View style={{ width: 16 }} />
+              <ButtonDelete
+                isRight={true}
+                isDelete={true}
+                title="DELETE"
+                onPress={() => handleDeleteTree(key)}
+              />
+            </View>
+          </Modal.Footer>
         </Modal.Container>
       </Modal>
     </>
