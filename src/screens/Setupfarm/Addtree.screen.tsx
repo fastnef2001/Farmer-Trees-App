@@ -36,6 +36,7 @@ import { useNavigation } from '@react-navigation/native';
 import { MyTabs } from '../../navigation/navigation';
 import { ButtonBack, ButtonDelete } from '../../components/Button/Button';
 import LottieView from 'lottie-react-native';
+import { ModalLoading } from '../../components/Modal/ModalLoading';
 
 const Addtree = ({ navigation }: any) => {
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);
@@ -48,6 +49,8 @@ const Addtree = ({ navigation }: any) => {
     { label: 'Quanlity', value: '', error: '' },
   ]);
   const [trees, setTrees] = useState<Tree[]>([]);
+  const [titlePopupNoti, setTitlePopupNoti] = useState('');
+  const [contentPopupNoti, setContentPopupNoti] = useState('');
 
   // Add tree
   // 1. Modal add tree
@@ -94,6 +97,7 @@ const Addtree = ({ navigation }: any) => {
       return;
     }
     try {
+      handleModalLoading();
       const name = treeNameInput?.value;
       const quanlity = quanlityInput?.value;
       const image = selectImage;
@@ -119,11 +123,18 @@ const Addtree = ({ navigation }: any) => {
         })
         .then(() => {
           setIsModalAddTree(() => false);
-          setIsModalSuccess(() => true);
+          handleModalLoading();
+          handleModalSuccessAdd();
         });
     } catch (error: any) {
       console.log('error', error);
     }
+  };
+
+  const handleModalSuccessAdd = () => {
+    setIsModalSuccess(() => !isModalSuccess);
+    setContentPopupNoti('You have successfully added the tree.');
+    setTitlePopupNoti('Successfully');
     setSelectImage('');
     setInputs(
       inputs.map(input => ({
@@ -132,10 +143,6 @@ const Addtree = ({ navigation }: any) => {
         error: '',
       })),
     );
-  };
-
-  const handleModalSuccess = () => {
-    setIsModalSuccess(() => !isModalSuccess);
   };
 
   //Get all tree
@@ -174,7 +181,6 @@ const Addtree = ({ navigation }: any) => {
   };
 
   const handleDeleteTree = (key: string) => {
-    // xoas ảnh trong storage
     const tree = trees.find(tree => tree.key === (key as any));
     if (tree) {
       const filename = auth().currentUser?.uid + tree.name;
@@ -230,18 +236,15 @@ const Addtree = ({ navigation }: any) => {
     }
 
     try {
+      handleModalLoading();
       const name = treeNameInput?.value;
       const quanlity = quanlityInput?.value;
       const image = selectImage;
-      const timeAdd = new Date().getTime();
       let imageUrl = '';
       const userId = auth().currentUser?.uid;
-      console.log('userId', image);
-      // if image là url với http thì không cần thay đổi ảnh
       if (image && image.includes('http')) {
         imageUrl = image;
       } else if (image) {
-        // xóa ảnh cũ trong storage
         const tree = trees.find(tree => tree.key === (key as any));
         if (tree) {
           const filename = auth().currentUser?.uid + tree.name;
@@ -267,20 +270,34 @@ const Addtree = ({ navigation }: any) => {
         })
         .then(() => {
           setIsModalEditTree(() => false);
-          setIsModalSuccess(() => true);
+          handleModalLoading();
+          handleModalSuccessEdit();
         });
-
-      setSelectImage('');
-      setInputs(
-        inputs.map(input => ({
-          ...input,
-          value: '',
-          error: '',
-        })),
-      );
     } catch (error: any) {
       console.log('error', error);
+      handleModalLoading();
     }
+  };
+
+  // Modal success edit
+  const handleModalSuccessEdit = () => {
+    setIsModalSuccess(() => !isModalSuccess);
+    setContentPopupNoti('You have successfully edited the tree.');
+    setTitlePopupNoti('Successfully');
+    setSelectImage('');
+    setInputs(
+      inputs.map(input => ({
+        ...input,
+        value: '',
+        error: '',
+      })),
+    );
+  };
+
+  // Modal loading
+  const [isModalLoading, setIsModalLoading] = React.useState(false);
+  const handleModalLoading = () => {
+    setIsModalLoading(prev => !prev);
   };
 
   return (
@@ -363,6 +380,7 @@ const Addtree = ({ navigation }: any) => {
       </View>
 
       <ModalInsert isVisible={isModalAddTree}>
+        <StatusBar backgroundColor={'#07111B'} />
         <ModalInsert.Container>
           <ModalInsert.Header>
             <View style={styles.headSessionModal}>
@@ -550,8 +568,8 @@ const Addtree = ({ navigation }: any) => {
         isVisible={isModalSuccess}
         onBackdropPress={() => setIsModalSuccess(false)}>
         <Modal.Container>
-          <Modal.Header title="Successfully" />
-          <Modal.Body title="You have successfully edited the tree." />
+          <Modal.Header title={titlePopupNoti} />
+          <Modal.Body title={contentPopupNoti} />
         </Modal.Container>
       </Modal>
 
@@ -583,6 +601,13 @@ const Addtree = ({ navigation }: any) => {
           </Modal.Footer>
         </Modal.Container>
       </Modal>
+
+      <ModalLoading isVisible={isModalLoading}>
+        <StatusBar backgroundColor={'#010508'} />
+        <SafeAreaView>
+          <ModalLoading.Container />
+        </SafeAreaView>
+      </ModalLoading>
     </>
   );
 };

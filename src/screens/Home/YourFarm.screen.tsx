@@ -304,7 +304,7 @@ const YourFarm = ({ navigation }: any) => {
         {/* Title */}
         <View style={styles1.headSession}>
           <View>
-            <Text style={styles1.txtTitle}>{farmName} farm</Text>
+            <Text style={styles1.txtTitle}>Wellcome {farmName} </Text>
           </View>
           <TouchableOpacity
             onPress={handleModalAddTree}
@@ -328,19 +328,27 @@ const YourFarm = ({ navigation }: any) => {
                   numberTree={tree.quanlity}
                   urlImage={tree.imageUrl}
                   onPressDelete={() => handleModalDelete(tree.key)}
-                  caculate={false}
+                  caculate={true}
                   onPressEdit={() => handleModalEditTree(tree.key)}
                 />
               ))}
             </ScrollView>
           </>
         ) : (
-          <LottieView
-            style={{ width: 200, height: 200 }}
-            source={require('../../assets/animations/animation_lma6s33i.json')}
-            autoPlay
-            loop
-          />
+          <View
+            style={{
+              height: '100%',
+              justifyContent: 'center',
+              paddingBottom: '40%',
+            }}>
+            <LottieView
+              style={{ width: 200, height: 200 }}
+              source={require('../../assets/animations/Empty.json')}
+              autoPlay
+              loop
+            />
+            <Text style={styles.txtTitleModal}> Empty Tree</Text>
+          </View>
         )}
       </View>
 

@@ -1,31 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import IconWeather from '../../assets/images/IconWeather.svg';
-import SvgUri from 'react-native-svg-uri';
+import LottieView from 'lottie-react-native';
 
-import Icon01d from '../../assets/weather/01d.svg';
-import Icon01n from '../../assets/weather/01n.svg';
-import Icon02d from '../../assets/weather/02d.svg';
-import Icon02n from '../../assets/weather/02n.svg';
-import Icon03d from '../../assets/weather/03d.svg';
-import Icon03n from '../../assets/weather/03n.svg';
-import Icon04d from '../../assets/weather/04d.svg';
-import Icon04n from '../../assets/weather/04n.svg';
-import Icon09d from '../../assets/weather/09d.svg';
-import Icon09n from '../../assets/weather/09n.svg';
-import Icon10d from '../../assets/weather/10d.svg';
-import Icon10n from '../../assets/weather/10n.svg';
-import Icon11d from '../../assets/weather/11d.svg';
-import Icon11n from '../../assets/weather/11n.svg';
-import Icon13d from '../../assets/weather/13d.svg';
-import Icon13n from '../../assets/weather/13n.svg';
-import Icon50d from '../../assets/weather/50d.svg';
-import Icon50n from '../../assets/weather/50n.svg';
-import { SvgProps } from 'react-native-svg';
+import Icon01d from '../../assets/weather/01d.json';
+import Icon01n from '../../assets/weather/01n.json';
+import Icon02d from '../../assets/weather/02d.json';
+import Icon02n from '../../assets/weather/02n.json';
+import Icon03d from '../../assets/weather/03d.json';
+import Icon03n from '../../assets/weather/03n.json';
+import Icon04d from '../../assets/weather/04d.json';
+import Icon04n from '../../assets/weather/04n.json';
+import Icon09d from '../../assets/weather/09d.json';
+import Icon09n from '../../assets/weather/09n.json';
+import Icon10d from '../../assets/weather/10d.json';
+import Icon10n from '../../assets/weather/10n.json';
+import Icon11n from '../../assets/weather/11n.json';
+import Icon13d from '../../assets/weather/13d.json';
+import Icon13n from '../../assets/weather/13n.json';
+import Icon50d from '../../assets/weather/50d.json';
 
 const WeatherComponent = () => {
   const [weatherData, setWeatherData] = useState<any>(null);
-  //   const [currentDateTime, setCurrentDateTime] = useState(new Date());
 
   const fetchWeatherData = () => {
     const apiUrl =
@@ -37,15 +32,12 @@ const WeatherComponent = () => {
   };
 
   useEffect(() => {
-    // Cập nhật thời tiết ban đầu khi component được render
     fetchWeatherData();
-
-    // Cập nhật thời tiết mỗi phút
     const intervalId = setInterval(() => {
       fetchWeatherData();
     }, 60000);
     return () => {
-      clearInterval(intervalId); // Hủy interval khi component bị unmount
+      clearInterval(intervalId);
     };
   }, []);
 
@@ -65,35 +57,40 @@ const WeatherComponent = () => {
   const cityName = weatherData.name;
   const country = weatherData.sys.country;
 
-  interface IconMappings {
-    [key: string]: React.FC<SvgProps>;
+  interface WeatherIcon {
+    nm: string;
+    ddd: number;
+    h: number;
+    w: number;
+    meta: {
+      g: string;
+    };
   }
 
-  const iconMappings: IconMappings = {
+  const iconMappings: { [key: string]: WeatherIcon } = {
     '01d': Icon01d,
-    '02d': Icon02d,
-    '03d': Icon03d,
-    '04d': Icon04d,
-    '09d': Icon09d,
-    '10d': Icon10d,
-    '11d': Icon11d,
-    '13d': Icon13d,
-    '50d': Icon50d,
     '01n': Icon01n,
+    '02d': Icon02d,
     '02n': Icon02n,
+    '03d': Icon03d,
     '03n': Icon03n,
+    '04d': Icon04d,
     '04n': Icon04n,
+    '09d': Icon09d,
     '09n': Icon09n,
+    '10d': Icon10d,
     '10n': Icon10n,
+    '11d': Icon11n,
     '11n': Icon11n,
+    '13d': Icon13d,
     '13n': Icon13n,
-    '50n': Icon50n,
+    '50d': Icon50d,
+    '50n': Icon50d,
   };
-  // Weather icon code
-  const iconWeather = weatherData.weather[0].icon;
 
-  // Get the corresponding SVG component from the mapping
+  const iconWeather = weatherData.weather[0].icon;
   const WeatherIcon = iconMappings[iconWeather];
+  console.log('WeatherIcon', iconWeather);
 
   //lấy ngày tháng năm
 
@@ -124,7 +121,12 @@ const WeatherComponent = () => {
 
       <View style={styles.weatherRight}>
         <View style={styles.iconWeather}>
-          <WeatherIcon width={40} height={40} />
+          <LottieView
+            source={WeatherIcon as any}
+            autoPlay
+            loop
+            style={{ width: 45, height: 45 }}
+          />
           <Text style={styles.textTemperature}>{temperatureC}°C</Text>
         </View>
 
@@ -222,9 +224,8 @@ const styles = StyleSheet.create({
 
   textTemperature: {
     fontSize: 18,
-    lineHeight: 25,
+    lineHeight: 20,
     letterSpacing: 0,
-    textAlign: 'left',
     color: '#252525',
     fontFamily: 'Nunito-Bold',
   },

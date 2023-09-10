@@ -216,6 +216,8 @@ const RegistrationScreen = ({ navigation }: any) => {
               fullName: fullNameGoogle,
             });
         }
+        await GoogleSignin.revokeAccess();
+        await GoogleSignin.signOut();
         handleModalLoading();
         handleModal();
         return;

@@ -134,17 +134,17 @@ const RegistrationScreen = ({ navigation }: any) => {
         userInfo.user.email,
       );
       if (isUserExist.length === 0) {
-        // If not exist, then set error
         setErrorText('Gmail is not registered.');
         await GoogleSignin.revokeAccess();
         await GoogleSignin.signOut();
         return;
       }
-      // If exist, then sign in
+      handleModalLoading();
       await auth().signInWithCredential(googleCredential);
       checkFarmName();
+      handleModalLoading();
     } catch {
-      setErrorText('Sign in failed. Please check again.');
+      console.log('error');
     }
   };
 
@@ -161,6 +161,14 @@ const RegistrationScreen = ({ navigation }: any) => {
     } else {
       navigation.navigate('Farmname');
     }
+    setTimeout(() => {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          value: '',
+        })),
+      );
+    }, 2000);
   };
 
   const [isModalVisibleLoading, setIsModalVisibleLoading] = useState(false);
