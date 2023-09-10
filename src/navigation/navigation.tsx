@@ -144,15 +144,16 @@ export const MainNavigation = () => {
 
 const AppNavigator = () => {
   const user = auth().currentUser;
+  console.log('user', user);
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="LoginScreen">
+      <Stack.Navigator>
         {user ? (
           <>
             <Stack.Screen
-              name="YourFarm"
+              name="Tabs"
               options={{ headerShown: false }}
-              component={YourFarm}
+              component={MyTabs}
             />
             <Stack.Screen
               name="LoginScreen"
@@ -168,9 +169,9 @@ const AppNavigator = () => {
               component={LoginScreen}
             />
             <Stack.Screen
-              name="YourFarm"
+              name="Tabs"
               options={{ headerShown: false }}
-              component={YourFarm}
+              component={MyTabs}
             />
           </>
         )}
@@ -209,11 +210,6 @@ const AppNavigator = () => {
           name="Profile"
           options={{ headerShown: false }}
           component={Profile}
-        />
-        <Stack.Screen
-          name="Tabs"
-          options={{ headerShown: false }}
-          component={MyTabs}
         />
       </Stack.Navigator>
     </NavigationContainer>

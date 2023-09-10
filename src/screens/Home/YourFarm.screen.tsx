@@ -4,7 +4,9 @@ import React, { useState } from 'react';
 import auth from '@react-native-firebase/auth';
 import {
   Image,
+  SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -30,6 +32,7 @@ import IconAdd36 from '../../assets/images/IconAdd36.svg';
 import { COLORS } from '../../theme/color';
 import { ButtonBack, ButtonDelete } from '../../components/Button/Button';
 import LottieView from 'lottie-react-native';
+import { ModalLoading } from '../../components/Modal/ModalLoading';
 
 const YourFarm = ({ navigation }: any) => {
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);
@@ -43,21 +46,11 @@ const YourFarm = ({ navigation }: any) => {
     { label: 'Quanlity', value: '', error: '' },
   ]);
 
-  //đưa các giá trị về ban đầu
-  const handleModalSuccess = () => {
-    setIsModalSuccess(() => !isModalSuccess);
-  };
-
-  //trong hàm handle modal thì set lại các giá trị về ban đầu
-  const handleModal = () => {
+  // 1. Modal add tree
+  const handleModalAddTree = () => {
     setIsModalAddTree(() => !isModalAddTree);
   };
-
-  const handleModalDelete = (key: string) => {
-    setKey(key);
-    setIsModalDelete(() => !isModalDelete);
-  };
-
+  // 2. Modal pick image and delete image
   const handleModalImagePicker = () => {
     const option = {
       mediaType: 'photo' as MediaType,
@@ -74,15 +67,15 @@ const YourFarm = ({ navigation }: any) => {
       }
     });
   };
-
   const handleDeleteImage = () => setSelectImage('');
+  // 3. Handle validate input
   const handleInputChange = (index: any, value: any) => {
     const newInputs = [...inputs];
     newInputs[index].value = value;
     newInputs[index].error = '';
     setInputs(newInputs);
   };
-
+  // 4. Handle add tree
   const handleAddTree = async () => {
     const treeNameInput = inputs.find(input => input.label === 'Tree name');
     const quanlityInput = inputs.find(input => input.label === 'Quanlity');
@@ -139,6 +132,28 @@ const YourFarm = ({ navigation }: any) => {
       })),
     );
   };
+  // 5. Modal success
+  const handleModalSuccess = () => {
+    setIsModalSuccess(() => !isModalSuccess);
+  };
+
+  // 6. Modal delete
+  const handleModalDelete = (key: string) => {
+    setKey(key);
+    setIsModalDelete(() => !isModalDelete);
+  };
+
+  // 7. Handle delete tree
+  const handleDeleteTree = (key: string) => {
+    firestore()
+      .collection('trees')
+      .doc(auth().currentUser?.uid)
+      .collection('tree')
+      .doc(key)
+      .delete();
+    setIsModalDelete(() => false);
+  };
+
   interface Tree {
     [x: string]: string;
     name: string;
@@ -146,6 +161,7 @@ const YourFarm = ({ navigation }: any) => {
     imageUrl: string;
   }
 
+  // 8. Get all tree
   const [trees, setTrees] = useState<Tree[]>([]);
   React.useEffect(() => {
     const subscriber = firestore()
@@ -168,6 +184,7 @@ const YourFarm = ({ navigation }: any) => {
     return () => subscriber();
   }, []);
 
+  // 9. Get farm name
   const [farmName, setFarmName] = useState('');
   React.useEffect(() => {
     const subscriber = firestore()
@@ -180,27 +197,118 @@ const YourFarm = ({ navigation }: any) => {
     return () => subscriber();
   }, []);
 
-  const handleDeleteTree = (key: string) => {
-    firestore()
-      .collection('trees')
-      .doc(auth().currentUser?.uid)
-      .collection('tree')
-      .doc(key)
-      .delete();
-    setIsModalDelete(() => false);
+  // 10. Modal edit tree
+  const [isModalEditTree, setIsModalEditTree] = React.useState(false);
+  const handleModalEditTree = (key: any) => {
+    setSelectImage('');
+    setInputs(
+      inputs.map(input => ({
+        ...input,
+        value: '',
+        error: '',
+      })),
+    );
+
+    const tree = trees.find(tree => tree.key === (key as any));
+    if (tree) {
+      setSelectImage(tree.imageUrl);
+      setInputs([
+        { label: 'Tree name', value: tree.name, error: '' },
+        { label: 'Quanlity', value: tree.quanlity, error: '' },
+      ]);
+      setKey(key);
+    }
+    setIsModalEditTree(() => !isModalEditTree);
+  };
+
+  // 11. Handle edit tree
+  const handleEditTree = async () => {
+    const treeNameInput = inputs.find(input => input.label === 'Tree name');
+    const quanlityInput = inputs.find(input => input.label === 'Quanlity');
+
+    if (!treeNameInput?.value || !quanlityInput?.value) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error: !input.value ? `Please enter ${input.label}` : '',
+        })),
+      );
+      return;
+    }
+    handleModalLoading();
+    try {
+      const name = treeNameInput?.value;
+      const quanlity = quanlityInput?.value;
+      const image = selectImage;
+      let imageUrl = '';
+      const userId = auth().currentUser?.uid;
+      console.log('userId', image);
+      // if image là url với http thì không cần thay đổi ảnh
+      if (image && image.includes('http')) {
+        imageUrl = image;
+      } else if (image) {
+        // xóa ảnh cũ trong storage
+        const tree = trees.find(tree => tree.key === (key as any));
+        if (tree) {
+          const filename = auth().currentUser?.uid + tree.name;
+          const storageRef = storage().ref(`imageTree/${filename}`);
+          storageRef.delete();
+        }
+
+        const filename = userId + name;
+        const storageRef = storage().ref(`imageTree/${filename}`);
+        await storageRef.putFile(image);
+        imageUrl = await storageRef.getDownloadURL();
+      }
+
+      firestore()
+        .collection('trees')
+        .doc(userId)
+        .collection('tree')
+        .doc(key)
+        .update({
+          name,
+          quanlity,
+          imageUrl,
+        })
+        .then(() => {
+          setIsModalEditTree(() => false);
+          handleModalLoading();
+          setIsModalSuccess(() => true);
+        });
+
+      setSelectImage('');
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          value: '',
+          error: '',
+        })),
+      );
+    } catch (error: any) {
+      console.log('error', error);
+    }
+  };
+
+  // 12. Modal loading
+  const [isModalLoading, setIsModalLoading] = React.useState(false);
+  const handleModalLoading = () => {
+    setIsModalLoading(prev => !prev);
   };
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
       <HeaderComponent onPress={() => navigation.navigate('Profile')} />
       <WeatherComponent />
       <View style={styles1.container}>
         {/* Title */}
         <View style={styles1.headSession}>
           <View>
-            <Text style={styles1.txtTitle}>{farmName} farm</Text>
+            <Text style={styles1.txtTitle}>Wellcome {farmName} </Text>
           </View>
-          <TouchableOpacity onPress={handleModal} style={{ marginRight: 8 }}>
+          <TouchableOpacity
+            onPress={handleModalAddTree}
+            style={{ marginRight: 8 }}>
             <IconAdd36 />
           </TouchableOpacity>
         </View>
@@ -219,29 +327,176 @@ const YourFarm = ({ navigation }: any) => {
                   nameTree={tree.name}
                   numberTree={tree.quanlity}
                   urlImage={tree.imageUrl}
-                  onPress={() => handleModalDelete(tree.key)}
+                  onPressDelete={() => handleModalDelete(tree.key)}
+                  caculate={true}
+                  onPressEdit={() => handleModalEditTree(tree.key)}
                 />
               ))}
             </ScrollView>
           </>
         ) : (
-          <LottieView
-            style={{ width: 200, height: 200 }}
-            source={require('../../assets/animations/animation_lma6s33i.json')}
-            autoPlay
-            loop
-          />
+          <View
+            style={{
+              height: '100%',
+              justifyContent: 'center',
+              paddingBottom: '40%',
+            }}>
+            <LottieView
+              style={{ width: 200, height: 200 }}
+              source={require('../../assets/animations/Empty.json')}
+              autoPlay
+              loop
+            />
+            <Text style={styles.txtTitleModal}> Empty Tree</Text>
+          </View>
         )}
       </View>
+
       <ModalInsert isVisible={isModalAddTree}>
+        <StatusBar backgroundColor={'#07111B'} />
+        <View style={{ flex: 1 }}>
+          <ModalInsert.Container>
+            <ModalInsert.Header>
+              <View style={styles.headSessionModal}>
+                <TouchableOpacity onPress={handleModalAddTree}>
+                  <IconBack> </IconBack>
+                </TouchableOpacity>
+                <View style={styles.txtContainer}>
+                  <Text style={styles.txtTitleModal}>Add tree</Text>
+                </View>
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                />
+              </View>
+            </ModalInsert.Header>
+            <ScrollView>
+              <ModalInsert.Body>
+                <View style={styles.root}>
+                  {selectImage ? (
+                    <Image
+                      style={{ height: 80, width: 80, borderRadius: 12 }}
+                      source={{
+                        uri: selectImage,
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      style={{ height: 80, width: 80, borderRadius: 12 }}
+                      source={require('../../assets/images/AvatarSquare.png')}
+                    />
+                  )}
+                  <View style={{ width: 8 }} />
+                  <TouchableOpacity
+                    style={styles.hoverButtonFull}
+                    onPress={handleModalImagePicker}>
+                    <View style={styles.frame625074}>
+                      <View style={styles.frame625079}>
+                        <IconUpload />
+                        <View style={{ width: 16 }} />
+                        <Text style={styles.photo}>Photo</Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                  <View style={{ width: 8 }} />
+                  <TouchableOpacity onPress={handleDeleteImage}>
+                    <IconDeleteRed />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.inputSession}>
+                  {inputs.map((input, index) => (
+                    <View key={index}>
+                      <Input
+                        label={input.label}
+                        placeholder={`Enter your ${input.label.toLowerCase()}`}
+                        value={input.value}
+                        onChangeText={(text: string) =>
+                          handleInputChange(index, text)
+                        }
+                        error={input.error}
+                        keyboardType={
+                          input.label === 'Quanlity' ? 'numeric' : 'default'
+                        }
+                        span="*"
+                      />
+                    </View>
+                  ))}
+                </View>
+                <TouchableOpacity
+                  style={styles.btnSendSession}
+                  onPress={handleAddTree}>
+                  <View style={styles.txtBtnSignup}>
+                    <IconSave />
+                    <View style={{ width: 16 }} />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        textAlign: 'center',
+                        color: '#FFFFFF',
+                        fontWeight: 'bold',
+                      }}>
+                      SAVE
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </ModalInsert.Body>
+            </ScrollView>
+          </ModalInsert.Container>
+        </View>
+      </ModalInsert>
+
+      <Modal
+        isVisible={isModalSuccess}
+        onBackdropPress={() => setIsModalSuccess(false)}>
+        <StatusBar backgroundColor={'#07111B'} />
+        <Modal.Container>
+          <Modal.Header title="Successfully" />
+          <Modal.Body title="You have successfully edited the tree." />
+        </Modal.Container>
+      </Modal>
+
+      <Modal isVisible={isModalDelete}>
+        <StatusBar backgroundColor={'#07111B'} />
+        <Modal.Container>
+          <Modal.Header title="Successfully" />
+          <Modal.Body title="You have successfully registered, please login." />
+          <Modal.Footer>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingHorizontal: 8,
+              }}>
+              <ButtonBack
+                isRight={false}
+                isDelete={false}
+                title="CANCEL"
+                onPress={handleModalAddTree}
+              />
+              <View style={{ width: 16 }} />
+              <ButtonDelete
+                isRight={true}
+                isDelete={true}
+                title="LOGIN"
+                onPress={() => handleDeleteTree(key)}
+              />
+            </View>
+          </Modal.Footer>
+        </Modal.Container>
+      </Modal>
+
+      <ModalInsert isVisible={isModalEditTree}>
+        <StatusBar backgroundColor={'#07111B'} />
         <ModalInsert.Container>
           <ModalInsert.Header>
             <View style={styles.headSessionModal}>
-              <TouchableOpacity onPress={handleModal}>
-                <IconBack> </IconBack>
+              <TouchableOpacity onPress={handleModalEditTree}>
+                <IconBack />
               </TouchableOpacity>
               <View style={styles.txtContainer}>
-                <Text style={styles.txtTitleModal}>Add tree</Text>
+                <Text style={styles.txtTitleModal}>Edit tree</Text>
               </View>
               <View
                 style={{
@@ -289,12 +544,12 @@ const YourFarm = ({ navigation }: any) => {
                   <View key={index}>
                     <Input
                       label={input.label}
-                      placeholder={`Enter your ${input.label.toLowerCase()}`}
+                      textPlaceholder={`Enter your ${input.label.toLowerCase()}`}
                       value={input.value}
                       onChangeText={(text: string) =>
                         handleInputChange(index, text)
                       }
-                      error={input.error}
+                      textError={input.error}
                       keyboardType={
                         input.label === 'Quanlity' ? 'numeric' : 'default'
                       }
@@ -305,7 +560,7 @@ const YourFarm = ({ navigation }: any) => {
               </View>
               <TouchableOpacity
                 style={styles.btnSendSession}
-                onPress={handleAddTree}>
+                onPress={handleEditTree}>
                 <View style={styles.txtBtnSignup}>
                   <IconSave />
                   <View style={{ width: 16 }} />
@@ -314,7 +569,7 @@ const YourFarm = ({ navigation }: any) => {
                       fontSize: 16,
                       textAlign: 'center',
                       color: '#FFFFFF',
-                      fontWeight: 'bold',
+                      fontFamily: 'Nunito-Bold',
                     }}>
                     SAVE
                   </Text>
@@ -325,42 +580,13 @@ const YourFarm = ({ navigation }: any) => {
         </ModalInsert.Container>
       </ModalInsert>
 
-      <Modal isVisible={isModalSuccess} onBackdropPress={handleModalSuccess}>
-        <Modal.Container>
-          <Modal.Header title="Successfully" />
-          <Modal.Body title="You have successfully edited the tree." />
-        </Modal.Container>
-      </Modal>
-
-      <Modal isVisible={isModalDelete}>
-        <Modal.Container>
-          <Modal.Header title="Successfully" />
-          <Modal.Body title="You have successfully registered, please login." />
-          <Modal.Footer>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingHorizontal: 8,
-              }}>
-              <ButtonBack
-                isRight={false}
-                isDelete={false}
-                title="CANCEL"
-                onPress={handleModal}
-              />
-              <View style={{ width: 16 }} />
-              <ButtonDelete
-                isRight={true}
-                isDelete={true}
-                title="LOGIN"
-                onPress={() => handleDeleteTree(key)}
-              />
-            </View>
-          </Modal.Footer>
-        </Modal.Container>
-      </Modal>
-    </>
+      <ModalLoading isVisible={isModalLoading}>
+        <StatusBar backgroundColor={'#010508'} />
+        <SafeAreaView>
+          <ModalLoading.Container />
+        </SafeAreaView>
+      </ModalLoading>
+    </SafeAreaView>
   );
 };
 
