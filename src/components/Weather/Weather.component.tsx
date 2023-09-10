@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import LottieView from 'lottie-react-native';
+import Geolocation from '@react-native-community/geolocation';
 
 import Icon01d from '../../assets/weather/01d.json';
 import Icon01n from '../../assets/weather/01n.json';
@@ -21,6 +22,18 @@ import Icon50d from '../../assets/weather/50d.json';
 
 const WeatherComponent = () => {
   const [weatherData, setWeatherData] = useState<any>(null);
+
+  Geolocation.getCurrentPosition(
+    position => {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      console.log(`Kinh tuyến: ${latitude}, Vĩ tuyến: ${longitude}`);
+    },
+    error => {
+      console.error(error.message);
+    },
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+  );
 
   const fetchWeatherData = () => {
     const apiUrl =
