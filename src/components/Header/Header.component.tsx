@@ -14,6 +14,7 @@ import Logo from '../../assets/images/Logo.svg';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { COLORS } from '../../theme/color';
+import Logo35 from '../../assets/images/Logo72.svg';
 
 export type ButtonProps = {
   onPress?: () => void;
@@ -45,7 +46,7 @@ const HeaderComponent = ({ onPress }: ButtonProps) => {
       />
       <SafeAreaView style={styleLogin as any}>
         <View style={styles.cover}>
-          <Logo />
+          <Logo35 />
           {user ? (
             <TouchableOpacity style={styles.root} onPress={onPress}>
               <Text style={styles.username}>{fullNameClipped}</Text>
@@ -66,6 +67,5 @@ export default HeaderComponent;
 
 const styleLogin = StyleSheet.create<any>({
   backgroundColor: '#163859',
-  height: 60,
   justifyContent: 'center',
 });

@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import LottieView from 'lottie-react-native';
+import Geolocation from '@react-native-community/geolocation';
 
 import Icon01d from '../../assets/weather/01d.json';
 import Icon01n from '../../assets/weather/01n.json';
@@ -22,27 +24,48 @@ import Icon50d from '../../assets/weather/50d.json';
 const WeatherComponent = () => {
   const [weatherData, setWeatherData] = useState<any>(null);
 
-  const fetchWeatherData = () => {
-    const apiUrl =
-      'https://api.openweathermap.org/data/2.5/weather?lat=12.694572451604682&lon=108.06366419104278&appid=37d19e0d00708a94ead8ddd20fba44ff';
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => setWeatherData(data))
-      .catch(error => console.error('Error fetching weather data:', error));
+  const fetchLocationData = () => {
+    Geolocation.getCurrentPosition(info => {
+      const { latitude, longitude } = info.coords;
+      console.log('latitude', latitude);
+      fetchWeatherData(latitude, longitude);
+    });
+  };
+
+  const fetchWeatherData = (lat: number | null, long: number | null) => {
+    console.log('lat', lat);
+    console.log('long', long);
+    if (lat !== null && long !== null) {
+      const apiKey = '37d19e0d00708a94ead8ddd20fba44ff';
+      const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${apiKey}`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => setWeatherData(data))
+        .catch(error => console.error('Error fetching weather data:', error));
+    }
   };
 
   useEffect(() => {
-    fetchWeatherData();
+    fetchLocationData();
     const intervalId = setInterval(() => {
-      fetchWeatherData();
-    }, 60000);
+      fetchLocationData();
+    }, 20000);
+
     return () => {
       clearInterval(intervalId);
     };
   }, []);
 
   if (!weatherData) {
-    return <Text>Loading...</Text>;
+    return (
+      <LottieView
+        style={{ width: 50, height: 50, alignSelf: 'center' }}
+        source={require('../../assets/animations/Loading11.json')}
+        autoPlay
+        loop
+      />
+    );
   }
 
   const temperature = weatherData.main.temp;
@@ -113,9 +136,13 @@ const WeatherComponent = () => {
     <View style={styles.root}>
       <View style={styles.weatherLeft}>
         {/* <Text style={styles.textTime}>{currentDate}</Text> */}
-        <Text style={styles.textLocation}>
-          {cityName}, {country}
-        </Text>
+        {cityName === 'Turan' ? (
+          <Text style={styles.textLocation}>Da Nang, {country}</Text>
+        ) : (
+          <Text style={styles.textLocation}>
+            {cityName}, {country}
+          </Text>
+        )}
         <Text style={styles.textWeather}>{weatherDescription} </Text>
       </View>
 
