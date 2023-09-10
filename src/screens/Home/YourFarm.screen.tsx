@@ -410,12 +410,12 @@ const YourFarm = ({ navigation }: any) => {
                     <View key={index}>
                       <Input
                         label={input.label}
-                        placeholder={`Enter your ${input.label.toLowerCase()}`}
+                        textPlaceholder={`Enter your ${input.label.toLowerCase()}`}
                         value={input.value}
                         onChangeText={(text: string) =>
                           handleInputChange(index, text)
                         }
-                        error={input.error}
+                        textError={input.error}
                         keyboardType={
                           input.label === 'Quanlity' ? 'numeric' : 'default'
                         }

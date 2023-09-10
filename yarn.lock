@@ -7406,6 +7406,11 @@ react-native-codegen@^0.70.6:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
+react-native-geolocation@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/react-native-geolocation/-/react-native-geolocation-1.0.0.tgz"
+  integrity sha512-O8gJJeTqkJhj2hwzimc38wR1KjM02MSg/fCDgmKMM0akTSv3nsDBf5k8nIa9I5Mu5ncd+t86plQPapkVYy/ZSw==
+
 react-native-gesture-handler@^2.8.0:
   version "2.8.0"
   resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.8.0.tgz"

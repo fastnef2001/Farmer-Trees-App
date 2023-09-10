@@ -4,8 +4,11 @@ export default StyleSheet.create({
   cover: {
     width: '100%',
     paddingHorizontal: 16,
+    paddingVertical: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignContent: 'center',
+    alignItems: 'center',
   },
   logoRightStyle: {
     width: 40,
@@ -19,8 +22,8 @@ export default StyleSheet.create({
   },
   ellipse59: {
     borderRadius: 100,
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
   },
   username: {
     color: '#ffffff',
