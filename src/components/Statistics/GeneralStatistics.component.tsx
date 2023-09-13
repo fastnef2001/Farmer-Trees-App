@@ -1,22 +1,52 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { COLORS } from '../../theme/color';
-import GeneralStatistics from '../../components/Statistics/GeneralStatistics.component';
-import HeaderComponent from '../../components/Header/Header.component';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Statistics = ({ navigation }: any) => {
+const GeneralStatistics = () => {
   const widthAndHeight = 130;
   const series = [30, 70];
   const sliceColor = [COLORS.blue, COLORS.red];
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <HeaderComponent onPress={() => navigation.navigate('Profile')} />
-      <ScrollView style={{ flex: 1 }}>
-        <GeneralStatistics />
-      </ScrollView>
-    </SafeAreaView>
+    <View style={stylesFrame.root}>
+      <View style={stylesHeader.root}>
+        <Text style={stylesHeader.generalStatistics}>General Statistics</Text>
+        <Text style={stylesHeader.exportExcel}>Export excel</Text>
+      </View>
+      <View style={{ height: 16 }} />
+      <View style={stylesBody.root}>
+        <View style={stylesChart.container}>
+          <PieChart
+            widthAndHeight={widthAndHeight}
+            series={series}
+            sliceColor={sliceColor}
+            coverRadius={0.45}
+          />
+        </View>
+        <View style={stylesBody.note}>
+          <View style={stylesBody.item}>
+            <View style={stylesBody.expense}>
+              <View style={stylesBody.redPoint} />
+              <View style={{ width: 8 }} />
+              <Text style={stylesBody.textItem}>Expense:</Text>
+              <View style={{ width: 8 }} />
+              <Text style={stylesBody.textPrice}>50.000 $</Text>
+            </View>
+            <View style={stylesBody.expense}>
+              <View style={stylesBody.bluePoint} />
+              <View style={{ width: 8 }} />
+              <Text style={stylesBody.textItem}>Profit:</Text>
+              <View style={{ width: 8 }} />
+              <Text style={stylesBody.textPrice}>150.000 $</Text>
+            </View>
+          </View>
+          <View style={stylesBody.income}>
+            <Text style={stylesBody.textIncome}>Income:</Text>
+            <Text style={stylesBody.textPriceIncome}>200.000 $</Text>
+          </View>
+        </View>
+      </View>
+    </View>
   );
 };
 
@@ -88,7 +118,6 @@ const stylesBody = StyleSheet.create({
     width: 172,
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: COLORS.grey,
     justifyContent: 'space-between',
   },
   bluePoint: {
@@ -113,7 +142,6 @@ const stylesBody = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: COLORS.grey,
   },
 });
 
@@ -135,4 +163,4 @@ const stylesFrame = StyleSheet.create({
   },
 });
 
-export default Statistics;
+export default GeneralStatistics;
