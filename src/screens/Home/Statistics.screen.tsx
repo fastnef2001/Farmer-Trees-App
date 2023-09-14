@@ -32,6 +32,7 @@ const Statistics = ({ navigation }: any) => {
             <Text style={stylesDate.tileMonth}>Apr.</Text>
             <Text style={stylesDate.tileDate}>12</Text>
           </View>
+          <View style={{ width: 6 }} />
           <View style={stylesBody.root}>
             <Text style={stylesBody.titleNameTree}>Coffee</Text>
             <View style={{ height: 4 }} />
@@ -40,6 +41,7 @@ const Statistics = ({ navigation }: any) => {
               <Text style={stylesContent.titlePrice}>2.000.000 $</Text>
             </View>
           </View>
+          <View style={{ width: 24 }} />
           <Detail />
         </View>
       </ScrollView>
@@ -71,10 +73,12 @@ const stylesHeader = StyleSheet.create({
 const stylesDate = StyleSheet.create({
   root: {
     width: 42,
+    height: '100%',
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: COLORS.green,
     borderRadius: 12,
+    justifyContent: 'center',
     padding: 4,
   },
   tileMonth: {
@@ -95,32 +99,30 @@ const stylesDate = StyleSheet.create({
 
 const stylesContent = StyleSheet.create({
   root: {
-    backgroundColor: COLORS.grey,
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
     flexDirection: 'row',
+    alignSelf: 'stretch',
   },
   titleQuantity: {
-    overflow: 'hidden',
     color: COLORS.text2,
-    textOverflow: 'ellipsis',
     fontFamily: 'Nunito-Regular',
-    fontSize: 14,
+    fontSize: 16,
     letterSpacing: 0.42,
+    justifyContent: 'flex-start',
   },
   titlePrice: {
-    overflow: 'hidden',
-    color: COLORS.text2,
-    textOverflow: 'ellipsis',
+    color: COLORS.green,
     fontFamily: 'Nunito-SemiBold',
-    fontSize: 14,
+    fontSize: 16,
     fontStyle: 'italic',
     letterSpacing: 0.42,
+    justifyContent: 'flex-end',
   },
 });
 
 const stylesBody = StyleSheet.create({
   root: {
+    flex: 1,
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
@@ -128,10 +130,8 @@ const stylesBody = StyleSheet.create({
     alignSelf: 'stretch',
     color: COLORS.blue,
     fontFamily: 'Nunito-SemiBold',
-    fontSize: 16,
-    lineHeight: 18,
+    fontSize: 18,
     letterSpacing: 0.48,
-    backgroundColor: COLORS.white,
   },
 });
 
@@ -144,8 +144,11 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     flexBasis: 0,
     flexDirection: 'row',
-    backgroundColor: COLORS.red,
+    flex: 1,
     borderRadius: 12,
+    borderWidth: 0.5,
+    backgroundColor: COLORS.white,
+    borderColor: COLORS.boder,
   },
 });
 

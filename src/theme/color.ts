@@ -9,4 +9,5 @@ export enum COLORS {
   text2 = '#636366',
   text1 = '#252525',
   green = '#237207',
+  boder = '#F4F4F4',
 }
