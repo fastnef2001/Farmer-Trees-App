@@ -15,7 +15,11 @@ export const ModalLoading = ({
   ...props
 }: ModalProps) => {
   return (
-    <RNModal isVisible={isVisible} {...props}>
+    <RNModal
+      isVisible={isVisible}
+      animationInTiming={500}
+      animationOutTiming={500}
+      {...props}>
       {children}
     </RNModal>
   );

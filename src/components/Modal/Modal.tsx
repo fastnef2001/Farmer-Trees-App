@@ -19,10 +19,8 @@ export const Modal = ({
   return (
     <RNModal
       isVisible={isVisible}
-      animationInTiming={1000}
-      animationOutTiming={1000}
-      backdropTransitionInTiming={800}
-      backdropTransitionOutTiming={800}
+      animationInTiming={700}
+      animationOutTiming={700}
       {...props}>
       {children}
     </RNModal>
@@ -68,7 +66,6 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     padding: 16,
     maxWidth: 327,
-    //đưa thẻ Container về giữa màn hình
     alignSelf: 'center',
     width: '100%',
   },

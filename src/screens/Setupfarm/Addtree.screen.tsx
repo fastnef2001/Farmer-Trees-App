@@ -56,6 +56,13 @@ const Addtree = ({ navigation }: any) => {
   // 1. Modal add tree
   const handleModalAddTree = () => {
     setIsModalAddTree(() => !isModalAddTree);
+    setInputs(
+      inputs.map(input => ({
+        ...input,
+        value: '',
+        error: '',
+      })),
+    );
   };
 
   // 2. Modal pick image and delete image
@@ -473,6 +480,7 @@ const Addtree = ({ navigation }: any) => {
       </ModalInsert>
 
       <ModalInsert isVisible={isModalEditTree}>
+        <StatusBar backgroundColor={'#07111B'} />
         <ModalInsert.Container>
           <ModalInsert.Header>
             <View style={styles.headSessionModal}>
@@ -567,6 +575,7 @@ const Addtree = ({ navigation }: any) => {
       <Modal
         isVisible={isModalSuccess}
         onBackdropPress={() => setIsModalSuccess(false)}>
+        <StatusBar backgroundColor={'#07111B'} />
         <Modal.Container>
           <Modal.Header title={titlePopupNoti} />
           <Modal.Body title={contentPopupNoti} />
@@ -574,6 +583,7 @@ const Addtree = ({ navigation }: any) => {
       </Modal>
 
       <Modal isVisible={isModalDelete}>
+        <StatusBar backgroundColor={'#07111B'} />
         <Modal.Container>
           <Modal.Header title="Delete" />
           <Modal.Body title="Do you want to delete this tree?" />
