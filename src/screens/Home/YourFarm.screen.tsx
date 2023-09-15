@@ -49,6 +49,13 @@ const YourFarm = ({ navigation }: any) => {
   // 1. Modal add tree
   const handleModalAddTree = () => {
     setIsModalAddTree(() => !isModalAddTree);
+    setInputs(
+      inputs.map(input => ({
+        ...input,
+        value: '',
+        error: '',
+      })),
+    );
   };
   // 2. Modal pick image and delete image
   const handleModalImagePicker = () => {
@@ -88,16 +95,12 @@ const YourFarm = ({ navigation }: any) => {
       );
       return;
     }
+    handleModalLoading();
     try {
       const name = treeNameInput?.value;
       const quanlity = quanlityInput?.value;
       const image = selectImage;
       const timeAdd = new Date().getTime();
-
-      // nếu image không có gì thì set imageUrl  rỗng, nếu có thì lưu vào storage và lấy url
-      // 1. check image có tồn tại hay không
-      // 2. nếu có thì lưu vào storage và lấy url
-      // 3. nếu không thì set imageUrl rỗng
       let imageUrl = '';
       const userId = auth().currentUser?.uid;
       if (image) {
@@ -118,11 +121,16 @@ const YourFarm = ({ navigation }: any) => {
         })
         .then(() => {
           setIsModalAddTree(() => false);
-          setIsModalSuccess(() => true);
+          handleModalLoading();
+          handleModalSuccess();
         });
     } catch (error: any) {
       console.log('error', error);
     }
+  };
+  // 5. Modal success
+  const handleModalSuccess = () => {
+    setIsModalSuccess(() => !isModalSuccess);
     setSelectImage('');
     setInputs(
       inputs.map(input => ({
@@ -131,10 +139,6 @@ const YourFarm = ({ navigation }: any) => {
         error: '',
       })),
     );
-  };
-  // 5. Modal success
-  const handleModalSuccess = () => {
-    setIsModalSuccess(() => !isModalSuccess);
   };
 
   // 6. Modal delete
@@ -260,7 +264,6 @@ const YourFarm = ({ navigation }: any) => {
         await storageRef.putFile(image);
         imageUrl = await storageRef.getDownloadURL();
       }
-
       firestore()
         .collection('trees')
         .doc(userId)
@@ -304,7 +307,7 @@ const YourFarm = ({ navigation }: any) => {
         {/* Title */}
         <View style={styles1.headSession}>
           <View>
-            <Text style={styles1.txtTitle}>Wellcome {farmName} </Text>
+            <Text style={styles1.txtTitle}>Welcome {farmName} </Text>
           </View>
           <TouchableOpacity
             onPress={handleModalAddTree}

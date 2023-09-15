@@ -25,10 +25,8 @@ export const ModalInsert = ({
   return (
     <RNModal
       isVisible={isVisible}
-      animationInTiming={1000}
-      animationOutTiming={1000}
-      backdropTransitionInTiming={800}
-      backdropTransitionOutTiming={800}
+      animationInTiming={500}
+      animationOutTiming={500}
       style={{ margin: 0 }}
       {...props}>
       {children}
