@@ -55,7 +55,7 @@ const Input = ({
             }}
             onBlur={() => setIsFocused(false)}
             style={{
-              color: COLORS.black,
+              color: COLORS.text1,
               height: '100%',
               flex: 1,
               fontFamily: 'Nunito-Regular',
@@ -118,7 +118,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 15,
     borderRadius: 8,
-    borderColor: COLORS.black,
+    borderColor: COLORS.text1,
     borderWidth: 1,
     outlineWidth: 3,
     paddingLeft: 16,
