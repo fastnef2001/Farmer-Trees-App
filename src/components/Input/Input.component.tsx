@@ -5,6 +5,7 @@ import { View, Text, TextInput, StyleSheet } from 'react-native';
 import { COLORS } from '../../theme/color';
 import HidePass from '../../assets/images/iconHidePass.svg';
 import UnHidePass from '../../assets/images/iconUnHidePass.svg';
+import IconDrop from '../../assets/images/IconDrop.svg';
 
 const Input = ({
   label,
@@ -13,6 +14,8 @@ const Input = ({
   textError,
   value,
   password,
+  dropDown,
+  iconDolar,
   onFocus = () => {},
   ...props
 }: any) => {
@@ -79,6 +82,28 @@ const Input = ({
                   onPress={() => setHidePassword(!hidePassword)}
                 />
               )}
+            </View>
+          )}
+          {dropDown && (
+            <View>
+              <IconDrop
+                style={{ flexDirection: 'row', justifyContent: 'flex-end' }}
+              />
+            </View>
+          )}
+          {iconDolar && (
+            <View>
+              <Text
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'flex-end',
+                  textAlign: 'center',
+                  color: COLORS.text2,
+                  height: 24,
+                  width: 24,
+                }}>
+                $
+              </Text>
             </View>
           )}
         </View>

@@ -1,20 +1,29 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import IconDrop from '../../assets/images/IconDrop.svg';
+import IconCalendar from '../../assets/images/IconCalendar.svg';
 import { COLORS } from '../../theme/color';
 
-const FilterComponent = () => {
+export type ButtonProps = {
+  onPress: () => void;
+  titleDate?: string;
+  isRight?: boolean;
+};
+
+const FilterComponent = ({ onPress, titleDate, isRight }: ButtonProps) => {
   return (
-    <TouchableOpacity style={stylesFilter.frame}>
+    <TouchableOpacity style={stylesFilter.frame} onPress={onPress}>
       <View style={stylesFilter.body}>
         <View style={stylesFilter.date}>
-          <Text style={stylesFilter.dateText}>21/07/2023</Text>
-          <View style={{ width: 8 }} />
-          <Text style={stylesFilter.dateText}>-</Text>
-          <View style={{ width: 8 }} />
-          <Text style={stylesFilter.dateText}>23/07/2023</Text>
+          {titleDate ? (
+            <Text style={stylesFilter.dateText}>{titleDate}</Text>
+          ) : isRight ? (
+            <Text style={stylesFilter.dateText1}>Start date</Text>
+          ) : (
+            <Text style={stylesFilter.dateText1}>End date</Text>
+          )}
         </View>
-        <IconDrop />
+        <IconCalendar />
       </View>
     </TouchableOpacity>
   );
@@ -33,18 +42,22 @@ const stylesFilter = StyleSheet.create({
     fontFamily: 'Nunito-SemiBold',
     fontSize: 14,
   },
+  dateText1: {
+    color: COLORS.text2,
+    fontFamily: 'Nunito-SemiBold',
+    fontSize: 14,
+  },
   frame: {
-    marginTop: 16,
-    width: '90%',
     height: 48,
     borderWidth: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 12,
     borderColor: COLORS.blue,
     backgroundColor: COLORS.white,
     flexDirection: 'row',
     alignSelf: 'center',
+    flex: 1,
   },
   body: {
     width: '100%',
