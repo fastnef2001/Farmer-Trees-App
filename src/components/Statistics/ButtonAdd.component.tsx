@@ -5,23 +5,37 @@ import { COLORS } from '../../theme/color';
 import IconPlusGreen from '../../assets/images/IconPlusGreen.svg';
 import IconPlusRed from '../../assets/images/IconPlusRed.svg';
 
-const ButtonAddComponent = () => {
+export type ButtonProps = {
+  onPress: () => void;
+  title?: string;
+  isRight?: boolean;
+};
+
+const ButtonAddComponent = ({ onPress, title, isRight }: ButtonProps) => {
   return (
-    <View style={stylesButtonAdd.root}>
-      <TouchableOpacity style={stylesButtonAdd.buttonAdd}>
-        <View style={stylesButtonAdd.bodyButton}>
-          <IconPlusGreen />
-          <Text style={stylesButtonAdd.titleButton}>Icome</Text>
-        </View>
-      </TouchableOpacity>
-      <View style={{ width: 16 }} />
-      <TouchableOpacity style={stylesButtonAdd.buttonAdd2}>
-        <View style={stylesButtonAdd.bodyButton}>
-          <IconPlusRed />
-          <Text style={stylesButtonAdd.titleButton2}>Expense</Text>
-        </View>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      style={isRight ? stylesButtonAdd.buttonAdd2 : stylesButtonAdd.buttonAdd}
+      onPress={onPress}>
+      <View style={stylesButtonAdd.bodyButton}>
+        {isRight ? (
+          <>
+            <IconPlusRed />
+            <Text style={stylesButtonAdd.titleButton2}>{title}</Text>
+          </>
+        ) : (
+          <>
+            <IconPlusGreen />
+            <Text style={stylesButtonAdd.titleButton}>{title}</Text>
+          </>
+        )}
+      </View>
+    </TouchableOpacity>
+    // <TouchableOpacity style={stylesButtonAdd.buttonAdd2}>
+    //   <View style={stylesButtonAdd.bodyButton}>
+    //     <IconPlusRed />
+    //     <Text style={stylesButtonAdd.titleButton2}>Expense</Text>
+    //   </View>
+    // </TouchableOpacity>
   );
 };
 
@@ -56,16 +70,14 @@ const stylesButtonAdd = StyleSheet.create({
     flexDirection: 'row',
   },
   iconlyRegularOutlinePlus2: {
-    width: 24, // theme.colors.24rem to 24px
-    height: 24, // theme.colors.24rem to 24px
+    width: 24,
+    height: 24,
   },
   titleButton2: {
     color: COLORS.red,
-    fontFamily: 'Nunito',
-    fontSize: 14, // 14rem to 14px
-    fontStyle: 'normal',
-    fontWeight: '600',
-    lineHeight: 20, // Adjust line height accordingly
+    fontFamily: 'Nunito-SemiBold',
+    fontSize: 14,
+    width: 64,
   },
   buttonAdd2: {
     borderRadius: 12,

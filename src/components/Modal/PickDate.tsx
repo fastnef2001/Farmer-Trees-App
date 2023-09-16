@@ -1,15 +1,7 @@
+import LottieView from 'lottie-react-native';
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Button,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
+import { StyleSheet, View, Text, Button, TouchableOpacity } from 'react-native';
 import RNModal from 'react-native-modal';
-import IconBack from '../../assets/images/IconBack.svg';
-import { ScrollView } from 'react-native-gesture-handler';
 
 type ModalProps = {
   isVisible: boolean;
@@ -17,7 +9,7 @@ type ModalProps = {
   [x: string]: any;
 };
 
-export const ModalInsert = ({
+export const PickDate = ({
   isVisible = false,
   children,
   ...props
@@ -34,16 +26,16 @@ export const ModalInsert = ({
   );
 };
 
-const ModalInsertContainer = ({ children }: { children: React.ReactNode }) => (
+const Container = ({ children }: { children: React.ReactNode }) => (
   <View style={styles.container}>{children}</View>
 );
-const ModalInsertHeader = ({ children }: { children: React.ReactNode }) => (
+const Header = ({ children }: { children: React.ReactNode }) => (
   <View style={styles.header}>{children}</View>
 );
-const ModalInsertBody = ({ children }: { children?: React.ReactNode }) => (
+const Body = ({ children }: { children?: React.ReactNode }) => (
   <View style={styles.body}>{children}</View>
 );
-const ModalInsertFooter = ({ children }: { children?: React.ReactNode }) => (
+const Footer = ({ children }: { children?: React.ReactNode }) => (
   <View style={styles.footer}>{children}</View>
 );
 
@@ -57,7 +49,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 12,
     paddingHorizontal: 8,
     paddingTop: 8,
-    maxHeight: 800,
+    maxHeight: 500,
   },
   header: {
     alignItems: 'center',
@@ -71,7 +63,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   body: {
-    width: '90%',
+    width: '100%',
     alignSelf: 'center',
   },
   footer: {
@@ -82,7 +74,7 @@ const styles = StyleSheet.create({
   },
 });
 
-ModalInsert.Container = ModalInsertContainer;
-ModalInsert.Header = ModalInsertHeader;
-ModalInsert.Body = ModalInsertBody;
-ModalInsert.Footer = ModalInsertFooter;
+PickDate.Container = Container;
+PickDate.Header = Header;
+PickDate.Body = Body;
+PickDate.Footer = Footer;

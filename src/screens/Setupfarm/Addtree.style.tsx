@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from '../../theme/color';
 
 export default StyleSheet.create({
   container: {
@@ -43,7 +44,15 @@ export default StyleSheet.create({
     lineHeight: 27,
     letterSpacing: 0,
     textAlign: 'center',
-    color: '#163859',
+    color: COLORS.blue,
+    fontFamily: 'Nunito-Bold',
+  },
+  txtTitleModal1: {
+    fontSize: 20,
+    lineHeight: 27,
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: COLORS.green,
     fontFamily: 'Nunito-Bold',
   },
   inputSession: {
@@ -62,7 +71,15 @@ export default StyleSheet.create({
   btnSendSession: {
     marginTop: 16,
     height: 48,
-    backgroundColor: '#163859',
+    backgroundColor: COLORS.blue,
+    borderRadius: 10,
+    borderWidth: 1,
+    marginBottom: 32,
+  },
+  btnSendSession1: {
+    marginTop: 16,
+    height: 48,
+    backgroundColor: COLORS.green,
     borderRadius: 10,
     borderWidth: 1,
     marginBottom: 32,
