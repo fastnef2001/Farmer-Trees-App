@@ -44,7 +44,7 @@ const Statistics = ({ navigation }: any) => {
   //Handle button add
   const [isModalExpense, setIsModalExpense] = useState(false);
   const [inputs, setInputs] = useState([
-    { label: 'Choose tree', value: '', error: '' },
+    { label: 'Tree', value: '', error: '' },
     { label: 'Quantity', value: '', error: '' },
     { label: 'Unit', value: '', error: '' },
     { label: 'Total price', value: '', error: '' },
@@ -212,14 +212,17 @@ const Statistics = ({ navigation }: any) => {
                     <View key={index}>
                       <Input
                         label={input.label}
-                        textPlaceholder={`Enter your ${input.label.toLowerCase()}`}
+                        textPlaceholder={
+                          input.label === 'Tree' || input.label === 'Unit'
+                            ? `Choose ${input.label.toLowerCase()}`
+                            : `Enter your ${input.label.toLowerCase()}`
+                        }
                         value={input.value}
                         onChangeText={(text: string) =>
                           handleInputChange(index, text)
                         }
                         dropDown={
-                          input.label === 'Choose tree' ||
-                          input.label === 'Unit'
+                          input.label === 'Tree' || input.label === 'Unit'
                         }
                         iconDolar={input.label === 'Total price'}
                         textError={input.error}
@@ -230,6 +233,11 @@ const Statistics = ({ navigation }: any) => {
                             : 'default'
                         }
                         span="*"
+                        editable={
+                          input.label === 'Tree' || input.label === 'Unit'
+                            ? false
+                            : true
+                        }
                       />
                     </View>
                   ))}

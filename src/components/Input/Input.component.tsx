@@ -1,7 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-dupe-keys */
 import React from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import { COLORS } from '../../theme/color';
 import HidePass from '../../assets/images/iconHidePass.svg';
 import UnHidePass from '../../assets/images/iconUnHidePass.svg';
@@ -28,86 +34,88 @@ const Input = ({
         <Text style={style.label}>{label}</Text>
         <Text style={style.span}>{span}</Text>
       </View>
-      <View
-        style={[
-          style.inputContainer,
-          {
-            borderColor: textError
-              ? COLORS.red
-              : isFocused
-              ? COLORS.blue
-              : COLORS.light,
-            alignItems: 'center',
-          },
-        ]}>
+      <TouchableOpacity>
         <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
-            height: 48,
-          }}>
-          <TextInput
-            placeholder={textPlaceholder}
-            placeholderTextColor="#C1C1C1"
-            autoCorrect={false}
-            onFocus={() => {
-              onFocus();
-              setIsFocused(true);
-            }}
-            onBlur={() => setIsFocused(false)}
+          style={[
+            style.inputContainer,
+            {
+              borderColor: textError
+                ? COLORS.red
+                : isFocused
+                ? COLORS.blue
+                : COLORS.light,
+              alignItems: 'center',
+            },
+          ]}>
+          <View
             style={{
-              color: COLORS.text1,
-              height: '100%',
-              flex: 1,
-              fontFamily: 'Nunito-Regular',
-              fontSize: 16,
-            }}
-            onChangeText={props.onChangeText}
-            value={value}
-            secureTextEntry={hidePassword}
-            {...props}
-          />
-          {password && (
-            <View>
-              {hidePassword ? (
-                <HidePass
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              width: '100%',
+              height: 48,
+            }}>
+            <TextInput
+              placeholder={textPlaceholder}
+              placeholderTextColor="#C1C1C1"
+              autoCorrect={false}
+              onFocus={() => {
+                onFocus();
+                setIsFocused(true);
+              }}
+              onBlur={() => setIsFocused(false)}
+              style={{
+                color: COLORS.text1,
+                height: '100%',
+                flex: 1,
+                fontFamily: 'Nunito-Regular',
+                fontSize: 16,
+              }}
+              onChangeText={props.onChangeText}
+              value={value}
+              secureTextEntry={hidePassword}
+              {...props}
+            />
+            {password && (
+              <View>
+                {hidePassword ? (
+                  <HidePass
+                    style={{ flexDirection: 'row', justifyContent: 'flex-end' }}
+                    onPress={() => setHidePassword(!hidePassword)}
+                  />
+                ) : (
+                  <UnHidePass
+                    style={{ flexDirection: 'row', justifyContent: 'flex-end' }}
+                    onPress={() => setHidePassword(!hidePassword)}
+                  />
+                )}
+              </View>
+            )}
+            {dropDown && (
+              <View>
+                <IconDrop
                   style={{ flexDirection: 'row', justifyContent: 'flex-end' }}
-                  onPress={() => setHidePassword(!hidePassword)}
                 />
-              ) : (
-                <UnHidePass
-                  style={{ flexDirection: 'row', justifyContent: 'flex-end' }}
-                  onPress={() => setHidePassword(!hidePassword)}
-                />
-              )}
-            </View>
-          )}
-          {dropDown && (
-            <View>
-              <IconDrop
-                style={{ flexDirection: 'row', justifyContent: 'flex-end' }}
-              />
-            </View>
-          )}
-          {iconDolar && (
-            <View>
-              <Text
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'flex-end',
-                  textAlign: 'center',
-                  color: COLORS.text2,
-                  height: 24,
-                  width: 24,
-                }}>
-                $
-              </Text>
-            </View>
-          )}
+              </View>
+            )}
+            {iconDolar && (
+              <View>
+                <Text
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                    textAlign: 'center',
+                    color: COLORS.text2,
+                    height: 24,
+                    width: 24,
+                  }}>
+                  $
+                </Text>
+              </View>
+            )}
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
       {textError && (
         <Text
           style={{
