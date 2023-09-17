@@ -27,14 +27,11 @@ const WeatherComponent = () => {
   const fetchLocationData = () => {
     Geolocation.getCurrentPosition(info => {
       const { latitude, longitude } = info.coords;
-      console.log('latitude', latitude);
       fetchWeatherData(latitude, longitude);
     });
   };
 
   const fetchWeatherData = (lat: number | null, long: number | null) => {
-    console.log('lat', lat);
-    console.log('long', long);
     if (lat !== null && long !== null) {
       const apiKey = '37d19e0d00708a94ead8ddd20fba44ff';
       const apiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${apiKey}`;
@@ -113,7 +110,6 @@ const WeatherComponent = () => {
 
   const iconWeather = weatherData.weather[0].icon;
   const WeatherIcon = iconMappings[iconWeather];
-  console.log('WeatherIcon', iconWeather);
 
   //lấy ngày tháng năm
 

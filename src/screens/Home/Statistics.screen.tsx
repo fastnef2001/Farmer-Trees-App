@@ -45,7 +45,7 @@ const Statistics = ({ navigation }: any) => {
   const [isModalExpense, setIsModalExpense] = useState(false);
   const [inputs, setInputs] = useState([
     { label: 'Choose tree', value: '', error: '' },
-    { label: 'Quantity of agricultural', value: '', error: '' },
+    { label: 'Quantity', value: '', error: '' },
     { label: 'Unit', value: '', error: '' },
     { label: 'Total price', value: '', error: '' },
   ]);
@@ -224,7 +224,7 @@ const Statistics = ({ navigation }: any) => {
                         iconDolar={input.label === 'Total price'}
                         textError={input.error}
                         keyboardType={
-                          input.label === 'Quantity of agricultural' ||
+                          input.label === 'Quantity' ||
                           input.label === 'Total price'
                             ? 'numeric'
                             : 'default'
