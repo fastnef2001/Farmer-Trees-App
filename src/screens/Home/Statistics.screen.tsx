@@ -44,7 +44,7 @@ const Statistics = ({ navigation }: any) => {
     setSelectedDateEnd('');
   };
 
-  //Handle button add
+  //Modal income
   const [isModalncome, setisModalncome] = useState(false);
   const [inputs, setInputs] = useState([
     { label: 'Tree', value: '', error: '' },
@@ -52,7 +52,7 @@ const Statistics = ({ navigation }: any) => {
     { label: 'Unit', value: '', error: '' },
     { label: 'Total price', value: '', error: '' },
   ]);
-  const handleModalExpense = () => {
+  const handleModalIncome = () => {
     setisModalncome(!isModalncome);
   };
   const handleInputChange = (index: any, value: any) => {
@@ -70,6 +70,32 @@ const Statistics = ({ navigation }: any) => {
     });
   };
 
+  // Modal Expense
+  const [ishandleModalExpense, setishandleModalExpense] = useState(false);
+  const [inputsExpense, setInputsExpense] = useState([
+    { label: 'Cost type', value: '', error: '' },
+    { label: 'Quantity', value: '', error: '' },
+    { label: 'Unit', value: '', error: '' },
+    { label: 'Total price', value: '', error: '' },
+  ]);
+  const handleModalExpense = () => {
+    setishandleModalExpense(!ishandleModalExpense);
+  };
+  const handleInputChangeExpense = (index: any, value: any) => {
+    const newInputsExpense = [...inputs];
+    newInputsExpense[index].value = value;
+    newInputsExpense[index].error = '';
+    setInputsExpense(newInputsExpense);
+  };
+  const handleAddExpense = () => {
+    const newInputsExpense = [...inputs];
+    newInputsExpense.forEach((input, index) => {
+      if (input.value === '') {
+        newInputsExpense[index].error = `Please enter ${input.label}`;
+      }
+    });
+  };
+
   interface Unit {
     [x: string]: string;
     name: string;
@@ -77,7 +103,10 @@ const Statistics = ({ navigation }: any) => {
   const [units, setUnit] = useState<Unit[]>([]);
   React.useEffect(() => {
     const fetchData = async () => {
-      const res = await firestore().collection('units').get();
+      const res = await firestore()
+        .collection('unitsTree')
+        .orderBy('id', 'asc')
+        .get();
       const data: any = [];
       res.forEach((doc: { data: () => any; id: any }) => {
         data.push({ ...doc.data(), id: doc.id });
@@ -126,7 +155,7 @@ const Statistics = ({ navigation }: any) => {
     setValueTree(valueTree);
   };
 
-  //Pick unit
+  //Pick unitsTree
   const [isModalPickUnit, setIsModalPickUnit] = useState(false);
   const handleModalPickUnit = () => {
     setIsModalPickUnit(!isModalPickUnit);
@@ -165,13 +194,13 @@ const Statistics = ({ navigation }: any) => {
         {/* Button Add */}
         <View style={stylesFilter.root}>
           <ButtonAddComponent
-            onPress={handleModalExpense}
+            onPress={handleModalIncome}
             title="Icome"
             isRight={false}
           />
           <View style={{ width: 8 }} />
           <ButtonAddComponent
-            onPress={handlePickDate(true)}
+            onPress={handleModalExpense}
             title="Expense"
             isRight={true}
           />
@@ -216,7 +245,7 @@ const Statistics = ({ navigation }: any) => {
           <ModalInsert.Container>
             <ModalInsert.Header>
               <View style={styles.headSessionModal}>
-                <TouchableOpacity onPress={handleModalExpense}>
+                <TouchableOpacity onPress={handleModalIncome}>
                   <IconBack> </IconBack>
                 </TouchableOpacity>
                 <View style={styles.txtContainer}>
@@ -371,13 +400,6 @@ const Statistics = ({ navigation }: any) => {
                     color={COLORS.blue}
                     label={tree.name}
                     value={tree.name}
-                    // key={index}
-                    // nameTree={tree.name}
-                    // numberTree={tree.quanlity}
-                    // urlImage={tree.imageUrl}
-                    // onPressDelete={() => handleModalDelete(tree.key)}
-                    // caculate={true}
-                    // onPressEdit={() => handleModalEditTree(tree.key)}
                   />
                 ))}
               </RadioButton.Group>
@@ -387,6 +409,175 @@ const Statistics = ({ navigation }: any) => {
       </ModalInsert>
 
       {/* Add expense */}
+
+      <ModalInsert isVisible={ishandleModalExpense} isPick={false}>
+        <StatusBar backgroundColor={'#07111B'} />
+        <View style={{ flex: 1 }}>
+          <ModalInsert.Container>
+            <ModalInsert.Header>
+              <View style={styles.headSessionModal}>
+                <TouchableOpacity onPress={handleModalExpense}>
+                  <IconBack> </IconBack>
+                </TouchableOpacity>
+                <View style={styles.txtContainer}>
+                  <Text style={styles.txtTitleModal2}>Add expense</Text>
+                </View>
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                  }}
+                />
+              </View>
+            </ModalInsert.Header>
+            <ScrollView>
+              <ModalInsert.Body>
+                <View style={styles.inputSession}>
+                  {inputsExpense.map((input, index) => (
+                    <View key={index}>
+                      <Input
+                        onPress={
+                          input.label === 'Cost type'
+                            ? handleModalPickTree
+                            : input.label === 'Unit'
+                            ? handleModalPickUnit
+                            : () => {}
+                        }
+                        label={input.label}
+                        textPlaceholder={
+                          input.label === 'Cost type' || input.label === 'Unit'
+                            ? `Choose ${input.label.toLowerCase()}`
+                            : `Enter your ${input.label.toLowerCase()}`
+                        }
+                        value={
+                          input.label === 'Cost type'
+                            ? valueTree
+                            : input.label === 'Unit'
+                            ? valueUnit
+                            : input.value
+                        }
+                        onChangeText={(text: string) =>
+                          handleInputChangeExpense(index, text)
+                        }
+                        dropDown={
+                          input.label === 'Cost type' || input.label === 'Unit'
+                        }
+                        iconDolar={input.label === 'Total price'}
+                        textError={input.error}
+                        keyboardType={
+                          input.label === 'Quantity' ||
+                          input.label === 'Total price'
+                            ? 'numeric'
+                            : 'default'
+                        }
+                        span="*"
+                        editable={
+                          input.label === 'Cost type' || input.label === 'Unit'
+                            ? false
+                            : true
+                        }
+                      />
+                    </View>
+                  ))}
+                </View>
+                <TouchableOpacity
+                  style={styles.btnSendSession2}
+                  onPress={handleAddExpense}>
+                  <View style={styles.txtBtnSignup}>
+                    <IconSave />
+                    <View style={{ width: 16 }} />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        textAlign: 'center',
+                        color: '#FFFFFF',
+                        fontFamily: 'Nunito-Bold',
+                      }}>
+                      SAVE
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </ModalInsert.Body>
+            </ScrollView>
+          </ModalInsert.Container>
+        </View>
+      </ModalInsert>
+
+      {/* <ModalInsert isVisible={isModalPickUnit}>
+        <StatusBar backgroundColor={'#010508'} />
+        <ModalInsert.Container isPick={true}>
+          <ModalInsert.Header>
+            <View style={styles.headSessionModal}>
+              <TouchableOpacity onPress={handleModalPickUnit}>
+                <IconBack> </IconBack>
+              </TouchableOpacity>
+              <View style={styles.txtContainer}>
+                <Text style={styles.txtTitleModal}>Pick unit</Text>
+              </View>
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                }}
+              />
+            </View>
+          </ModalInsert.Header>
+
+          <ScrollView>
+            <ModalInsert.Body isPick={true}>
+              <RadioButton.Group
+                onValueChange={value => hanleHideModalPicklUnit(value)}
+                value={valueUnit}>
+                {units.map((unit, index) => (
+                  <RadioButton.Item
+                    color={COLORS.blue}
+                    label={unit.name}
+                    value={unit.name}
+                  />
+                ))}
+              </RadioButton.Group>
+            </ModalInsert.Body>
+          </ScrollView>
+        </ModalInsert.Container>
+      </ModalInsert> */}
+
+      {/* <ModalInsert isVisible={isModalPickTree}>
+        <StatusBar backgroundColor={'#010508'} />
+        <ModalInsert.Container isPick={true}>
+          <ModalInsert.Header>
+            <View style={styles.headSessionModal}>
+              <TouchableOpacity onPress={handleModalPickTree}>
+                <IconBack> </IconBack>
+              </TouchableOpacity>
+              <View style={styles.txtContainer}>
+                <Text style={styles.txtTitleModal}>Pick tree</Text>
+              </View>
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                }}
+              />
+            </View>
+          </ModalInsert.Header>
+
+          <ScrollView>
+            <ModalInsert.Body isPick={true}>
+              <RadioButton.Group
+                onValueChange={value => hanleHideModalPicklTree(value)}
+                value={valueTree}>
+                {trees.map((tree, index) => (
+                  <RadioButton.Item
+                    color={COLORS.blue}
+                    label={tree.name}
+                    value={tree.name}
+                  />
+                ))}
+              </RadioButton.Group>
+            </ModalInsert.Body>
+          </ScrollView>
+        </ModalInsert.Container>
+      </ModalInsert> */}
     </SafeAreaView>
   );
 };
