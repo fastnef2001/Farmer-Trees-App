@@ -355,7 +355,7 @@ const YourFarm = ({ navigation }: any) => {
         )}
       </View>
 
-      <ModalInsert isVisible={isModalAddTree}>
+      <ModalInsert isVisible={isModalAddTree} isPick={false}>
         <StatusBar backgroundColor={'#07111B'} />
         <View style={{ flex: 1 }}>
           <ModalInsert.Container>
@@ -490,7 +490,7 @@ const YourFarm = ({ navigation }: any) => {
         </Modal.Container>
       </Modal>
 
-      <ModalInsert isVisible={isModalEditTree}>
+      <ModalInsert isVisible={isModalEditTree} isPick={false}>
         <StatusBar backgroundColor={'#07111B'} />
         <ModalInsert.Container>
           <ModalInsert.Header>

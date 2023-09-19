@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState } from 'react';
 import {
@@ -8,6 +9,7 @@ import {
   TouchableOpacity,
   StatusBar,
 } from 'react-native';
+import auth from '@react-native-firebase/auth';
 import GeneralStatistics from '../../components/Statistics/GeneralStatistics.component';
 import HeaderComponent from '../../components/Header/Header.component';
 import FilterComponent from '../../components/Statistics/Filter.component';
@@ -25,6 +27,7 @@ import IconSwitch from '../../assets/images/IconSwitch.svg';
 import Input from '../../components/Input/Input.component';
 import IconSave from '../../assets/images/IconSave.svg';
 import firestore from '@react-native-firebase/firestore';
+import { RadioButton } from 'react-native-paper';
 
 const Statistics = ({ navigation }: any) => {
   //Handlefilter
@@ -74,7 +77,7 @@ const Statistics = ({ navigation }: any) => {
   const [units, setUnit] = useState<Unit[]>([]);
   React.useEffect(() => {
     const fetchData = async () => {
-      const res = await firestore().collection('unit').get();
+      const res = await firestore().collection('units').get();
       const data: any = [];
       res.forEach((doc: { data: () => any; id: any }) => {
         data.push({ ...doc.data(), id: doc.id });
@@ -84,6 +87,47 @@ const Statistics = ({ navigation }: any) => {
     };
     fetchData();
   }, []);
+
+  //Pick tree
+  interface Tree {
+    [x: string]: string;
+    name: string;
+    quanlity: string;
+    imageUrl: string;
+  }
+  const [trees, setTrees] = useState<Tree[]>([]);
+  React.useEffect(() => {
+    const subscriber = firestore()
+      .collection('trees')
+      .doc(auth().currentUser?.uid)
+      .collection('tree')
+      .orderBy('timeAdd', 'desc')
+      .onSnapshot(querySnapshot => {
+        const trees: any = [];
+        querySnapshot.forEach(documentSnapshot => {
+          trees.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+          console.log('treeProperties', trees);
+        });
+        setTrees(trees);
+        console.log('trees', trees);
+      });
+    return () => subscriber();
+  }, []);
+  const [isModalPickTree, setIsModalPickTree] = useState(false);
+  const handleModalPickTree = () => {
+    setIsModalPickTree(!isModalPickTree);
+  };
+  const [valueTree, setValueTree] = React.useState('');
+
+  //Pick unit
+  const [isModalPickUnit, setIsModalPickUnit] = useState(false);
+  const handleModalPickUnit = () => {
+    setIsModalPickUnit(!isModalPickUnit);
+  };
+  const [valueUnit, setValueUnit] = React.useState('');
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -126,6 +170,8 @@ const Statistics = ({ navigation }: any) => {
         </View>
       </ScrollView>
 
+      {/* Add income */}
+
       <PickDate
         isVisible={isModalPickDate}
         onBackdropPress={() => setIsModalPickDate(false)}>
@@ -156,7 +202,7 @@ const Statistics = ({ navigation }: any) => {
         </PickDate.Container>
       </PickDate>
 
-      <ModalInsert isVisible={isModalExpense}>
+      <ModalInsert isVisible={isModalExpense} isPick={false}>
         <StatusBar backgroundColor={'#07111B'} />
         <View style={{ flex: 1 }}>
           <ModalInsert.Container>
@@ -182,13 +228,26 @@ const Statistics = ({ navigation }: any) => {
                   {inputs.map((input, index) => (
                     <View key={index}>
                       <Input
+                        onPress={
+                          input.label === 'Tree'
+                            ? handleModalPickTree
+                            : input.label === 'Unit'
+                            ? handleModalPickUnit
+                            : () => {}
+                        }
                         label={input.label}
                         textPlaceholder={
                           input.label === 'Tree' || input.label === 'Unit'
                             ? `Choose ${input.label.toLowerCase()}`
                             : `Enter your ${input.label.toLowerCase()}`
                         }
-                        value={input.value}
+                        value={
+                          input.label === 'Tree'
+                            ? valueTree
+                            : input.label === 'Unit'
+                            ? valueUnit
+                            : input.value
+                        }
                         onChangeText={(text: string) =>
                           handleInputChange(index, text)
                         }
@@ -235,6 +294,91 @@ const Statistics = ({ navigation }: any) => {
           </ModalInsert.Container>
         </View>
       </ModalInsert>
+
+      <ModalInsert isVisible={isModalPickUnit}>
+        <StatusBar backgroundColor={'#010508'} />
+        <ModalInsert.Container isPick={true}>
+          <ModalInsert.Header>
+            <View style={styles.headSessionModal}>
+              <TouchableOpacity onPress={handleModalPickUnit}>
+                <IconBack> </IconBack>
+              </TouchableOpacity>
+              <View style={styles.txtContainer}>
+                <Text style={styles.txtTitleModal}>Pick unit</Text>
+              </View>
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                }}
+              />
+            </View>
+          </ModalInsert.Header>
+
+          <ScrollView>
+            <ModalInsert.Body isPick={true}>
+              <RadioButton.Group
+                onValueChange={value => setValueUnit(value)}
+                value={valueUnit}>
+                {units.map((unit, index) => (
+                  <RadioButton.Item
+                    color={COLORS.blue}
+                    label={unit.name}
+                    value={unit.name}
+                  />
+                ))}
+              </RadioButton.Group>
+            </ModalInsert.Body>
+          </ScrollView>
+        </ModalInsert.Container>
+      </ModalInsert>
+
+      <ModalInsert isVisible={isModalPickTree}>
+        <StatusBar backgroundColor={'#010508'} />
+        <ModalInsert.Container isPick={true}>
+          <ModalInsert.Header>
+            <View style={styles.headSessionModal}>
+              <TouchableOpacity onPress={handleModalPickTree}>
+                <IconBack> </IconBack>
+              </TouchableOpacity>
+              <View style={styles.txtContainer}>
+                <Text style={styles.txtTitleModal}>Pick tree</Text>
+              </View>
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                }}
+              />
+            </View>
+          </ModalInsert.Header>
+
+          <ScrollView>
+            <ModalInsert.Body isPick={true}>
+              <RadioButton.Group
+                onValueChange={value => setValueTree(value)}
+                value={valueTree}>
+                {trees.map((tree, index) => (
+                  <RadioButton.Item
+                    color={COLORS.blue}
+                    label={tree.name}
+                    value={tree.name}
+                    // key={index}
+                    // nameTree={tree.name}
+                    // numberTree={tree.quanlity}
+                    // urlImage={tree.imageUrl}
+                    // onPressDelete={() => handleModalDelete(tree.key)}
+                    // caculate={true}
+                    // onPressEdit={() => handleModalEditTree(tree.key)}
+                  />
+                ))}
+              </RadioButton.Group>
+            </ModalInsert.Body>
+          </ScrollView>
+        </ModalInsert.Container>
+      </ModalInsert>
+
+      {/* Add expense */}
     </SafeAreaView>
   );
 };

@@ -22,6 +22,7 @@ const Input = ({
   password,
   dropDown,
   iconDolar,
+  onPress = () => {},
   onFocus = () => {},
   ...props
 }: any) => {
@@ -34,7 +35,7 @@ const Input = ({
         <Text style={style.label}>{label}</Text>
         <Text style={style.span}>{span}</Text>
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onPress}>
         <View
           style={[
             style.inputContainer,
