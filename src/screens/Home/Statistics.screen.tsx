@@ -45,7 +45,7 @@ const Statistics = ({ navigation }: any) => {
   };
 
   //Handle button add
-  const [isModalExpense, setIsModalExpense] = useState(false);
+  const [isModalncome, setisModalncome] = useState(false);
   const [inputs, setInputs] = useState([
     { label: 'Tree', value: '', error: '' },
     { label: 'Quantity', value: '', error: '' },
@@ -53,7 +53,7 @@ const Statistics = ({ navigation }: any) => {
     { label: 'Total price', value: '', error: '' },
   ]);
   const handleModalExpense = () => {
-    setIsModalExpense(!isModalExpense);
+    setisModalncome(!isModalncome);
   };
   const handleInputChange = (index: any, value: any) => {
     const newInputs = [...inputs];
@@ -121,6 +121,10 @@ const Statistics = ({ navigation }: any) => {
     setIsModalPickTree(!isModalPickTree);
   };
   const [valueTree, setValueTree] = React.useState('');
+  const hanleHideModalPicklTree = (valueTree: string) => {
+    setIsModalPickTree(false);
+    setValueTree(valueTree);
+  };
 
   //Pick unit
   const [isModalPickUnit, setIsModalPickUnit] = useState(false);
@@ -128,6 +132,10 @@ const Statistics = ({ navigation }: any) => {
     setIsModalPickUnit(!isModalPickUnit);
   };
   const [valueUnit, setValueUnit] = React.useState('');
+  const hanleHideModalPicklUnit = (valueUnit: string) => {
+    setIsModalPickUnit(false);
+    setValueUnit(valueUnit);
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -170,8 +178,6 @@ const Statistics = ({ navigation }: any) => {
         </View>
       </ScrollView>
 
-      {/* Add income */}
-
       <PickDate
         isVisible={isModalPickDate}
         onBackdropPress={() => setIsModalPickDate(false)}>
@@ -202,7 +208,9 @@ const Statistics = ({ navigation }: any) => {
         </PickDate.Container>
       </PickDate>
 
-      <ModalInsert isVisible={isModalExpense} isPick={false}>
+      {/* Add income */}
+
+      <ModalInsert isVisible={isModalncome} isPick={false}>
         <StatusBar backgroundColor={'#07111B'} />
         <View style={{ flex: 1 }}>
           <ModalInsert.Container>
@@ -318,7 +326,7 @@ const Statistics = ({ navigation }: any) => {
           <ScrollView>
             <ModalInsert.Body isPick={true}>
               <RadioButton.Group
-                onValueChange={value => setValueUnit(value)}
+                onValueChange={value => hanleHideModalPicklUnit(value)}
                 value={valueUnit}>
                 {units.map((unit, index) => (
                   <RadioButton.Item
@@ -356,7 +364,7 @@ const Statistics = ({ navigation }: any) => {
           <ScrollView>
             <ModalInsert.Body isPick={true}>
               <RadioButton.Group
-                onValueChange={value => setValueTree(value)}
+                onValueChange={value => hanleHideModalPicklTree(value)}
                 value={valueTree}>
                 {trees.map((tree, index) => (
                   <RadioButton.Item
