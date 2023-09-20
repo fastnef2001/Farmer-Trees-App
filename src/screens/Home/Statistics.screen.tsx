@@ -28,6 +28,7 @@ import Input from '../../components/Input/Input.component';
 import IconSave from '../../assets/images/IconSave.svg';
 import firestore from '@react-native-firebase/firestore';
 import { RadioButton } from 'react-native-paper';
+import IconCalendar from '../../assets/images/IconCalendar.svg';
 
 const Statistics = ({ navigation }: any) => {
   //Handlefilter
@@ -45,6 +46,16 @@ const Statistics = ({ navigation }: any) => {
   };
 
   //Modal income
+  const [isModalPickDate1, setIsModalPickDate1] = useState(false);
+  const [isIncome, setIsIncome] = useState(false);
+  const [incomeDate, setIncomeDate] = useState('');
+
+  const dateNow = new Date().getDate();
+  const monthNow = new Date().getMonth() + 1;
+  const yearNow = new Date().getFullYear();
+  const monthNow1 = monthNow < 10 ? `0${monthNow}` : monthNow;
+  const timeNow = `${yearNow}/${monthNow1}/${dateNow}`;
+
   const [isModalncome, setisModalncome] = useState(false);
   const [inputs, setInputs] = useState([
     { label: 'Tree', value: '', error: '' },
@@ -54,6 +65,12 @@ const Statistics = ({ navigation }: any) => {
   ]);
   const handleModalIncome = () => {
     setisModalncome(!isModalncome);
+    setIncomeDate(timeNow);
+    const newInputs = [...inputs];
+    newInputs.forEach((input, index) => {
+      newInputs[index].value = '';
+      newInputs[index].error = '';
+    });
   };
   const handleInputChange = (index: any, value: any) => {
     const newInputs = [...inputs];
@@ -61,41 +78,60 @@ const Statistics = ({ navigation }: any) => {
     newInputs[index].error = '';
     setInputs(newInputs);
   };
+
+  const handlePickDate1 = (isIncomeDate: boolean) => () => {
+    setIsModalPickDate1(true);
+    setIsIncome(isIncomeDate);
+  };
+
   const handleAddIncome = () => {
-    const newInputs = [...inputs];
-    newInputs.forEach((input, index) => {
-      if (input.value === '') {
-        newInputs[index].error = `Please enter ${input.label}`;
-      }
-    });
-  };
+    const treeNameInput = inputs.find(input => input.label === 'Tree');
+    const quanlityInput = inputs.find(input => input.label === 'Quantity');
+    const unitInput = inputs.find(input => input.label === 'Unit');
+    const totalPriceInput = inputs.find(input => input.label === 'Total price');
+    const userid = auth().currentUser?.uid;
+    const date = incomeDate;
+    const time = new Date().getTime();
 
-  // Modal Expense
-  const [ishandleModalExpense, setishandleModalExpense] = useState(false);
-  const [inputsExpense, setInputsExpense] = useState([
-    { label: 'Cost type', value: '', error: '' },
-    { label: 'Quantity', value: '', error: '' },
-    { label: 'Unit', value: '', error: '' },
-    { label: 'Total price', value: '', error: '' },
-  ]);
-  const handleModalExpense = () => {
-    setishandleModalExpense(!ishandleModalExpense);
+    if (
+      !treeNameInput?.value ||
+      !quanlityInput?.value ||
+      !unitInput?.value ||
+      !totalPriceInput?.value
+    ) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          error: !input.value ? `Please enter ${input.label}` : '',
+        })),
+      );
+      return;
+    }
+    try {
+      const tree = treeNameInput?.value;
+      const quantity = Number(quanlityInput?.value);
+      const unit = unitInput?.value;
+      const total = Number(totalPriceInput?.value);
+      firestore()
+        .collection('incomes')
+        .doc(userid)
+        .collection('income')
+        .add({
+          date,
+          time,
+          tree,
+          quantity,
+          unit,
+          total,
+        })
+        .then(() => {
+          console.log('User added!');
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
-  const handleInputChangeExpense = (index: any, value: any) => {
-    const newInputsExpense = [...inputs];
-    newInputsExpense[index].value = value;
-    newInputsExpense[index].error = '';
-    setInputsExpense(newInputsExpense);
-  };
-  const handleAddExpense = () => {
-    const newInputsExpense = [...inputs];
-    newInputsExpense.forEach((input, index) => {
-      if (input.value === '') {
-        newInputsExpense[index].error = `Please enter ${input.label}`;
-      }
-    });
-  };
-
+  //Pick unitsTree
   interface Unit {
     [x: string]: string;
     name: string;
@@ -116,6 +152,17 @@ const Statistics = ({ navigation }: any) => {
     };
     fetchData();
   }, []);
+  const [isModalPickUnit, setIsModalPickUnit] = useState(false);
+  const handleModalPickUnit = () => {
+    setIsModalPickUnit(!isModalPickUnit);
+  };
+  const [valueUnit, setValueUnit] = React.useState('');
+  const hanleHideModalPicklUnit = (valueUnit: string) => {
+    setIsModalPickUnit(false);
+    setValueUnit(valueUnit);
+    const newInputs = [...inputs];
+    newInputs[2].value = valueUnit;
+  };
 
   //Pick tree
   interface Tree {
@@ -153,17 +200,76 @@ const Statistics = ({ navigation }: any) => {
   const hanleHideModalPicklTree = (valueTree: string) => {
     setIsModalPickTree(false);
     setValueTree(valueTree);
+    const newInputs = [...inputs];
+    newInputs[0].value = valueTree;
   };
 
-  //Pick unitsTree
-  const [isModalPickUnit, setIsModalPickUnit] = useState(false);
-  const handleModalPickUnit = () => {
-    setIsModalPickUnit(!isModalPickUnit);
+  // Modal Expense
+  const [expenseDate, setExpenseDate] = useState('');
+  const [ishandleModalExpense, setishandleModalExpense] = useState(false);
+  const [inputsExpense, setInputsExpense] = useState([
+    { label: 'Cost type', value: '', error: '' },
+    { label: 'Quantity', value: '', error: '' },
+    { label: 'Unit', value: '', error: '' },
+    { label: 'Total price', value: '', error: '' },
+  ]);
+  const handleModalExpense = () => {
+    setishandleModalExpense(!ishandleModalExpense);
+    setExpenseDate(timeNow);
+    const newInputs = [...inputsExpense];
+    newInputs.forEach((input, index) => {
+      newInputs[index].value = '';
+      newInputs[index].error = '';
+    });
   };
-  const [valueUnit, setValueUnit] = React.useState('');
-  const hanleHideModalPicklUnit = (valueUnit: string) => {
-    setIsModalPickUnit(false);
-    setValueUnit(valueUnit);
+  const handleInputChangeExpense = (index: any, value: any) => {
+    const newInputsExpense = [...inputs];
+    newInputsExpense[index].value = value;
+    newInputsExpense[index].error = '';
+    setInputsExpense(newInputsExpense);
+  };
+  const handleAddExpense = () => {
+    const newInputsExpense = [...inputs];
+    newInputsExpense.forEach((input, index) => {
+      if (input.value === '') {
+        newInputsExpense[index].error = `Please enter ${input.label}`;
+      }
+    });
+  };
+  //Cost type
+  interface costType {
+    [x: string]: string;
+    name: string;
+  }
+  const [costTypes, setCostType] = useState<Unit[]>([]);
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const res = await firestore()
+        .collection('costTypes')
+        .orderBy('id', 'asc')
+        .get();
+      const data: any = [];
+      res.forEach((doc: { data: () => any; id: any }) => {
+        data.push({ ...doc.data(), id: doc.id });
+      });
+      setCostType(data);
+      console.log('costTypes', data);
+    };
+    fetchData();
+  }, []);
+
+  const [isModalPickCostType, setIsModalPickCostType] = useState(false);
+  const handleModalPickCostType = () => {
+    setIsModalPickCostType(!isModalPickCostType);
+  };
+
+  const [valueCostType, setValueCostType] = React.useState('');
+  const hanleHideModalPickCostTypes = (valueCostType: string) => {
+    console.log('valueCostType', valueCostType);
+    setIsModalPickCostType(false);
+    setValueCostType(valueCostType);
+    const newInputs = [...inputsExpense];
+    newInputs[0].value = valueCostType;
   };
 
   return (
@@ -237,6 +343,36 @@ const Statistics = ({ navigation }: any) => {
         </PickDate.Container>
       </PickDate>
 
+      <PickDate
+        isVisible={isModalPickDate1}
+        onBackdropPress={() => setIsModalPickDate1(false)}>
+        <StatusBar backgroundColor={'#07111B'} />
+        <PickDate.Container>
+          <PickDate.Body>
+            <DatePicker
+              onSelectedChange={date => {
+                if (isIncome) {
+                  setIncomeDate(date);
+                } else {
+                  setExpenseDate(date);
+                }
+              }}
+              mode="calendar"
+              options={{
+                textHeaderColor: COLORS.blue,
+                textDefaultColor: COLORS.blue,
+                selectedTextColor: '#fff',
+                mainColor: COLORS.blue,
+                textSecondaryColor: COLORS.text2,
+                defaultFont: 'Nunito-SemiBold',
+              }}
+              selected={isIncome ? incomeDate : selectedDateEnd}
+              selectorStartingYear={2020}
+            />
+          </PickDate.Body>
+        </PickDate.Container>
+      </PickDate>
+
       {/* Add income */}
 
       <ModalInsert isVisible={isModalncome} isPick={false}>
@@ -262,6 +398,14 @@ const Statistics = ({ navigation }: any) => {
             <ScrollView>
               <ModalInsert.Body>
                 <View style={styles.inputSession}>
+                  <TouchableOpacity
+                    style={stylesPickDate.root}
+                    onPress={handlePickDate1(true)}>
+                    <Text style={stylesPickDate.textDay}>{incomeDate}</Text>
+                    <View style={{ width: 8 }} />
+                    <IconCalendar />
+                  </TouchableOpacity>
+                  <View style={{ height: 8 }} />
                   {inputs.map((input, index) => (
                     <View key={index}>
                       <Input
@@ -278,13 +422,7 @@ const Statistics = ({ navigation }: any) => {
                             ? `Choose ${input.label.toLowerCase()}`
                             : `Enter your ${input.label.toLowerCase()}`
                         }
-                        value={
-                          input.label === 'Tree'
-                            ? valueTree
-                            : input.label === 'Unit'
-                            ? valueUnit
-                            : input.value
-                        }
+                        value={input.value}
                         onChangeText={(text: string) =>
                           handleInputChange(index, text)
                         }
@@ -433,12 +571,19 @@ const Statistics = ({ navigation }: any) => {
             <ScrollView>
               <ModalInsert.Body>
                 <View style={styles.inputSession}>
+                  <TouchableOpacity
+                    style={stylesPickDate.root}
+                    onPress={handlePickDate1(false)}>
+                    <Text style={stylesPickDate.textDay}>{expenseDate}</Text>
+                    <View style={{ width: 8 }} />
+                    <IconCalendar />
+                  </TouchableOpacity>
                   {inputsExpense.map((input, index) => (
                     <View key={index}>
                       <Input
                         onPress={
                           input.label === 'Cost type'
-                            ? handleModalPickTree
+                            ? handleModalPickCostType
                             : input.label === 'Unit'
                             ? handleModalPickUnit
                             : () => {}
@@ -449,13 +594,7 @@ const Statistics = ({ navigation }: any) => {
                             ? `Choose ${input.label.toLowerCase()}`
                             : `Enter your ${input.label.toLowerCase()}`
                         }
-                        value={
-                          input.label === 'Cost type'
-                            ? valueTree
-                            : input.label === 'Unit'
-                            ? valueUnit
-                            : input.value
-                        }
+                        value={input.label === 'Unit' ? valueUnit : input.value}
                         onChangeText={(text: string) =>
                           handleInputChangeExpense(index, text)
                         }
@@ -503,12 +642,12 @@ const Statistics = ({ navigation }: any) => {
         </View>
       </ModalInsert>
 
-      {/* <ModalInsert isVisible={isModalPickUnit}>
+      <ModalInsert isVisible={isModalPickCostType}>
         <StatusBar backgroundColor={'#010508'} />
         <ModalInsert.Container isPick={true}>
           <ModalInsert.Header>
             <View style={styles.headSessionModal}>
-              <TouchableOpacity onPress={handleModalPickUnit}>
+              <TouchableOpacity onPress={handleModalPickCostType}>
                 <IconBack> </IconBack>
               </TouchableOpacity>
               <View style={styles.txtContainer}>
@@ -526,20 +665,20 @@ const Statistics = ({ navigation }: any) => {
           <ScrollView>
             <ModalInsert.Body isPick={true}>
               <RadioButton.Group
-                onValueChange={value => hanleHideModalPicklUnit(value)}
-                value={valueUnit}>
-                {units.map((unit, index) => (
+                onValueChange={value => hanleHideModalPickCostTypes(value)}
+                value={valueCostType}>
+                {costTypes.map((costType, index) => (
                   <RadioButton.Item
                     color={COLORS.blue}
-                    label={unit.name}
-                    value={unit.name}
+                    label={costType.name}
+                    value={costType.name}
                   />
                 ))}
               </RadioButton.Group>
             </ModalInsert.Body>
           </ScrollView>
         </ModalInsert.Container>
-      </ModalInsert> */}
+      </ModalInsert>
 
       {/* <ModalInsert isVisible={isModalPickTree}>
         <StatusBar backgroundColor={'#010508'} />
@@ -602,6 +741,20 @@ const stylesButtonReload = StyleSheet.create({
     backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+});
+
+const stylesPickDate = StyleSheet.create({
+  root: {
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+  },
+  textDay: {
+    color: COLORS.text1,
+    fontFamily: 'Nunito-SemiBold',
+    fontSize: 16,
   },
 });
 
