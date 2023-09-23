@@ -89,7 +89,6 @@ export default StyleSheet.create({
     height: 48,
     backgroundColor: COLORS.green,
     borderRadius: 10,
-    borderWidth: 1,
     marginBottom: 32,
   },
   btnSendSession2: {
@@ -97,7 +96,13 @@ export default StyleSheet.create({
     height: 48,
     backgroundColor: COLORS.red,
     borderRadius: 10,
-    borderWidth: 1,
+    marginBottom: 32,
+  },
+  btnSendSession3: {
+    marginTop: 16,
+    height: 48,
+    backgroundColor: COLORS.grey,
+    borderRadius: 10,
     marginBottom: 32,
   },
   txtBtnSignup: {
