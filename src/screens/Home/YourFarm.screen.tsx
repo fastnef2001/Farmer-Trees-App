@@ -180,10 +180,8 @@ const YourFarm = ({ navigation }: any) => {
             ...documentSnapshot.data(),
             key: documentSnapshot.id,
           });
-          console.log('treeProperties', trees);
         });
         setTrees(trees);
-        console.log('trees', trees);
       });
     return () => subscriber();
   }, []);
@@ -246,7 +244,6 @@ const YourFarm = ({ navigation }: any) => {
       const image = selectImage;
       let imageUrl = '';
       const userId = auth().currentUser?.uid;
-      console.log('userId', image);
       // if image là url với http thì không cần thay đổi ảnh
       if (image && image.includes('http')) {
         imageUrl = image;

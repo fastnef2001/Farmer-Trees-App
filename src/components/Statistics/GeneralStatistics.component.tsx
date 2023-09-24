@@ -1,11 +1,45 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { COLORS } from '../../theme/color';
 
-const GeneralStatistics = () => {
+export type GeneralStatisticsProps = {
+  totalExpense: number;
+  totalIncome: number;
+  totalProfit: number;
+};
+function formatCurrency(amount: number) {
+  return amount.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+}
+
+const GeneralStatistics = ({
+  totalExpense,
+  totalIncome,
+  totalProfit,
+}: GeneralStatisticsProps) => {
+  const [chartExpense, setChartExpense] = React.useState(1);
+  const [chartProfit, setChartProfit] = React.useState(1);
+
+  const formatTotalIncome = formatCurrency(totalIncome);
+  const formatTotalExpense = formatCurrency(totalExpense);
+  const formatTotalProfit = formatCurrency(totalProfit);
   const widthAndHeight = 130;
-  const series = [30, 70];
+  useEffect(() => {
+    if (totalExpense !== 0) {
+      setChartExpense(totalExpense);
+    } else if (totalProfit !== 0) {
+      setChartProfit(totalProfit);
+    }
+  }, [totalExpense, totalIncome, totalProfit]);
+  if (chartProfit < 0) {
+    setChartProfit(0);
+  }
+  const series = [chartProfit, chartExpense];
   const sliceColor = [COLORS.blue, COLORS.red];
   return (
     <View style={stylesFrame.root}>
@@ -30,19 +64,21 @@ const GeneralStatistics = () => {
               <View style={{ width: 8 }} />
               <Text style={stylesBody.textItem}>Expense:</Text>
               <View style={{ width: 8 }} />
-              <Text style={stylesBody.textPrice}>50.000 $</Text>
+              <Text style={stylesBody.textPrice}>{formatTotalExpense}</Text>
             </View>
+            <View style={{ height: 8 }} />
             <View style={stylesBody.expense}>
               <View style={stylesBody.bluePoint} />
               <View style={{ width: 8 }} />
               <Text style={stylesBody.textItem}>Profit:</Text>
               <View style={{ width: 8 }} />
-              <Text style={stylesBody.textPrice}>150.000 $</Text>
+              <Text style={stylesBody.textPrice}>{formatTotalProfit}</Text>
             </View>
           </View>
+          <View style={{ height: 8 }} />
           <View style={stylesBody.income}>
             <Text style={stylesBody.textIncome}>Income:</Text>
-            <Text style={stylesBody.textPriceIncome}>200.000 $</Text>
+            <Text style={stylesBody.textPriceIncome}>{formatTotalIncome}</Text>
           </View>
         </View>
       </View>

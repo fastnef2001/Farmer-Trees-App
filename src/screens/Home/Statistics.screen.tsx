@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react';
@@ -8,6 +9,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
+  ImageBackground,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import GeneralStatistics from '../../components/Statistics/GeneralStatistics.component';
@@ -16,8 +18,6 @@ import FilterComponent from '../../components/Statistics/Filter.component';
 import ButtonAddComponent from '../../components/Statistics/ButtonAdd.component';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS } from '../../theme/color';
-import Detail from '../../assets/images/Detail.svg';
-import IconDetailBold from '../../assets/images/IconDetailBold.svg';
 import DatePicker from 'react-native-modern-datepicker';
 import { PickDate } from '../../components/Modal/PickDate';
 import { ModalInsert } from '../../components/Modal/ModalInsert';
@@ -29,6 +29,10 @@ import IconSave from '../../assets/images/IconSave.svg';
 import firestore from '@react-native-firebase/firestore';
 import { RadioButton } from 'react-native-paper';
 import IconCalendar from '../../assets/images/IconCalendar.svg';
+import {
+  PopUpSuccess,
+  PopUpLoading,
+} from '../../components/Statistics/GeneralPopUps.component';
 
 const Statistics = ({ navigation }: any) => {
   // Modal add
@@ -66,9 +70,7 @@ const Statistics = ({ navigation }: any) => {
     { label: 'Total price', value: '', error: '' },
   ]);
   const [isDisabled, setIsDisabled] = useState(true);
-  const newInputs = [...inputs];
   useEffect(() => {
-    // Kiểm tra giá trị của inputs khi inputs thay đổi
     if (inputs.length > 0) {
       if (
         inputs[0].value &&
@@ -261,491 +263,685 @@ const Statistics = ({ navigation }: any) => {
   };
 
   // Add income / expense
+  const [isModalSuccess, setIsModalSuccess] = useState(false);
+  const [titleHeader, setTitleHeader] = useState('');
+  const [titleBody, setTitleBody] = useState('');
+  const [isModalLoading, setIsModalLoading] = useState(false);
   const handleAdd = (text: string) => {
     if (text === 'income') {
-      console.log('inputsIncome');
+      setIsModalLoading(true);
+      function convertToKilograms(quantity: number, unit: string) {
+        switch (unit) {
+          case 'Gram':
+            return quantity / 1000; // 1 gram = 0.001 kilogram
+          case 'Kilogram':
+            return quantity;
+          case 'Quintal':
+            return quantity * 100; // 1 quintal = 100 kilograms
+          case 'Ton':
+            return quantity * 1000; // 1 ton = 1000 kilograms
+          default:
+            return quantity;
+        }
+      }
+      try {
+        const userid = auth().currentUser?.uid;
+        const time = new Date().getTime();
+        const date = selectedDateIncome;
+        const tree = inputs[0].value;
+        const quantity = Number(inputs[1].value);
+        const unit = inputs[2].value;
+        const total = Number(inputs[3].value);
+        const quantityInKilograms = convertToKilograms(quantity, unit);
+        firestore()
+          .collection('incomes')
+          .doc(userid)
+          .collection('income')
+          .add({
+            date,
+            time,
+            tree,
+            quantityInKilograms,
+            unit,
+            total,
+          })
+          .then(() => {
+            setIsModalAdd(false);
+            setIsModalLoading(false);
+            setTitleHeader('Successfully');
+            setTitleBody('You have successfully added income');
+            setIsModalSuccess(true);
+            setTimeout(() => {
+              setIsModalSuccess(false);
+            }, 5000);
+            const newInputs = [...inputs];
+            newInputs.forEach((input, index) => {
+              newInputs[index].value = '';
+              newInputs[index].error = '';
+            });
+          });
+      } catch (error) {
+        console.log(error);
+      }
     } else {
-      console.log('inputsExpense');
+      setIsModalLoading(true);
+      try {
+        const userid = auth().currentUser?.uid;
+        const time = new Date().getTime();
+        const date = selectedDateExpense;
+        const cost = inputs[0].value;
+        const quantity = Number(inputs[1].value);
+        const unit = inputs[2].value;
+        const total = Number(inputs[3].value);
+        firestore()
+          .collection('expenses')
+          .doc(userid)
+          .collection('expense')
+          .add({
+            date,
+            time,
+            cost,
+            quantity,
+            unit,
+            total,
+          })
+          .then(() => {
+            setIsModalAdd(false);
+            setIsModalLoading(false);
+            setTitleHeader('Successfully');
+            setTitleBody('You have successfully added expense');
+            setIsModalSuccess(true);
+            setTimeout(() => {
+              setIsModalSuccess(false);
+            }, 5000);
+            const newInputs = [...inputs];
+            newInputs.forEach((input, index) => {
+              newInputs[index].value = '';
+              newInputs[index].error = '';
+            });
+          });
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
-  // // Add income
-  // const handleAddIncome = () => {
-  //   console.log('inputsIncome');
-  //   // const treeNameInput = inputsIncome.find(input => input.label === 'Tree');
-  //   // const quanlityInput = inputsIncome.find(
-  //   //   input => input.label === 'Quantity',
-  //   // );
-  //   // const unitInput = inputsIncome.find(input => input.label === 'Unit');
-  //   // const totalPriceInput = inputsIncome.find(
-  //   //   input => input.label === 'Total price',
-  //   // );
-  //   // const userid = auth().currentUser?.uid;
-  //   // const date = selectedDateIncome;
-  //   // const time = new Date().getTime();
+  // Handle general statistic
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [totalExpense, setTotalExpense] = useState(0);
+  const [totalProfit, setTotalProfit] = useState(0);
+  useEffect(() => {
+    setTotalProfit(totalIncome - totalExpense);
+  }, [totalIncome, totalExpense]);
+  // Get data income
+  if (!selectedDateStart && !selectedDateEnd) {
+    React.useEffect(() => {
+      const subscriber = firestore()
+        .collection('incomes')
+        .doc(auth().currentUser?.uid)
+        .collection('income')
+        .onSnapshot(querySnapshot => {
+          const incomes: any = [];
+          querySnapshot.forEach(documentSnapshot => {
+            incomes.push({
+              ...documentSnapshot.data(),
+              key: documentSnapshot.id,
+            });
+          });
+          const validIncomes = incomes.filter((income: { total: number }) => {
+            return !isNaN(income.total) && income.total >= 0;
+          });
 
-  //   // if (
-  //   //   !treeNameInput?.value ||
-  //   //   !quanlityInput?.value ||
-  //   //   !unitInput?.value ||
-  //   //   !totalPriceInput?.value
-  //   // ) {
-  //   //   setInputsIncome(
-  //   //     inputsIncome.map(input => ({
-  //   //       ...input,
-  //   //       error: !input.value ? `Please enter ${input.label}` : '',
-  //   //     })),
-  //   //   );
-  //   //   return;
-  //   // }
-  //   // try {
-  //   //   const tree = treeNameInput?.value;
-  //   //   const quantity = Number(quanlityInput?.value);
-  //   //   const unit = unitInput?.value;
-  //   //   const total = Number(totalPriceInput?.value);
-  //   //   firestore()
-  //   //     .collection('incomes')
-  //   //     .doc(userid)
-  //   //     .collection('income')
-  //   //     .add({
-  //   //       date,
-  //   //       time,
-  //   //       tree,
-  //   //       quantity,
-  //   //       unit,
-  //   //       total,
-  //   //     })
-  //   //     .then(() => {
-  //   //       console.log('User added!');
-  //   //     });
-  //   // } catch (error) {
-  //   //   console.log(error);
-  //   // }
-  // };
-  // // Add expense
-  // const handleAddExpense = () => {
-  //   console.log('inputsExpense');
-  // };
+          const totalSumIncome = validIncomes.reduce(
+            (accumulator: any, income: { total: number }) => {
+              return accumulator + income.total;
+            },
+            0,
+          );
 
-  //Modal income
-  // const [isModalPickDate1, setIsModalPickDate1] = useState(false);
-  // const [isIncome, setIsIncome] = useState(false);
+          setTotalIncome(totalSumIncome);
+        });
+      return () => subscriber();
+    }, [selectedDateEnd, selectedDateStart, totalIncome]);
+  } else if (!selectedDateStart && selectedDateEnd) {
+    React.useEffect(() => {
+      const subscriber = firestore()
+        .collection('incomes')
+        .doc(auth().currentUser?.uid)
+        .collection('income')
+        .where('date', '<=', selectedDateEnd)
+        .onSnapshot(querySnapshot => {
+          const incomes: any = [];
+          querySnapshot.forEach(documentSnapshot => {
+            incomes.push({
+              ...documentSnapshot.data(),
+              key: documentSnapshot.id,
+            });
+          });
+          const validIncomes = incomes.filter((income: { total: number }) => {
+            return !isNaN(income.total) && income.total >= 0;
+          });
 
-  // const [isModalncome, setisModalncome] = useState(false);
+          const totalSumIncome = validIncomes.reduce(
+            (accumulator: any, income: { total: number }) => {
+              return accumulator + income.total;
+            },
+            0,
+          );
 
-  // const handleModalIncome = () => {
-  //   setisModalncome(!isModalncome);
-  //   const newInputs = [...inputsIncome];
-  //   newInputs.forEach((input, index) => {
-  //     newInputs[index].value = '';
-  //     newInputs[index].error = '';
-  //   });
-  // };
-  // const handleInputChange = (index: any, value: any) => {
-  //   const newInputs = [...inputsIncome];
-  //   newInputs[index].value = value;
-  //   newInputs[index].error = '';
-  //   setInputsIncome(newInputs);
-  // };
+          setTotalIncome(totalSumIncome);
+        });
+      return () => subscriber();
+    }, [selectedDateEnd, selectedDateStart, totalIncome]);
+  } else if (selectedDateStart && !selectedDateEnd) {
+    React.useEffect(() => {
+      const subscriber = firestore()
+        .collection('incomes')
+        .doc(auth().currentUser?.uid)
+        .collection('income')
+        .where('date', '>=', selectedDateStart)
+        .onSnapshot(querySnapshot => {
+          const incomes: any = [];
+          querySnapshot.forEach(documentSnapshot => {
+            incomes.push({
+              ...documentSnapshot.data(),
+              key: documentSnapshot.id,
+            });
+          });
+          const validIncomes = incomes.filter((income: { total: number }) => {
+            return !isNaN(income.total) && income.total >= 0;
+          });
 
-  // const handlePickDate1 = (isIncomeDate: boolean) => () => {
-  //   setIsModalPickDate1(true);
-  //   setIsIncome(isIncomeDate);
-  // };
-  // Modal Expense
-  // const [expenseDate, setExpenseDate] = useState('');
-  // const [ishandleModalExpense, setishandleModalExpense] = useState(false);
-  // const handleModalExpense = () => {
-  //   setishandleModalExpense(!ishandleModalExpense);
-  //   setExpenseDate(timeNow);
-  //   const newInputs = [...inputsExpense];
-  //   newInputs.forEach((input, index) => {
-  //     newInputs[index].value = '';
-  //     newInputs[index].error = '';
-  //   });
-  // };
-  // const handleInputChangeExpense = (index: any, value: any) => {
-  //   const newInputsExpense = [...inputsExpense];
-  //   newInputsExpense[index].value = value;
-  //   newInputsExpense[index].error = '';
-  //   setInputsExpense(newInputsExpense);
-  // };
-  // const handleAddExpense = () => {
-  //   const newInputsExpense = [...inputsExpense];
-  //   newInputsExpense.forEach((input, index) => {
-  //     if (input.value === '') {
-  //       newInputsExpense[index].error = `Please enter ${input.label}`;
-  //     }
-  //   });
-  // };
-  //Cost type
-  // const [valueCostType, setValueCostType] = React.useState('');
-  // const hanleHideModalPickCostTypes = (valueCostType: string) => {
-  //   console.log('valueCostType', valueCostType);
-  //   setIsModalPickCostType(false);
-  //   setValueCostType(valueCostType);
-  //   const newInputs = [...inputsExpense];
-  //   newInputs[0].value = valueCostType;
-  // };
+          const totalSumIncome = validIncomes.reduce(
+            (accumulator: any, income: { total: number }) => {
+              return accumulator + income.total;
+            },
+            0,
+          );
+
+          setTotalIncome(totalSumIncome);
+        });
+      return () => subscriber();
+    }, [selectedDateEnd, selectedDateStart, totalIncome]);
+  } else {
+    React.useEffect(() => {
+      const subscriber = firestore()
+        .collection('incomes')
+        .doc(auth().currentUser?.uid)
+        .collection('income')
+        .where('date', '>=', selectedDateStart)
+        .where('date', '<=', selectedDateEnd)
+        .onSnapshot(querySnapshot => {
+          const incomes: any = [];
+          querySnapshot.forEach(documentSnapshot => {
+            incomes.push({
+              ...documentSnapshot.data(),
+              key: documentSnapshot.id,
+            });
+          });
+          const validIncomes = incomes.filter((income: { total: number }) => {
+            return !isNaN(income.total) && income.total >= 0;
+          });
+
+          const totalSumIncome = validIncomes.reduce(
+            (accumulator: any, income: { total: number }) => {
+              return accumulator + income.total;
+            },
+            0,
+          );
+
+          setTotalIncome(totalSumIncome);
+        });
+      return () => subscriber();
+    }, [selectedDateEnd, selectedDateStart, totalIncome]);
+  }
+  // End get data income
+  // Get data expense
+  if (!selectedDateStart && !selectedDateEnd) {
+    React.useEffect(() => {
+      const subscriber = firestore()
+        .collection('expenses')
+        .doc(auth().currentUser?.uid)
+        .collection('expense')
+        .onSnapshot(querySnapshot => {
+          const expenses: any = [];
+          querySnapshot.forEach(documentSnapshot => {
+            expenses.push({
+              ...documentSnapshot.data(),
+              key: documentSnapshot.id,
+            });
+          });
+          const totalSumExpense = expenses.reduce(
+            (accumulator: any, expense: { total: number }) => {
+              if (!isNaN(expense.total)) {
+                return accumulator + expense.total;
+              }
+              return accumulator;
+            },
+            0,
+          );
+          setTotalExpense(totalSumExpense);
+        });
+      return () => subscriber();
+    }, []);
+  } else if (!selectedDateStart && selectedDateEnd) {
+    React.useEffect(() => {
+      const subscriber = firestore()
+        .collection('expenses')
+        .doc(auth().currentUser?.uid)
+        .collection('expense')
+        .where('date', '<=', selectedDateEnd)
+        .onSnapshot(querySnapshot => {
+          const expenses: any = [];
+          querySnapshot.forEach(documentSnapshot => {
+            expenses.push({
+              ...documentSnapshot.data(),
+              key: documentSnapshot.id,
+            });
+          });
+          const totalSumExpense = expenses.reduce(
+            (accumulator: any, expense: { total: number }) => {
+              if (!isNaN(expense.total)) {
+                return accumulator + expense.total;
+              }
+              return accumulator;
+            },
+            0,
+          );
+          setTotalExpense(totalSumExpense);
+        });
+      return () => subscriber();
+    }, [selectedDateEnd]);
+  } else if (selectedDateStart && !selectedDateEnd) {
+    React.useEffect(() => {
+      const subscriber = firestore()
+        .collection('expenses')
+        .doc(auth().currentUser?.uid)
+        .collection('expense')
+        .where('date', '>=', selectedDateStart)
+        .onSnapshot(querySnapshot => {
+          const expenses: any = [];
+          querySnapshot.forEach(documentSnapshot => {
+            expenses.push({
+              ...documentSnapshot.data(),
+              key: documentSnapshot.id,
+            });
+          });
+          const totalSumExpense = expenses.reduce(
+            (accumulator: any, expense: { total: number }) => {
+              if (!isNaN(expense.total)) {
+                return accumulator + expense.total;
+              }
+              return accumulator;
+            },
+            0,
+          );
+          setTotalExpense(totalSumExpense);
+        });
+      return () => subscriber();
+    }, [selectedDateStart]);
+  } else {
+    React.useEffect(() => {
+      const subscriber = firestore()
+        .collection('expenses')
+        .doc(auth().currentUser?.uid)
+        .collection('expense')
+        .where('date', '>=', selectedDateStart)
+        .where('date', '<=', selectedDateEnd)
+        .onSnapshot(querySnapshot => {
+          const expenses: any = [];
+          querySnapshot.forEach(documentSnapshot => {
+            expenses.push({
+              ...documentSnapshot.data(),
+              key: documentSnapshot.id,
+            });
+          });
+          const totalSumExpense = expenses.reduce(
+            (accumulator: any, expense: { total: number }) => {
+              if (!isNaN(expense.total)) {
+                return accumulator + expense.total;
+              }
+              return accumulator;
+            },
+            0,
+          );
+          setTotalExpense(totalSumExpense);
+        });
+      return () => subscriber();
+    }, [selectedDateEnd, selectedDateStart]);
+  }
+  // End get data expense
+
+  React.useEffect(() => {
+    const subscriber = firestore()
+      .collection('expenses')
+      .doc(auth().currentUser?.uid)
+      .collection('expense')
+      .onSnapshot(querySnapshot => {
+        const expenses: any = [];
+        querySnapshot.forEach(documentSnapshot => {
+          expenses.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+        const totalSumExpense = expenses.reduce(
+          (accumulator: any, expense: { total: number }) => {
+            if (!isNaN(expense.total)) {
+              return accumulator + expense.total;
+            }
+            return accumulator;
+          },
+          0,
+        );
+        setTotalExpense(totalSumExpense);
+      });
+    return () => subscriber();
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <HeaderComponent onPress={() => navigation.navigate('Profile')} />
-      <ScrollView style={{ flex: 1 }}>
-        {/* Filter */}
-        <View style={stylesFilter.root}>
-          <FilterComponent
-            onPress={handlePickDate('startDate')}
-            titleDate={selectedDateStart}
-            isRight={true}
-          />
-          <View style={{ width: 8 }} />
-          <FilterComponent
-            onPress={handlePickDate('endDate')}
-            titleDate={selectedDateEnd}
-            isRight={false}
-          />
-          <View style={{ width: 8 }} />
-          <TouchableOpacity
-            style={stylesButtonReload.root}
-            onPress={handleReload}>
-            <IconSwitch />
-          </TouchableOpacity>
-        </View>
-
-        {/* Button Add */}
-        <View style={stylesFilter.root}>
-          <ButtonAddComponent
-            onPress={handleModalAddIncome}
-            title="Icome"
-            isRight={false}
-          />
-          <View style={{ width: 8 }} />
-          <ButtonAddComponent
-            onPress={handleModalAddExpense}
-            title="Expense"
-            isRight={true}
-          />
-        </View>
-      </ScrollView>
-
-      <PickDate
-        isVisible={isModalPickDate}
-        onBackdropPress={() => setIsModalPickDate(false)}>
-        <StatusBar backgroundColor={'#07111B'} />
-        <PickDate.Container>
-          <PickDate.Body>
-            <DatePicker
-              onSelectedChange={date => {
-                if (status === 'startDate') {
-                  setSelectedDateStart(date);
-                } else if (status === 'endDate') {
-                  setSelectedDateEnd(date);
-                } else if (status === 'incomeDate') {
-                  setSelectedDateIncome(date);
-                } else {
-                  setSelectedDateExpense(date);
-                }
-              }}
-              mode="calendar"
-              options={{
-                textHeaderColor: COLORS.blue,
-                textDefaultColor: COLORS.blue,
-                selectedTextColor: '#fff',
-                mainColor: COLORS.blue,
-                textSecondaryColor: COLORS.text2,
-                defaultFont: 'Nunito-SemiBold',
-              }}
-              selected={
-                status === 'startDate'
-                  ? selectedDateStart
-                  : status === 'endDate'
-                  ? selectedDateEnd
-                  : status === 'incomeDate'
-                  ? selectedDateIncome
-                  : selectedDateExpense
-              }
-              selectorStartingYear={2020}
+      <ImageBackground
+        source={require('../../assets/images/background.jpg')}
+        style={{ flex: 1, width: '100%', height: '100%' }}>
+        <HeaderComponent onPress={() => navigation.navigate('Profile')} />
+        <ScrollView style={{ flex: 1 }}>
+          {/* Filter */}
+          <View style={stylesFilter.root}>
+            <FilterComponent
+              onPress={handlePickDate('startDate')}
+              titleDate={selectedDateStart}
+              isRight={true}
             />
-          </PickDate.Body>
-        </PickDate.Container>
-      </PickDate>
-
-      {/* <PickDate
-        isVisible={isModalPickDate1}
-        onBackdropPress={() => setIsModalPickDate1(false)}>
-        <StatusBar backgroundColor={'#07111B'} />
-        <PickDate.Container>
-          <PickDate.Body>
-            <DatePicker
-              onSelectedChange={date => {
-                if (isIncome) {
-                  setIncomeDate(date);
-                } else {
-                  setExpenseDate(date);
-                }
-              }}
-              mode="calendar"
-              options={{
-                textHeaderColor: COLORS.blue,
-                textDefaultColor: COLORS.blue,
-                selectedTextColor: '#fff',
-                mainColor: COLORS.blue,
-                textSecondaryColor: COLORS.text2,
-                defaultFont: 'Nunito-SemiBold',
-              }}
-              selected={isIncome ? incomeDate : selectedDateEnd}
-              selectorStartingYear={2020}
+            <View style={{ width: 8 }} />
+            <FilterComponent
+              onPress={handlePickDate('endDate')}
+              titleDate={selectedDateEnd}
+              isRight={false}
             />
-          </PickDate.Body>
-        </PickDate.Container>
-      </PickDate> */}
+            <View style={{ width: 8 }} />
+            <TouchableOpacity
+              style={stylesButtonReload.root}
+              onPress={handleReload}>
+              <IconSwitch />
+            </TouchableOpacity>
+          </View>
+          {/* End filter */}
+          {/* GeneralStatistics */}
+          <GeneralStatistics
+            totalIncome={totalIncome}
+            totalExpense={totalExpense}
+            totalProfit={totalProfit}
+          />
+          {/* End GeneralStatistics */}
 
-      {/* Add income */}
-      {/* <ModalInsert isVisible={isModalncome} isPick={false}>
-        <StatusBar backgroundColor={'#07111B'} />
-        <View style={{ flex: 1 }}>
-          <ModalInsert.Container>
-            <ModalInsert.Header>
-              <View style={styles.headSessionModal}>
-                <TouchableOpacity onPress={handleModalIncome}>
-                  <IconBack> </IconBack>
-                </TouchableOpacity>
-                <View style={styles.txtContainer}>
-                  <Text style={styles.txtTitleModal1}>Add income</Text>
-                </View>
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                  }}
-                />
-              </View>
-            </ModalInsert.Header>
-            <ScrollView>
-              <ModalInsert.Body>
-                <View style={styles.inputSession}>
-                  <TouchableOpacity
-                    style={stylesPickDate.root}
-                    onPress={handlePickDate1(true)}>
-                    <Text style={stylesPickDate.textDay}>{incomeDate}</Text>
-                    <View style={{ width: 8 }} />
-                    <IconCalendar />
-                  </TouchableOpacity>
-                  <View style={{ height: 8 }} />
-                  {inputsIncome.map((input, index) => (
-                    <View key={index}>
-                      <Input
-                        onPress={
-                          input.label === 'Tree'
-                            ? handleModalPickTree
-                            : input.label === 'Unit'
-                            ? handleModalPickUnit
-                            : () => {}
-                        }
-                        label={input.label}
-                        textPlaceholder={
-                          input.label === 'Tree' || input.label === 'Unit'
-                            ? `Choose ${input.label.toLowerCase()}`
-                            : `Enter your ${input.label.toLowerCase()}`
-                        }
-                        value={input.value}
-                        onChangeText={(text: string) =>
-                          handleInputChange(index, text)
-                        }
-                        dropDown={
-                          input.label === 'Tree' || input.label === 'Unit'
-                        }
-                        iconDolar={input.label === 'Total price'}
-                        textError={input.error}
-                        keyboardType={
-                          input.label === 'Quantity' ||
-                          input.label === 'Total price'
-                            ? 'numeric'
-                            : 'default'
-                        }
-                        span="*"
-                        editable={
-                          input.label === 'Tree' || input.label === 'Unit'
-                            ? false
-                            : true
-                        }
-                      />
-                    </View>
-                  ))}
-                </View>
-                <TouchableOpacity
-                  style={styles.btnSendSession1}
-                  onPress={handleAddIncome}>
-                  <View style={styles.txtBtnSignup}>
-                    <IconSave />
-                    <View style={{ width: 16 }} />
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        textAlign: 'center',
-                        color: '#FFFFFF',
-                        fontFamily: 'Nunito-Bold',
-                      }}>
-                      SAVE
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </ModalInsert.Body>
-            </ScrollView>
-          </ModalInsert.Container>
-        </View>
-      </ModalInsert> */}
-      {/* End income */}
+          {/* Button Add */}
+          <View style={stylesFilter.root}>
+            <ButtonAddComponent
+              onPress={handleModalAddIncome}
+              title="Icome"
+              isRight={false}
+            />
+            <View style={{ width: 8 }} />
+            <ButtonAddComponent
+              onPress={handleModalAddExpense}
+              title="Expense"
+              isRight={true}
+            />
+          </View>
+          {/* End button add */}
+        </ScrollView>
 
-      {/* Add expense */}
-
-      {/* <ModalInsert isVisible={ishandleModalExpense} isPick={false}>
-        <StatusBar backgroundColor={'#07111B'} />
-        <View style={{ flex: 1 }}>
-          <ModalInsert.Container>
-            <ModalInsert.Header>
-              <View style={styles.headSessionModal}>
-                <TouchableOpacity onPress={handleModalExpense}>
-                  <IconBack> </IconBack>
-                </TouchableOpacity>
-                <View style={styles.txtContainer}>
-                  <Text style={styles.txtTitleModal2}>Add expense</Text>
-                </View>
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                  }}
-                />
-              </View>
-            </ModalInsert.Header>
-            <ScrollView>
-              <ModalInsert.Body>
-                <View style={styles.inputSession}>
-                  <TouchableOpacity
-                    style={stylesPickDate.root}
-                    onPress={handlePickDate1(false)}>
-                    <Text style={stylesPickDate.textDay}>{expenseDate}</Text>
-                    <View style={{ width: 8 }} />
-                    <IconCalendar />
-                  </TouchableOpacity>
-                  {inputsExpense.map((input, index) => (
-                    <View key={index}>
-                      <Input
-                        onPress={
-                          input.label === 'Cost type'
-                            ? handleModalPickCostType
-                            : input.label === 'Unit'
-                            ? handleModalPickUnit
-                            : () => {}
-                        }
-                        label={input.label}
-                        textPlaceholder={
-                          input.label === 'Cost type' || input.label === 'Unit'
-                            ? `Choose ${input.label.toLowerCase()}`
-                            : `Enter your ${input.label.toLowerCase()}`
-                        }
-                        value={input.label === 'Unit' ? valueUnit : input.value}
-                        onChangeText={(text: string) =>
-                          handleInputChangeExpense(index, text)
-                        }
-                        dropDown={
-                          input.label === 'Cost type' || input.label === 'Unit'
-                        }
-                        iconDolar={input.label === 'Total price'}
-                        textError={input.error}
-                        keyboardType={
-                          input.label === 'Quantity' ||
-                          input.label === 'Total price'
-                            ? 'numeric'
-                            : 'default'
-                        }
-                        span="*"
-                        editable={
-                          input.label === 'Cost type' || input.label === 'Unit'
-                            ? false
-                            : true
-                        }
-                      />
-                    </View>
-                  ))}
-                </View>
-                <TouchableOpacity
-                  style={styles.btnSendSession2}
-                  onPress={handleAddExpense}>
-                  <View style={styles.txtBtnSignup}>
-                    <IconSave />
-                    <View style={{ width: 16 }} />
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        textAlign: 'center',
-                        color: '#FFFFFF',
-                        fontFamily: 'Nunito-Bold',
-                      }}>
-                      SAVE
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </ModalInsert.Body>
-            </ScrollView>
-          </ModalInsert.Container>
-        </View>
-      </ModalInsert> */}
-
-      {/* <ModalInsert isVisible={isModalPickCostType}>
-        <StatusBar backgroundColor={'#010508'} />
-        <ModalInsert.Container isPick={true}>
-          <ModalInsert.Header>
-            <View style={styles.headSessionModal}>
-              <TouchableOpacity onPress={handleModalPickCostType}>
-                <IconBack> </IconBack>
-              </TouchableOpacity>
-              <View style={styles.txtContainer}>
-                <Text style={styles.txtTitleModal}>Pick unit</Text>
-              </View>
-              <View
-                style={{
-                  width: 40,
-                  height: 40,
+        {/* Modal pick date */}
+        <PickDate
+          isVisible={isModalPickDate}
+          onBackdropPress={() => setIsModalPickDate(false)}>
+          <StatusBar backgroundColor={'#07111B'} />
+          <PickDate.Container>
+            <PickDate.Body>
+              <DatePicker
+                onSelectedChange={date => {
+                  if (status === 'startDate') {
+                    setSelectedDateStart(date);
+                  } else if (status === 'endDate') {
+                    setSelectedDateEnd(date);
+                  } else if (status === 'incomeDate') {
+                    setSelectedDateIncome(date);
+                  } else {
+                    setSelectedDateExpense(date);
+                  }
+                  // setIsModalPickDate(false);
                 }}
+                mode="calendar"
+                options={{
+                  textHeaderColor: COLORS.blue,
+                  textDefaultColor: COLORS.blue,
+                  selectedTextColor: '#fff',
+                  mainColor: COLORS.blue,
+                  textSecondaryColor: COLORS.text2,
+                  defaultFont: 'Nunito-SemiBold',
+                }}
+                selected={
+                  status === 'startDate'
+                    ? selectedDateStart
+                    : status === 'endDate'
+                    ? selectedDateEnd
+                    : status === 'incomeDate'
+                    ? selectedDateIncome
+                    : selectedDateExpense
+                }
+                selectorStartingYear={2020}
               />
-            </View>
-          </ModalInsert.Header>
+            </PickDate.Body>
+          </PickDate.Container>
+        </PickDate>
+        {/* End modal pick date */}
 
-          <ScrollView>
-            <ModalInsert.Body isPick={true}>
-              <RadioButton.Group
-                onValueChange={value => hanleHideModalPickCostTypes(value)}
-                value={valueCostType}>
-                {costTypes.map((costType, index) => (
-                  <RadioButton.Item
-                    color={COLORS.blue}
-                    label={costType.name}
-                    value={costType.name}
+        {/* Modal add */}
+        <ModalInsert isVisible={isModaAdd} isPick={false}>
+          <StatusBar backgroundColor={'#07111B'} />
+          <View style={{ flex: 1 }}>
+            <ModalInsert.Container>
+              <ModalInsert.Header>
+                <View style={styles.headSessionModal}>
+                  <TouchableOpacity onPress={handleHideModalAdd}>
+                    <IconBack> </IconBack>
+                  </TouchableOpacity>
+                  <View style={styles.txtContainer}>
+                    {titleModalAdd === 'Add income' ? (
+                      <Text style={styles.txtTitleModal1}>Add income</Text>
+                    ) : (
+                      <Text style={styles.txtTitleModal2}>Add expense</Text>
+                    )}
+                  </View>
+                  <View
+                    style={{
+                      width: 40,
+                      height: 40,
+                    }}
                   />
-                ))}
-              </RadioButton.Group>
-            </ModalInsert.Body>
-          </ScrollView>
-        </ModalInsert.Container>
-      </ModalInsert> */}
+                </View>
+              </ModalInsert.Header>
+              <ScrollView>
+                <ModalInsert.Body>
+                  <View style={styles.inputSession}>
+                    {titleModalAdd === 'Add income' ? (
+                      <TouchableOpacity
+                        style={stylesPickDate.root}
+                        onPress={handlePickDate('incomeDate')}>
+                        <Text style={stylesPickDate.textDay}>
+                          {selectedDateIncome}
+                        </Text>
+                        <View style={{ width: 8 }} />
+                        <IconCalendar />
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity
+                        style={stylesPickDate.root}
+                        onPress={handlePickDate('expenseDate')}>
+                        <Text style={stylesPickDate.textDay}>
+                          {selectedDateExpense}
+                        </Text>
+                        <View style={{ width: 8 }} />
+                        <IconCalendar />
+                      </TouchableOpacity>
+                    )}
 
-      <ModalInsert isVisible={isModaAdd} isPick={false}>
-        <StatusBar backgroundColor={'#07111B'} />
-        <View style={{ flex: 1 }}>
-          <ModalInsert.Container>
+                    <View style={{ height: 8 }} />
+                    {inputs.map((input, index) => (
+                      <View key={index}>
+                        {titleModalAdd === 'Add income' ? (
+                          <Input
+                            onPress={
+                              input.label === 'Tree'
+                                ? handleModalPickTree
+                                : input.label === 'Unit'
+                                ? handleModalPickUnitIncome
+                                : () => {}
+                            }
+                            label={input.label}
+                            textPlaceholder={
+                              input.label === 'Tree' || input.label === 'Unit'
+                                ? `Choose ${input.label.toLowerCase()}`
+                                : `Enter your ${input.label.toLowerCase()}`
+                            }
+                            value={input.value}
+                            onChangeText={(text: string) =>
+                              handleInputChange(index, text)
+                            }
+                            dropDown={
+                              input.label === 'Tree' || input.label === 'Unit'
+                            }
+                            iconDolar={input.label === 'Total price'}
+                            textError={input.error}
+                            keyboardType={
+                              input.label === 'Quantity' ||
+                              input.label === 'Total price'
+                                ? 'numeric'
+                                : 'default'
+                            }
+                            span="*"
+                            editable={
+                              input.label === 'Tree' || input.label === 'Unit'
+                                ? false
+                                : true
+                            }
+                          />
+                        ) : (
+                          <Input
+                            onPress={
+                              input.label === 'Cost type'
+                                ? handleModalPickCostType
+                                : input.label === 'Unit'
+                                ? handleModalPickUnitExpense
+                                : () => {}
+                            }
+                            label={input.label}
+                            textPlaceholder={
+                              input.label === 'Cost type' ||
+                              input.label === 'Unit'
+                                ? `Choose ${input.label.toLowerCase()}`
+                                : `Enter your ${input.label.toLowerCase()}`
+                            }
+                            value={input.value}
+                            onChangeText={(text: string) =>
+                              handleInputChange(index, text)
+                            }
+                            dropDown={
+                              input.label === 'Cost type' ||
+                              input.label === 'Unit'
+                            }
+                            iconDolar={input.label === 'Total price'}
+                            textError={input.error}
+                            keyboardType={
+                              input.label === 'Quantity' ||
+                              input.label === 'Total price'
+                                ? 'numeric'
+                                : 'default'
+                            }
+                            span="*"
+                            editable={
+                              input.label === 'Cost type' ||
+                              input.label === 'Unit'
+                                ? false
+                                : true
+                            }
+                          />
+                        )}
+                      </View>
+                    ))}
+                  </View>
+                  {titleModalAdd === 'Add income' && isDisabled === false ? (
+                    <TouchableOpacity
+                      style={styles.btnSendSession1}
+                      onPress={() => handleAdd('income')}>
+                      <View style={styles.txtBtnSignup}>
+                        <IconSave />
+                        <View style={{ width: 16 }} />
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            textAlign: 'center',
+                            color: '#FFFFFF',
+                            fontFamily: 'Nunito-Bold',
+                          }}>
+                          SAVE
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : titleModalAdd === 'Add expense' &&
+                    isDisabled === false ? (
+                    <TouchableOpacity
+                      style={styles.btnSendSession2}
+                      onPress={() => handleAdd('expense')}>
+                      <View style={styles.txtBtnSignup}>
+                        <IconSave />
+                        <View style={{ width: 16 }} />
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            textAlign: 'center',
+                            color: '#FFFFFF',
+                            fontFamily: 'Nunito-Bold',
+                          }}>
+                          SAVE
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ) : (
+                    <View style={styles.btnSendSession3}>
+                      <View style={styles.txtBtnSignup}>
+                        <IconSave />
+                        <View style={{ width: 16 }} />
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            textAlign: 'center',
+                            color: '#FFFFFF',
+                            fontFamily: 'Nunito-Bold',
+                          }}>
+                          SAVE
+                        </Text>
+                      </View>
+                    </View>
+                  )}
+                </ModalInsert.Body>
+              </ScrollView>
+            </ModalInsert.Container>
+          </View>
+        </ModalInsert>
+        {/* End modal add */}
+
+        {/* Modal pick */}
+        <ModalInsert isVisible={isModalPick}>
+          <StatusBar backgroundColor={'#010508'} />
+          <ModalInsert.Container isPick={true}>
             <ModalInsert.Header>
               <View style={styles.headSessionModal}>
-                <TouchableOpacity onPress={handleHideModalAdd}>
+                <TouchableOpacity onPress={handleModalPickHide}>
                   <IconBack> </IconBack>
                 </TouchableOpacity>
                 <View style={styles.txtContainer}>
-                  {titleModalAdd === 'Add income' ? (
-                    <Text style={styles.txtTitleModal1}>Add income</Text>
-                  ) : (
-                    <Text style={styles.txtTitleModal2}>Add expense</Text>
-                  )}
+                  <Text style={styles.txtTitleModal}>{titlePick}</Text>
                 </View>
                 <View
                   style={{
@@ -755,239 +951,63 @@ const Statistics = ({ navigation }: any) => {
                 />
               </View>
             </ModalInsert.Header>
-            <ScrollView>
-              <ModalInsert.Body>
-                <View style={styles.inputSession}>
-                  {titleModalAdd === 'Add income' ? (
-                    <TouchableOpacity
-                      style={stylesPickDate.root}
-                      onPress={handlePickDate('incomeDate')}>
-                      <Text style={stylesPickDate.textDay}>
-                        {selectedDateIncome}
-                      </Text>
-                      <View style={{ width: 8 }} />
-                      <IconCalendar />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      style={stylesPickDate.root}
-                      onPress={handlePickDate('expenseDate')}>
-                      <Text style={stylesPickDate.textDay}>
-                        {selectedDateExpense}
-                      </Text>
-                      <View style={{ width: 8 }} />
-                      <IconCalendar />
-                    </TouchableOpacity>
-                  )}
 
-                  <View style={{ height: 8 }} />
-                  {inputs.map((input, index) => (
-                    <View key={index}>
-                      {titleModalAdd === 'Add income' ? (
-                        <Input
-                          onPress={
-                            input.label === 'Tree'
-                              ? handleModalPickTree
-                              : input.label === 'Unit'
-                              ? handleModalPickUnitIncome
-                              : () => {}
-                          }
-                          label={input.label}
-                          textPlaceholder={
-                            input.label === 'Tree' || input.label === 'Unit'
-                              ? `Choose ${input.label.toLowerCase()}`
-                              : `Enter your ${input.label.toLowerCase()}`
-                          }
-                          value={input.value}
-                          onChangeText={(text: string) =>
-                            handleInputChange(index, text)
-                          }
-                          dropDown={
-                            input.label === 'Tree' || input.label === 'Unit'
-                          }
-                          iconDolar={input.label === 'Total price'}
-                          textError={input.error}
-                          keyboardType={
-                            input.label === 'Quantity' ||
-                            input.label === 'Total price'
-                              ? 'numeric'
-                              : 'default'
-                          }
-                          span="*"
-                          editable={
-                            input.label === 'Tree' || input.label === 'Unit'
-                              ? false
-                              : true
-                          }
-                        />
-                      ) : (
-                        <Input
-                          onPress={
-                            input.label === 'Cost type'
-                              ? handleModalPickCostType
-                              : input.label === 'Unit'
-                              ? handleModalPickUnitExpense
-                              : () => {}
-                          }
-                          label={input.label}
-                          textPlaceholder={
-                            input.label === 'Cost type' ||
-                            input.label === 'Unit'
-                              ? `Choose ${input.label.toLowerCase()}`
-                              : `Enter your ${input.label.toLowerCase()}`
-                          }
-                          value={input.value}
-                          onChangeText={(text: string) =>
-                            handleInputChange(index, text)
-                          }
-                          dropDown={
-                            input.label === 'Cost type' ||
-                            input.label === 'Unit'
-                          }
-                          iconDolar={input.label === 'Total price'}
-                          textError={input.error}
-                          keyboardType={
-                            input.label === 'Quantity' ||
-                            input.label === 'Total price'
-                              ? 'numeric'
-                              : 'default'
-                          }
-                          span="*"
-                          editable={
-                            input.label === 'Cost type' ||
-                            input.label === 'Unit'
-                              ? false
-                              : true
-                          }
-                        />
-                      )}
-                    </View>
-                  ))}
-                </View>
-                {titleModalAdd === 'Add income' && isDisabled === false ? (
-                  <TouchableOpacity
-                    style={styles.btnSendSession1}
-                    onPress={() => handleAdd('income')}>
-                    <View style={styles.txtBtnSignup}>
-                      <IconSave />
-                      <View style={{ width: 16 }} />
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          textAlign: 'center',
-                          color: '#FFFFFF',
-                          fontFamily: 'Nunito-Bold',
-                        }}>
-                        SAVE
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                ) : titleModalAdd === 'Add expense' && isDisabled === false ? (
-                  <TouchableOpacity
-                    style={styles.btnSendSession2}
-                    onPress={() => handleAdd('expense')}>
-                    <View style={styles.txtBtnSignup}>
-                      <IconSave />
-                      <View style={{ width: 16 }} />
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          textAlign: 'center',
-                          color: '#FFFFFF',
-                          fontFamily: 'Nunito-Bold',
-                        }}>
-                        SAVE
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                ) : (
-                  <View style={styles.btnSendSession3}>
-                    <View style={styles.txtBtnSignup}>
-                      <IconSave />
-                      <View style={{ width: 16 }} />
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          textAlign: 'center',
-                          color: '#FFFFFF',
-                          fontFamily: 'Nunito-Bold',
-                        }}>
-                        SAVE
-                      </Text>
-                    </View>
-                  </View>
-                )}
+            <ScrollView>
+              <ModalInsert.Body isPick={true}>
+                <RadioButton.Group
+                  onValueChange={value => hanleHideModalPick(value, titlePick)}
+                  value={valuePick}>
+                  {titlePick === 'Pick tree' ? (
+                    trees.map((tree, index) => (
+                      <RadioButton.Item
+                        color={COLORS.blue}
+                        label={tree.name}
+                        value={tree.name}
+                      />
+                    ))
+                  ) : titlePick === 'Pick unit income' ? (
+                    unitsIncome.map((unit, index) => (
+                      <RadioButton.Item
+                        color={COLORS.blue}
+                        label={unit.name}
+                        value={unit.name}
+                      />
+                    ))
+                  ) : titlePick === 'Pick cost type' ? (
+                    costTypes.map((costType, index) => (
+                      <RadioButton.Item
+                        color={COLORS.blue}
+                        label={costType.name}
+                        value={costType.name}
+                      />
+                    ))
+                  ) : titlePick === 'Pick unit expense' ? (
+                    unitsExpense.map((unit, index) => (
+                      <RadioButton.Item
+                        color={COLORS.blue}
+                        label={unit.name}
+                        value={unit.name}
+                      />
+                    ))
+                  ) : (
+                    <></>
+                  )}
+                </RadioButton.Group>
               </ModalInsert.Body>
             </ScrollView>
           </ModalInsert.Container>
-        </View>
-      </ModalInsert>
+        </ModalInsert>
+        {/* End modal pick */}
 
-      <ModalInsert isVisible={isModalPick}>
-        <StatusBar backgroundColor={'#010508'} />
-        <ModalInsert.Container isPick={true}>
-          <ModalInsert.Header>
-            <View style={styles.headSessionModal}>
-              <TouchableOpacity onPress={handleModalPickHide}>
-                <IconBack> </IconBack>
-              </TouchableOpacity>
-              <View style={styles.txtContainer}>
-                <Text style={styles.txtTitleModal}>{titlePick}</Text>
-              </View>
-              <View
-                style={{
-                  width: 40,
-                  height: 40,
-                }}
-              />
-            </View>
-          </ModalInsert.Header>
-
-          <ScrollView>
-            <ModalInsert.Body isPick={true}>
-              <RadioButton.Group
-                onValueChange={value => hanleHideModalPick(value, titlePick)}
-                value={valuePick}>
-                {titlePick === 'Pick tree' ? (
-                  trees.map((tree, index) => (
-                    <RadioButton.Item
-                      color={COLORS.blue}
-                      label={tree.name}
-                      value={tree.name}
-                    />
-                  ))
-                ) : titlePick === 'Pick unit income' ? (
-                  unitsIncome.map((unit, index) => (
-                    <RadioButton.Item
-                      color={COLORS.blue}
-                      label={unit.name}
-                      value={unit.name}
-                    />
-                  ))
-                ) : titlePick === 'Pick cost type' ? (
-                  costTypes.map((costType, index) => (
-                    <RadioButton.Item
-                      color={COLORS.blue}
-                      label={costType.name}
-                      value={costType.name}
-                    />
-                  ))
-                ) : titlePick === 'Pick unit expense' ? (
-                  unitsExpense.map((unit, index) => (
-                    <RadioButton.Item
-                      color={COLORS.blue}
-                      label={unit.name}
-                      value={unit.name}
-                    />
-                  ))
-                ) : (
-                  <></>
-                )}
-              </RadioButton.Group>
-            </ModalInsert.Body>
-          </ScrollView>
-        </ModalInsert.Container>
-      </ModalInsert>
+        {/* Pop up noti and loading */}
+        <PopUpSuccess
+          isModalSuccess={isModalSuccess}
+          titleHeader={titleHeader}
+          titleBody={titleBody}
+        />
+        <PopUpLoading isModalSuccess={isModalLoading} />
+        {/* End up noti and loading */}
+      </ImageBackground>
     </SafeAreaView>
   );
 };
