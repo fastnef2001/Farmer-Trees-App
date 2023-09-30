@@ -6,31 +6,62 @@ import { COLORS } from '../../theme/color';
 import IconDetailBold from '../../assets/images/IconDetailBold.svg';
 import Detail from '../../assets/images/Detail.svg';
 
-const historyComponent = () => {
+export type HistoryProps = {
+  data: never[];
+  title: string;
+  isIncome: boolean;
+};
+
+const HistoryComponent = ({ data, title, isIncome }: HistoryProps) => {
+  data = data.slice(0, 5);
+
   return (
     <View style={stylesHistory.root}>
       <View style={stylesHeader.root}>
-        <Text style={stylesHeader.generalStatistics}>Income history</Text>
+        <Text style={stylesHeader.generalStatistics}>{title}</Text>
         <Text style={stylesHeader.exportExcel}>Export excel</Text>
       </View>
       <View style={{ height: 16 }} />
-      <TouchableOpacity style={stylesItem.root}>
-        <View style={stylesDate.root}>
-          <Text style={stylesDate.tileMonth}>Apr.</Text>
-          <Text style={stylesDate.tileDate}>12</Text>
-        </View>
-        <View style={{ width: 6 }} />
-        <View style={stylesBody.root}>
-          <Text style={stylesBody.titleNameTree}>Coffee</Text>
-          <View style={{ height: 0 }} />
-          <View style={stylesContent.root}>
-            <Text style={stylesContent.titleQuantity}>200 kg</Text>
-            <Text style={stylesContent.titlePrice}>2.000.000 $</Text>
+
+      {data.map((item: any) => (
+        <TouchableOpacity style={stylesItem.root}>
+          <View style={isIncome ? stylesDate.root : stylesDate.root1}>
+            <Text style={stylesDate.tileMonth}>{item.month}</Text>
+            <Text style={stylesDate.tileDate}>{item.day}</Text>
           </View>
-        </View>
-        <View style={{ width: 24 }} />
-        <Detail />
-      </TouchableOpacity>
+          <View style={{ width: 6 }} />
+          <View style={stylesBody.root}>
+            {isIncome ? (
+              <Text style={stylesBody.titleNameTree}>{item.tree}</Text>
+            ) : (
+              <Text style={stylesBody.titleNameTree}>{item.costType}</Text>
+            )}
+            <View style={{ height: 0 }} />
+            <View style={stylesContent.root}>
+              {isIncome ? (
+                <Text style={stylesContent.titleQuantity}>
+                  {item.quantityInKilograms} kg
+                </Text>
+              ) : (
+                <Text style={stylesContent.titleQuantity}>
+                  {item.quantity} {item.unit}
+                </Text>
+              )}
+              <Text
+                style={
+                  isIncome
+                    ? stylesContent.titlePrice
+                    : stylesContent.titlePrice1
+                }>
+                {item.totalPrice}$
+              </Text>
+            </View>
+          </View>
+          <View style={{ width: 24 }} />
+          <Detail />
+        </TouchableOpacity>
+      ))}
+
       <View style={{ height: 16 }} />
       <TouchableOpacity style={stylesFooter.root}>
         <Text style={stylesFooter.title}>See more</Text>
@@ -40,6 +71,8 @@ const historyComponent = () => {
   );
 };
 
+export default HistoryComponent;
+
 const stylesHistory = StyleSheet.create({
   root: {
     borderRadius: 12,
@@ -48,13 +81,13 @@ const stylesHistory = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    marginVertical: 16,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.white,
     shadowColor: 'rgba(0, 0, 0, 0.08)',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 8,
     padding: 16,
+    marginTop: 16,
   },
 });
 
@@ -89,6 +122,16 @@ const stylesDate = StyleSheet.create({
     justifyContent: 'center',
     padding: 4,
   },
+  root1: {
+    width: 42,
+    height: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: COLORS.red,
+    borderRadius: 12,
+    justifyContent: 'center',
+    padding: 4,
+  },
   tileMonth: {
     color: COLORS.white,
     fontFamily: 'Nunito-Regular',
@@ -118,6 +161,7 @@ const stylesItem = StyleSheet.create({
     borderWidth: 0.5,
     backgroundColor: COLORS.white,
     borderColor: COLORS.boder,
+    marginBottom: 8,
   },
 });
 
@@ -151,6 +195,14 @@ const stylesContent = StyleSheet.create({
   },
   titlePrice: {
     color: COLORS.green,
+    fontFamily: 'Nunito-SemiBold',
+    fontSize: 16,
+    fontStyle: 'italic',
+    letterSpacing: 0.42,
+    justifyContent: 'flex-end',
+  },
+  titlePrice1: {
+    color: COLORS.red,
     fontFamily: 'Nunito-SemiBold',
     fontSize: 16,
     fontStyle: 'italic',
