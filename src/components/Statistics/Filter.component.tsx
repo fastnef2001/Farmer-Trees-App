@@ -10,7 +10,11 @@ export type ButtonProps = {
   isRight?: boolean;
 };
 
-const FilterComponent = ({ onPress, titleDate, isRight }: ButtonProps) => {
+export const FilterComponent = ({
+  onPress,
+  titleDate,
+  isRight,
+}: ButtonProps) => {
   return (
     <TouchableOpacity style={stylesFilter.frame} onPress={onPress}>
       <View style={stylesFilter.body}>
@@ -29,7 +33,7 @@ const FilterComponent = ({ onPress, titleDate, isRight }: ButtonProps) => {
   );
 };
 
-const stylesFilter = StyleSheet.create({
+export const stylesFilter = StyleSheet.create({
   root: {
     width: '90%',
     justifyContent: 'center',
@@ -70,5 +74,3 @@ const stylesFilter = StyleSheet.create({
     flexDirection: 'row',
   },
 });
-
-export default FilterComponent;

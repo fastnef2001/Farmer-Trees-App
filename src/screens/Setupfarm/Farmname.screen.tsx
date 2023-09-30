@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
-import HeaderComponent from '../../components/Header/Header.component';
+import { HeaderComponent } from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import Input from '../../components/Input/Input.component';
 import IconContinue from '../../assets/images/IconContinue.svg';

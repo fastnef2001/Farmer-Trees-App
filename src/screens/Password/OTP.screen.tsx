@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
-import HeaderComponent from '../../components/Header/Header.component';
+import { HeaderComponent } from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconVerify from '../../assets/images/IconVerify.svg';
 import OTPTextView from 'react-native-otp-textinput';

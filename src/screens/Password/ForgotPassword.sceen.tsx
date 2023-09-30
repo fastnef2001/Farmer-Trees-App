@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import React from 'react';
-import HeaderComponent from '../../components/Header/Header.component';
+import { HeaderComponent } from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconSend from '../../assets/images/IconSend.svg';
 import Input from '../../components/Input/Input.component';

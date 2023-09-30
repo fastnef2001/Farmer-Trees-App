@@ -14,8 +14,8 @@ import {
 import auth from '@react-native-firebase/auth';
 import GeneralStatistics from '../../components/Statistics/GeneralStatistics.component';
 import HistoryComponent from '../../components/Statistics/History.component';
-import HeaderComponent from '../../components/Header/Header.component';
-import FilterComponent from '../../components/Statistics/Filter.component';
+import { HeaderComponent } from '../../components/Header/Header.component';
+import { FilterComponent } from '../../components/Statistics/Filter.component';
 import ButtonAddComponent from '../../components/Statistics/ButtonAdd.component';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS } from '../../theme/color';
@@ -743,7 +743,7 @@ const Statistics = ({ navigation }: any) => {
     <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }}>
         <HeaderComponent onPress={() => navigation.navigate('Profile')} />
-        <ScrollView style={{ flex: 1, marginTop: 16 }}>
+        <ScrollView style={{ flex: 1, paddingTop: 16 }}>
           {/* Filter */}
           <View style={stylesFilter.root}>
             <FilterComponent
@@ -772,7 +772,6 @@ const Statistics = ({ navigation }: any) => {
             totalProfit={totalProfit}
           />
           {/* End GeneralStatistics */}
-
           {/* Button Add */}
           <View style={stylesFilter.root}>
             <ButtonAddComponent
@@ -790,11 +789,13 @@ const Statistics = ({ navigation }: any) => {
           {/* End button add */}
           {/* History */}
           <HistoryComponent
+            handlePress={() => navigation.navigate('IncomeHistory')}
             data={dataIncome}
             title="Income history"
             isIncome={true}
           />
           <HistoryComponent
+            handlePress={() => navigation.navigate('ExpenseHistory')}
             data={dataExpense}
             title="Expense history"
             isIncome={false}

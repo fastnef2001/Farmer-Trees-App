@@ -17,6 +17,8 @@ import Farmname from '../screens/Setupfarm/Farmname.screen';
 import YourFarm from '../screens/Home/YourFarm.screen';
 import { StatusBar, Text, View } from 'react-native';
 import auth from '@react-native-firebase/auth';
+import IncomeHistory from '../screens/Home/IncomeHistory.screen';
+import ExpenseHistory from '../screens/Home/ExpenseHistory.screen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -137,7 +139,11 @@ export const MainNavigation = () => {
         options={{ headerShown: false }}
         component={Profile}
       />
-      {/* add your another screen here using -> Stack.Screen */}
+      <Stack.Screen
+        name="IncomeHistory"
+        options={{ headerShown: false }}
+        component={IncomeHistory}
+      />
     </Stack.Navigator>
   );
 };
@@ -210,6 +216,16 @@ const AppNavigator = () => {
           name="Profile"
           options={{ headerShown: false }}
           component={Profile}
+        />
+        <Stack.Screen
+          name="IncomeHistory"
+          options={{ headerShown: false }}
+          component={IncomeHistory}
+        />
+        <Stack.Screen
+          name="ExpenseHistory"
+          options={{ headerShown: false }}
+          component={ExpenseHistory}
         />
       </Stack.Navigator>
     </NavigationContainer>

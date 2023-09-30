@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import HeaderComponent from '../../components/Header/Header.component';
+import { HeaderComponent } from '../../components/Header/Header.component';
 import { ButtonMenu } from '../../components/Button/ButtonMenu';
 import WeatherComponent from '../../components/Weather/Weather.component';
 import firestore from '@react-native-firebase/firestore';

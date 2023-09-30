@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+export const styles = StyleSheet.create({
   cover: {
     width: '100%',
     paddingHorizontal: 16,
@@ -32,5 +32,21 @@ export default StyleSheet.create({
     fontStyle: 'normal',
     fontWeight: '400',
     fontFamily: 'Nunito-Regular',
+  },
+});
+
+export const stylesHeaderTitle = StyleSheet.create({
+  root: {
+    width: 375,
+    alignItems: 'center',
+    marginHorizontal: 8,
+    flexDirection: 'row',
+  },
+  incomeHistory: {
+    flex: 1,
+    color: 'white',
+    textAlign: 'center',
+    fontFamily: 'Nunito-Bold',
+    fontSize: 20,
   },
 });

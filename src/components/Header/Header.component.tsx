@@ -8,19 +8,22 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import styles from './Header.styles';
+import { styles, stylesHeaderTitle } from './Header.styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Logo from '../../assets/images/Logo.svg';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { COLORS } from '../../theme/color';
 import Logo35 from '../../assets/images/Logo72.svg';
+import IconBackWhite40 from '../../assets/images/IconBackWhite40.svg';
+import IconPlusWhite40 from '../../assets/images/IconPlusWhite40.svg';
+import { useNavigation } from '@react-navigation/native';
 
 export type ButtonProps = {
   onPress?: () => void;
 };
 
-const HeaderComponent = ({ onPress }: ButtonProps) => {
+export const HeaderComponent = ({ onPress }: ButtonProps) => {
   const user = auth().currentUser;
   const [fullName, setFullName] = useState('');
   if (user) {
@@ -63,8 +66,34 @@ const HeaderComponent = ({ onPress }: ButtonProps) => {
   );
 };
 
-export default HeaderComponent;
+export type HeaderTitleProps = {
+  // onPress?: () => void;
+  title: string;
+};
 
+export const HeaderTitle = ({ title }: HeaderTitleProps) => {
+  const navigation = useNavigation();
+  return (
+    <>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={'#163859'}
+        animated={true}
+      />
+      <SafeAreaView style={styleLogin as any}>
+        <View style={styles.cover}>
+          <View style={styles.root}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <IconBackWhite40 />
+            </TouchableOpacity>
+            <Text style={stylesHeaderTitle.incomeHistory}>{title}</Text>
+            <IconPlusWhite40 />
+          </View>
+        </View>
+      </SafeAreaView>
+    </>
+  );
+};
 const styleLogin = StyleSheet.create<any>({
   backgroundColor: '#163859',
   justifyContent: 'center',

@@ -15,7 +15,7 @@ import {
   AppRegistry,
 } from 'react-native';
 import { launchImageLibrary, MediaType } from 'react-native-image-picker';
-import HeaderComponent from '../../components/Header/Header.component';
+import { HeaderComponent } from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconAdd from '../../assets/images/IconAdd.svg';
 import Input from '../../components/Input/Input.component';
@@ -31,9 +31,6 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import styles from './Addtree.style';
-import RNRestart from 'react-native-restart';
-import { useNavigation } from '@react-navigation/native';
-import { MyTabs } from '../../navigation/navigation';
 import { ButtonBack, ButtonDelete } from '../../components/Button/Button';
 import LottieView from 'lottie-react-native';
 import { ModalLoading } from '../../components/Modal/ModalLoading';

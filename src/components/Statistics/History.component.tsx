@@ -10,13 +10,19 @@ export type HistoryProps = {
   data: never[];
   title: string;
   isIncome: boolean;
+  handlePress?: () => void;
 };
 
-const HistoryComponent = ({ data, title, isIncome }: HistoryProps) => {
+const HistoryComponent = ({
+  data,
+  title,
+  isIncome,
+  handlePress,
+}: HistoryProps) => {
   data = data.slice(0, 5);
 
   return (
-    <View style={stylesHistory.root}>
+    <View style={isIncome ? stylesHistory.root : stylesHistory.root1}>
       <View style={stylesHeader.root}>
         <Text style={stylesHeader.generalStatistics}>{title}</Text>
         <Text style={stylesHeader.exportExcel}>Export excel</Text>
@@ -63,7 +69,7 @@ const HistoryComponent = ({ data, title, isIncome }: HistoryProps) => {
       ))}
 
       <View style={{ height: 16 }} />
-      <TouchableOpacity style={stylesFooter.root}>
+      <TouchableOpacity style={stylesFooter.root} onPress={handlePress}>
         <Text style={stylesFooter.title}>See more</Text>
         <IconDetailBold />
       </TouchableOpacity>
@@ -88,6 +94,22 @@ const stylesHistory = StyleSheet.create({
     shadowRadius: 8,
     padding: 16,
     marginTop: 16,
+  },
+  root1: {
+    borderRadius: 12,
+    alignSelf: 'center',
+    width: '90%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    backgroundColor: COLORS.white,
+    shadowColor: 'rgba(0, 0, 0, 0.08)',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 8,
+    padding: 16,
+    marginTop: 16,
+    marginBottom: 32,
   },
 });
 

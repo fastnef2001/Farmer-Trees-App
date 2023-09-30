@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
-import HeaderComponent from '../../components/Header/Header.component';
+import { HeaderComponent } from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import Input from '../../components/Input/Input.component';
 import IconSend from '../../assets/images/IconSend.svg';
@@ -80,12 +80,12 @@ const ChangePassword = ({ navigation }: any) => {
                     justifyContent: 'center',
                     paddingHorizontal: 8,
                   }}>
-                  <ButtonLogin
+                  {/* <ButtonLogin
                     isRight={true}
                     isLogin={true}
                     title="LOGIN"
                     onPress={() => navigation.navigate('LoginScreen')}
-                  />
+                  /> */}
                 </View>
               </Modal.Footer>
             </Modal.Container>
