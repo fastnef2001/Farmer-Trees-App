@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import GeneralStatistics from '../../components/Statistics/GeneralStatistics.component';
+import HistoryComponent from '../../components/Statistics/History.component';
 import HeaderComponent from '../../components/Header/Header.component';
 import FilterComponent from '../../components/Statistics/Filter.component';
 import ButtonAddComponent from '../../components/Statistics/ButtonAdd.component';
@@ -274,8 +275,6 @@ const Statistics = ({ navigation }: any) => {
         switch (unit) {
           case 'Gram':
             return quantity / 1000; // 1 gram = 0.001 kilogram
-          case 'Kilogram':
-            return quantity;
           case 'Quintal':
             return quantity * 100; // 1 quintal = 100 kilograms
           case 'Ton':
@@ -291,19 +290,63 @@ const Statistics = ({ navigation }: any) => {
         const tree = inputs[0].value;
         const quantity = Number(inputs[1].value);
         const unit = inputs[2].value;
-        const total = Number(inputs[3].value);
+        const totalPrice = Number(inputs[3].value);
         const quantityInKilograms = convertToKilograms(quantity, unit);
+        let month = date.slice(5, 7);
+        switch (month) {
+          case '01':
+            month = 'Jan.';
+            break;
+          case '02':
+            month = 'Feb.';
+            break;
+          case '03':
+            month = 'Mar.';
+            break;
+          case '04':
+            month = 'Apr.';
+            break;
+          case '05':
+            month = 'May.';
+            break;
+          case '06':
+            month = 'Jun.';
+            break;
+          case '07':
+            month = 'Jul.';
+            break;
+          case '08':
+            month = 'Aug.';
+            break;
+          case '09':
+            month = 'Sep.';
+            break;
+          case '10':
+            month = 'Oct.';
+            break;
+          case '11':
+            month = 'Nov.';
+            break;
+          case '12':
+            month = 'Dec.';
+            break;
+          default:
+            month = 'Jan.';
+        }
+        const day = date.slice(8, 10);
         firestore()
           .collection('incomes')
           .doc(userid)
           .collection('income')
           .add({
+            unit,
+            month,
+            day,
             date,
             time,
             tree,
             quantityInKilograms,
-            unit,
-            total,
+            totalPrice,
           })
           .then(() => {
             setIsModalAdd(false);
@@ -329,21 +372,65 @@ const Statistics = ({ navigation }: any) => {
         const userid = auth().currentUser?.uid;
         const time = new Date().getTime();
         const date = selectedDateExpense;
-        const cost = inputs[0].value;
+        const costType = inputs[0].value;
         const quantity = Number(inputs[1].value);
-        const unit = inputs[2].value;
-        const total = Number(inputs[3].value);
+        const unit = inputs[2].value.toLowerCase();
+        const totalPrice = Number(inputs[3].value);
+        let month = date.slice(5, 7);
+        switch (month) {
+          case '01':
+            month = 'Jan.';
+            break;
+          case '02':
+            month = 'Feb.';
+            break;
+          case '03':
+            month = 'Mar.';
+            break;
+          case '04':
+            month = 'Apr.';
+            break;
+          case '05':
+            month = 'May.';
+            break;
+          case '06':
+            month = 'Jun.';
+            break;
+          case '07':
+            month = 'Jul.';
+            break;
+          case '08':
+            month = 'Aug.';
+            break;
+          case '09':
+            month = 'Sep.';
+            break;
+          case '10':
+            month = 'Oct.';
+            break;
+          case '11':
+            month = 'Nov.';
+            break;
+          case '12':
+            month = 'Dec.';
+            break;
+          default:
+            month = 'Jan.';
+        }
+        const day = date.slice(8, 10);
         firestore()
           .collection('expenses')
           .doc(userid)
           .collection('expense')
           .add({
+            month,
+            day,
             date,
             time,
-            cost,
+            costType,
             quantity,
             unit,
-            total,
+            totalPrice,
           })
           .then(() => {
             setIsModalAdd(false);
@@ -367,7 +454,9 @@ const Statistics = ({ navigation }: any) => {
   };
   // Handle general statistic
   const [totalIncome, setTotalIncome] = useState(0);
+  const [dataIncome, setDataIncome] = useState([]);
   const [totalExpense, setTotalExpense] = useState(0);
+  const [dataExpense, setDataExpense] = useState([]);
   const [totalProfit, setTotalProfit] = useState(0);
   useEffect(() => {
     setTotalProfit(totalIncome - totalExpense);
@@ -379,6 +468,7 @@ const Statistics = ({ navigation }: any) => {
         .collection('incomes')
         .doc(auth().currentUser?.uid)
         .collection('income')
+        .orderBy('time', 'desc')
         .onSnapshot(querySnapshot => {
           const incomes: any = [];
           querySnapshot.forEach(documentSnapshot => {
@@ -387,17 +477,19 @@ const Statistics = ({ navigation }: any) => {
               key: documentSnapshot.id,
             });
           });
-          const validIncomes = incomes.filter((income: { total: number }) => {
-            return !isNaN(income.total) && income.total >= 0;
-          });
+          const validIncomes = incomes.filter(
+            (income: { totalPrice: number }) => {
+              return !isNaN(income.totalPrice) && income.totalPrice >= 0;
+            },
+          );
 
           const totalSumIncome = validIncomes.reduce(
-            (accumulator: any, income: { total: number }) => {
-              return accumulator + income.total;
+            (accumulator: any, income: { totalPrice: number }) => {
+              return accumulator + income.totalPrice;
             },
             0,
           );
-
+          setDataIncome(incomes);
           setTotalIncome(totalSumIncome);
         });
       return () => subscriber();
@@ -417,17 +509,19 @@ const Statistics = ({ navigation }: any) => {
               key: documentSnapshot.id,
             });
           });
-          const validIncomes = incomes.filter((income: { total: number }) => {
-            return !isNaN(income.total) && income.total >= 0;
-          });
+          const validIncomes = incomes.filter(
+            (income: { totalPrice: number }) => {
+              return !isNaN(income.totalPrice) && income.totalPrice >= 0;
+            },
+          );
 
           const totalSumIncome = validIncomes.reduce(
-            (accumulator: any, income: { total: number }) => {
-              return accumulator + income.total;
+            (accumulator: any, income: { totalPrice: number }) => {
+              return accumulator + income.totalPrice;
             },
             0,
           );
-
+          setDataIncome(incomes);
           setTotalIncome(totalSumIncome);
         });
       return () => subscriber();
@@ -447,17 +541,19 @@ const Statistics = ({ navigation }: any) => {
               key: documentSnapshot.id,
             });
           });
-          const validIncomes = incomes.filter((income: { total: number }) => {
-            return !isNaN(income.total) && income.total >= 0;
-          });
+          const validIncomes = incomes.filter(
+            (income: { totalPrice: number }) => {
+              return !isNaN(income.totalPrice) && income.totalPrice >= 0;
+            },
+          );
 
           const totalSumIncome = validIncomes.reduce(
-            (accumulator: any, income: { total: number }) => {
-              return accumulator + income.total;
+            (accumulator: any, income: { totalPrice: number }) => {
+              return accumulator + income.totalPrice;
             },
             0,
           );
-
+          setDataIncome(incomes);
           setTotalIncome(totalSumIncome);
         });
       return () => subscriber();
@@ -478,17 +574,19 @@ const Statistics = ({ navigation }: any) => {
               key: documentSnapshot.id,
             });
           });
-          const validIncomes = incomes.filter((income: { total: number }) => {
-            return !isNaN(income.total) && income.total >= 0;
-          });
+          const validIncomes = incomes.filter(
+            (income: { totalPrice: number }) => {
+              return !isNaN(income.totalPrice) && income.totalPrice >= 0;
+            },
+          );
 
           const totalSumIncome = validIncomes.reduce(
-            (accumulator: any, income: { total: number }) => {
-              return accumulator + income.total;
+            (accumulator: any, income: { totalPrice: number }) => {
+              return accumulator + income.totalPrice;
             },
             0,
           );
-
+          setDataIncome(incomes);
           setTotalIncome(totalSumIncome);
         });
       return () => subscriber();
@@ -511,14 +609,15 @@ const Statistics = ({ navigation }: any) => {
             });
           });
           const totalSumExpense = expenses.reduce(
-            (accumulator: any, expense: { total: number }) => {
-              if (!isNaN(expense.total)) {
-                return accumulator + expense.total;
+            (accumulator: any, expense: { totalPrice: number }) => {
+              if (!isNaN(expense.totalPrice)) {
+                return accumulator + expense.totalPrice;
               }
               return accumulator;
             },
             0,
           );
+          setDataExpense(expenses);
           setTotalExpense(totalSumExpense);
         });
       return () => subscriber();
@@ -539,14 +638,15 @@ const Statistics = ({ navigation }: any) => {
             });
           });
           const totalSumExpense = expenses.reduce(
-            (accumulator: any, expense: { total: number }) => {
-              if (!isNaN(expense.total)) {
-                return accumulator + expense.total;
+            (accumulator: any, expense: { totalPrice: number }) => {
+              if (!isNaN(expense.totalPrice)) {
+                return accumulator + expense.totalPrice;
               }
               return accumulator;
             },
             0,
           );
+          setDataExpense(expenses);
           setTotalExpense(totalSumExpense);
         });
       return () => subscriber();
@@ -567,14 +667,15 @@ const Statistics = ({ navigation }: any) => {
             });
           });
           const totalSumExpense = expenses.reduce(
-            (accumulator: any, expense: { total: number }) => {
-              if (!isNaN(expense.total)) {
-                return accumulator + expense.total;
+            (accumulator: any, expense: { totalPrice: number }) => {
+              if (!isNaN(expense.totalPrice)) {
+                return accumulator + expense.totalPrice;
               }
               return accumulator;
             },
             0,
           );
+          setDataExpense(expenses);
           setTotalExpense(totalSumExpense);
         });
       return () => subscriber();
@@ -596,21 +697,21 @@ const Statistics = ({ navigation }: any) => {
             });
           });
           const totalSumExpense = expenses.reduce(
-            (accumulator: any, expense: { total: number }) => {
-              if (!isNaN(expense.total)) {
-                return accumulator + expense.total;
+            (accumulator: any, expense: { totalPrice: number }) => {
+              if (!isNaN(expense.totalPrice)) {
+                return accumulator + expense.totalPrice;
               }
               return accumulator;
             },
             0,
           );
+          setDataExpense(expenses);
           setTotalExpense(totalSumExpense);
         });
       return () => subscriber();
     }, [selectedDateEnd, selectedDateStart]);
   }
   // End get data expense
-
   React.useEffect(() => {
     const subscriber = firestore()
       .collection('expenses')
@@ -625,9 +726,9 @@ const Statistics = ({ navigation }: any) => {
           });
         });
         const totalSumExpense = expenses.reduce(
-          (accumulator: any, expense: { total: number }) => {
-            if (!isNaN(expense.total)) {
-              return accumulator + expense.total;
+          (accumulator: any, expense: { totalPrice: number }) => {
+            if (!isNaN(expense.totalPrice)) {
+              return accumulator + expense.totalPrice;
             }
             return accumulator;
           },
@@ -640,11 +741,9 @@ const Statistics = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ImageBackground
-        source={require('../../assets/images/background.jpg')}
-        style={{ flex: 1, width: '100%', height: '100%' }}>
+      <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }}>
         <HeaderComponent onPress={() => navigation.navigate('Profile')} />
-        <ScrollView style={{ flex: 1 }}>
+        <ScrollView style={{ flex: 1, marginTop: 16 }}>
           {/* Filter */}
           <View style={stylesFilter.root}>
             <FilterComponent
@@ -689,6 +788,18 @@ const Statistics = ({ navigation }: any) => {
             />
           </View>
           {/* End button add */}
+          {/* History */}
+          <HistoryComponent
+            data={dataIncome}
+            title="Income history"
+            isIncome={true}
+          />
+          <HistoryComponent
+            data={dataExpense}
+            title="Expense history"
+            isIncome={false}
+          />
+          {/* End history */}
         </ScrollView>
 
         {/* Modal pick date */}
@@ -1018,7 +1129,6 @@ const stylesFilter = StyleSheet.create({
     flexDirection: 'row',
     width: '90%',
     alignSelf: 'center',
-    marginTop: 16,
   },
 });
 
