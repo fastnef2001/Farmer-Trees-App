@@ -67,11 +67,11 @@ export const HeaderComponent = ({ onPress }: ButtonProps) => {
 };
 
 export type HeaderTitleProps = {
-  // onPress?: () => void;
+  onPress?: () => void;
   title: string;
 };
 
-export const HeaderTitle = ({ title }: HeaderTitleProps) => {
+export const HeaderTitle = ({ title, onPress }: HeaderTitleProps) => {
   const navigation = useNavigation();
   return (
     <>
@@ -87,7 +87,9 @@ export const HeaderTitle = ({ title }: HeaderTitleProps) => {
               <IconBackWhite40 />
             </TouchableOpacity>
             <Text style={stylesHeaderTitle.incomeHistory}>{title}</Text>
-            <IconPlusWhite40 />
+            <TouchableOpacity onPress={onPress}>
+              <IconPlusWhite40 />
+            </TouchableOpacity>
           </View>
         </View>
       </SafeAreaView>

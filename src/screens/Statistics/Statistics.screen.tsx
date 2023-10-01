@@ -34,6 +34,7 @@ import {
 } from '../../components/Statistics/GeneralPopUps.component';
 import { UseLogic } from './UserLogic';
 import { HandleAdd } from './HandleAdd';
+import { ModalAdd } from '../../components/Modal/ModalAdd';
 
 const Statistics = ({ navigation }: any) => {
   const {
@@ -209,198 +210,22 @@ const Statistics = ({ navigation }: any) => {
         {/* End modal pick date */}
 
         {/* Modal add */}
-        <ModalInsert isVisible={isModaAdd} isPick={false}>
-          <StatusBar backgroundColor={'#07111B'} />
-          <View style={{ flex: 1 }}>
-            <ModalInsert.Container>
-              <ModalInsert.Header>
-                <View style={styles.headSessionModal}>
-                  <TouchableOpacity onPress={handleHideModalAdd}>
-                    <IconBack> </IconBack>
-                  </TouchableOpacity>
-                  <View style={styles.txtContainer}>
-                    {titleModalAdd === 'Add income' ? (
-                      <Text style={styles.txtTitleModal1}>Add income</Text>
-                    ) : (
-                      <Text style={styles.txtTitleModal2}>Add expense</Text>
-                    )}
-                  </View>
-                  <View
-                    style={{
-                      width: 40,
-                      height: 40,
-                    }}
-                  />
-                </View>
-              </ModalInsert.Header>
-              <ScrollView>
-                <ModalInsert.Body>
-                  <View style={styles.inputSession}>
-                    {titleModalAdd === 'Add income' ? (
-                      <TouchableOpacity
-                        style={stylesPickDate.root}
-                        onPress={handlePickDate('incomeDate')}>
-                        <Text style={stylesPickDate.textDay}>
-                          {selectedDateIncome}
-                        </Text>
-                        <View style={{ width: 8 }} />
-                        <IconCalendar />
-                      </TouchableOpacity>
-                    ) : (
-                      <TouchableOpacity
-                        style={stylesPickDate.root}
-                        onPress={handlePickDate('expenseDate')}>
-                        <Text style={stylesPickDate.textDay}>
-                          {selectedDateExpense}
-                        </Text>
-                        <View style={{ width: 8 }} />
-                        <IconCalendar />
-                      </TouchableOpacity>
-                    )}
-
-                    <View style={{ height: 8 }} />
-                    {inputs.map((input, index) => (
-                      <View key={index}>
-                        {titleModalAdd === 'Add income' ? (
-                          <Input
-                            onPress={
-                              input.label === 'Tree'
-                                ? handleModalPickTree
-                                : input.label === 'Unit'
-                                ? handleModalPickUnitIncome
-                                : () => {}
-                            }
-                            label={input.label}
-                            textPlaceholder={
-                              input.label === 'Tree' || input.label === 'Unit'
-                                ? `Choose ${input.label.toLowerCase()}`
-                                : `Enter your ${input.label.toLowerCase()}`
-                            }
-                            value={input.value}
-                            onChangeText={(text: string) =>
-                              handleInputChange(index, text)
-                            }
-                            dropDown={
-                              input.label === 'Tree' || input.label === 'Unit'
-                            }
-                            iconDolar={input.label === 'Total price'}
-                            textError={input.error}
-                            keyboardType={
-                              input.label === 'Quantity' ||
-                              input.label === 'Total price'
-                                ? 'numeric'
-                                : 'default'
-                            }
-                            span="*"
-                            editable={
-                              input.label === 'Tree' || input.label === 'Unit'
-                                ? false
-                                : true
-                            }
-                          />
-                        ) : (
-                          <Input
-                            onPress={
-                              input.label === 'Cost type'
-                                ? handleModalPickCostType
-                                : input.label === 'Unit'
-                                ? handleModalPickUnitExpense
-                                : () => {}
-                            }
-                            label={input.label}
-                            textPlaceholder={
-                              input.label === 'Cost type' ||
-                              input.label === 'Unit'
-                                ? `Choose ${input.label.toLowerCase()}`
-                                : `Enter your ${input.label.toLowerCase()}`
-                            }
-                            value={input.value}
-                            onChangeText={(text: string) =>
-                              handleInputChange(index, text)
-                            }
-                            dropDown={
-                              input.label === 'Cost type' ||
-                              input.label === 'Unit'
-                            }
-                            iconDolar={input.label === 'Total price'}
-                            textError={input.error}
-                            keyboardType={
-                              input.label === 'Quantity' ||
-                              input.label === 'Total price'
-                                ? 'numeric'
-                                : 'default'
-                            }
-                            span="*"
-                            editable={
-                              input.label === 'Cost type' ||
-                              input.label === 'Unit'
-                                ? false
-                                : true
-                            }
-                          />
-                        )}
-                      </View>
-                    ))}
-                  </View>
-                  {titleModalAdd === 'Add income' && isDisabled === false ? (
-                    <TouchableOpacity
-                      style={styles.btnSendSession1}
-                      onPress={() => handleAdd('income')}>
-                      <View style={styles.txtBtnSignup}>
-                        <IconSave />
-                        <View style={{ width: 16 }} />
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            textAlign: 'center',
-                            color: '#FFFFFF',
-                            fontFamily: 'Nunito-Bold',
-                          }}>
-                          SAVE
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  ) : titleModalAdd === 'Add expense' &&
-                    isDisabled === false ? (
-                    <TouchableOpacity
-                      style={styles.btnSendSession2}
-                      onPress={() => handleAdd('expense')}>
-                      <View style={styles.txtBtnSignup}>
-                        <IconSave />
-                        <View style={{ width: 16 }} />
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            textAlign: 'center',
-                            color: '#FFFFFF',
-                            fontFamily: 'Nunito-Bold',
-                          }}>
-                          SAVE
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  ) : (
-                    <View style={styles.btnSendSession3}>
-                      <View style={styles.txtBtnSignup}>
-                        <IconSave />
-                        <View style={{ width: 16 }} />
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            textAlign: 'center',
-                            color: '#FFFFFF',
-                            fontFamily: 'Nunito-Bold',
-                          }}>
-                          SAVE
-                        </Text>
-                      </View>
-                    </View>
-                  )}
-                </ModalInsert.Body>
-              </ScrollView>
-            </ModalInsert.Container>
-          </View>
-        </ModalInsert>
+        <ModalAdd
+          isModaAdd={isModaAdd}
+          handleHideModalAdd={handleHideModalAdd}
+          titleModalAdd={titleModalAdd}
+          handlePickDate={handlePickDate}
+          selectedDateIncome={selectedDateIncome}
+          selectedDateExpense={selectedDateExpense}
+          handleModalPickTree={handleModalPickTree}
+          handleModalPickUnitIncome={handleModalPickUnitIncome}
+          handleModalPickUnitExpense={handleModalPickUnitExpense}
+          handleModalPickCostType={handleModalPickCostType}
+          handleInputChange={handleInputChange}
+          handleAdd={handleAdd}
+          inputs={inputs}
+          isDisabled={isDisabled}
+        />
         {/* End modal add */}
 
         {/* Modal pick */}

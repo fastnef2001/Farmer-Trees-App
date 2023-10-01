@@ -17,8 +17,8 @@ import Farmname from '../screens/Setupfarm/Farmname.screen';
 import YourFarm from '../screens/Home/YourFarm.screen';
 import { StatusBar, Text, View } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import IncomeHistory from '../screens/Home/IncomeHistory.screen';
-import ExpenseHistory from '../screens/Home/ExpenseHistory.screen';
+import IncomeHistory from '../screens/Statistics/IncomeHistory.screen';
+import ExpenseHistory from '../screens/Statistics/ExpenseHistory.screen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
