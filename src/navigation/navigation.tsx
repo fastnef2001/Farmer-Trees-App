@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import RegistrationScreen from '../screens/Login/Registration.screen';
 import LoginScreen from '../screens/Login/Login.screen';
 import ChatAIScreen from '../screens/Home/ChatAI.screen';
-import Statistics from '../screens/Home/Statistics.screen';
+import Statistics from '../screens/Statistics/Statistics.screen';
 import ForgotPassword from '../screens/Password/ForgotPassword.sceen';
 import Profile from '../screens/Home/Profile.screen';
 import OTPScreen from '../screens/Password/OTP.screen';

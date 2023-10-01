@@ -34,17 +34,18 @@ import {
   PopUpSuccess,
   PopUpLoading,
 } from '../../components/Statistics/GeneralPopUps.component';
+import {
+  InputInterface,
+  TreeInterface,
+  UnitInterface,
+} from './Statistics.interface';
 
 const Statistics = ({ navigation }: any) => {
   // Modal add
   const [isModaAdd, setIsModalAdd] = useState(false);
   const [titleModalAdd, setTitleModalAdd] = useState('');
-  interface Input {
-    label: string;
-    value: string;
-    error: string;
-  }
-  const [inputs, setInputs] = useState<Input[]>([]);
+
+  const [inputs, setInputs] = useState<InputInterface[]>([]);
   const timeNow = `${new Date().getFullYear()}/${(new Date().getMonth() + 1)
     .toString()
     .padStart(2, '0')}/${new Date().getDate().toString().padStart(2, '0')}`;
@@ -114,11 +115,8 @@ const Statistics = ({ navigation }: any) => {
   };
 
   // Get data unit income
-  interface Unit {
-    [x: string]: string;
-    name: string;
-  }
-  const [unitsIncome, setUnitsIncome] = useState<Unit[]>([]);
+
+  const [unitsIncome, setUnitsIncome] = useState<UnitInterface[]>([]);
   React.useEffect(() => {
     const fetchData = async () => {
       const res = await firestore()
@@ -135,13 +133,7 @@ const Statistics = ({ navigation }: any) => {
   }, []);
   // End get data unit income
   // Get data tree
-  interface Tree {
-    [x: string]: string;
-    name: string;
-    quanlity: string;
-    imageUrl: string;
-  }
-  const [trees, setTrees] = useState<Tree[]>([]);
+  const [trees, setTrees] = useState<TreeInterface[]>([]);
   React.useEffect(() => {
     const subscriber = firestore()
       .collection('trees')
@@ -162,7 +154,7 @@ const Statistics = ({ navigation }: any) => {
   }, []);
   // End get data tree
   // Get data cost type
-  const [costTypes, setCostType] = useState<Unit[]>([]);
+  const [costTypes, setCostType] = useState<UnitInterface[]>([]);
   React.useEffect(() => {
     const fetchData = async () => {
       const res = await firestore()
@@ -179,7 +171,7 @@ const Statistics = ({ navigation }: any) => {
   }, []);
   // End get data cost type
   // Get data unit expense
-  const [unitsExpense, setUnitsExpense] = useState<Unit[]>([]);
+  const [unitsExpense, setUnitsExpense] = useState<UnitInterface[]>([]);
   React.useEffect(() => {
     const fetchData = async () => {
       const res = await firestore()
