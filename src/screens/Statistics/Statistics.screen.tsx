@@ -33,8 +33,25 @@ import {
   PopUpLoading,
 } from '../../components/Statistics/GeneralPopUps.component';
 import { UseLogic } from './UserLogic';
+import { HandleAdd } from './HandleAdd';
 
 const Statistics = ({ navigation }: any) => {
+  const {
+    selectedDateStart,
+    setSelectedDateStart,
+    selectedDateEnd,
+    setSelectedDateEnd,
+    handlePickDate,
+    handleReload,
+    totalIncome,
+    totalExpense,
+    totalProfit,
+    dataIncome,
+    dataExpense,
+    status,
+    isModalPickDate,
+    setIsModalPickDate,
+  } = UseLogic();
   const {
     isModaAdd,
     setIsModalAdd,
@@ -68,19 +85,10 @@ const Statistics = ({ navigation }: any) => {
     valuePick,
     setValuePick,
     hanleHideModalPick,
-    selectedDateStart,
-    setSelectedDateStart,
-    selectedDateEnd,
-    setSelectedDateEnd,
     selectedDateIncome,
     setSelectedDateIncome,
     selectedDateExpense,
     setSelectedDateExpense,
-    handlePickDate,
-    handleReload,
-    totalIncome,
-    totalExpense,
-    totalProfit,
     handleAdd,
     isModalSuccess,
     setIsModalSuccess,
@@ -90,15 +98,7 @@ const Statistics = ({ navigation }: any) => {
     setTitleBody,
     isModalLoading,
     setIsModalLoading,
-    dataIncome,
-    setDataIncome,
-    dataExpense,
-    setDataExpense,
-    status,
-    setStatus,
-    isModalPickDate,
-    setIsModalPickDate,
-  } = UseLogic();
+  } = HandleAdd();
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }}>

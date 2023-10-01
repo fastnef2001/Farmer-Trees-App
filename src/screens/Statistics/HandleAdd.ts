@@ -141,13 +141,33 @@ function getDataCostType() {
 }
 
 export function HandleAdd() {
-  // Modal add
   const [selectedDateIncome, setSelectedDateIncome] = useState('');
   const [selectedDateExpense, setSelectedDateExpense] = useState('');
   const [isModaAdd, setIsModalAdd] = useState(false);
   const [titleModalAdd, setTitleModalAdd] = useState('');
-
   const [inputs, setInputs] = useState<InputInterface[]>([]);
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [isModalPick, setIsModalPick] = useState(false);
+  const [titlePick, setTitlePick] = useState('');
+  const [valuePick, setValuePick] = React.useState('');
+  const [isModalSuccess, setIsModalSuccess] = useState(false);
+  const [titleHeader, setTitleHeader] = useState('');
+  const [titleBody, setTitleBody] = useState('');
+  const [isModalLoading, setIsModalLoading] = useState(false);
+
+  const [inputsIncome, setInputsIncome] = useState([
+    { label: 'Tree', value: '', error: '' },
+    { label: 'Quantity', value: '', error: '' },
+    { label: 'Unit', value: '', error: '' },
+    { label: 'Total price', value: '', error: '' },
+  ]);
+  const [inputsExpense, setInputsExpense] = useState([
+    { label: 'Cost type', value: '', error: '' },
+    { label: 'Quantity', value: '', error: '' },
+    { label: 'Unit', value: '', error: '' },
+    { label: 'Total price', value: '', error: '' },
+  ]);
+
   const timeNow = getTimeNow();
 
   const handleHideModalAdd = () => {
@@ -164,14 +184,6 @@ export function HandleAdd() {
     });
   };
 
-  // Income
-  const [inputsIncome, setInputsIncome] = useState([
-    { label: 'Tree', value: '', error: '' },
-    { label: 'Quantity', value: '', error: '' },
-    { label: 'Unit', value: '', error: '' },
-    { label: 'Total price', value: '', error: '' },
-  ]);
-  const [isDisabled, setIsDisabled] = useState(true);
   useEffect(() => {
     if (inputs.length > 0) {
       if (
@@ -187,19 +199,14 @@ export function HandleAdd() {
       }
     }
   }, [inputs]);
+
   const handleModalAddIncome = () => {
     setSelectedDateIncome(timeNow);
     setTitleModalAdd('Add income');
     setInputs([...inputsIncome]);
     setIsModalAdd(!isModaAdd);
   };
-  // Expense
-  const [inputsExpense, setInputsExpense] = useState([
-    { label: 'Cost type', value: '', error: '' },
-    { label: 'Quantity', value: '', error: '' },
-    { label: 'Unit', value: '', error: '' },
-    { label: 'Total price', value: '', error: '' },
-  ]);
+
   const handleModalAddExpense = () => {
     setSelectedDateExpense(timeNow);
     setTitleModalAdd('Add expense');
@@ -224,8 +231,6 @@ export function HandleAdd() {
   const unitsExpense = getDataUnitExpense();
 
   // Modal pick
-  const [isModalPick, setIsModalPick] = useState(false);
-  const [titlePick, setTitlePick] = useState('');
   const handleModalPickHide = () => {
     setIsModalPick(false);
   };
@@ -256,7 +261,6 @@ export function HandleAdd() {
   // End modal pick
 
   // Handle value modal pick
-  const [valuePick, setValuePick] = React.useState('');
   const hanleHideModalPick = (value: string, titlePick: string) => {
     setIsModalPick(false);
     setValuePick(value);
@@ -276,10 +280,6 @@ export function HandleAdd() {
   };
 
   // Add income / expense
-  const [isModalSuccess, setIsModalSuccess] = useState(false);
-  const [titleHeader, setTitleHeader] = useState('');
-  const [titleBody, setTitleBody] = useState('');
-  const [isModalLoading, setIsModalLoading] = useState(false);
   const handleAdd = (text: string) => {
     if (text === 'income') {
       setIsModalLoading(true);
