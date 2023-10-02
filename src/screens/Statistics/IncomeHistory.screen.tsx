@@ -5,31 +5,95 @@ import { HeaderTitle } from '../../components/Header/Header.component';
 import { ModalAdd } from '../../components/Modal/ModalAdd';
 import { UseLogic } from './UserLogic';
 import { HandleAdd } from './HandleAdd';
+import { ModalPickDate } from '../../components/Modal/ModalPickDate';
 
 const IncomeHistory = () => {
   const {
-    handleModalAddIncome,
+    selectedDateStart,
+    setSelectedDateStart,
+    selectedDateEnd,
+    setSelectedDateEnd,
+    handlePickDate,
+    handleReload,
+    totalIncome,
+    totalExpense,
+    totalProfit,
+    dataIncome,
+    dataExpense,
+    status,
+    isModalPickDate,
+    setIsModalPickDate,
+  } = UseLogic();
+  const {
     isModaAdd,
-    handleHideModalAdd,
+    setIsModalAdd,
     titleModalAdd,
-    selectedDateIncome,
-    selectedDateExpense,
+    setTitleModalAdd,
+    inputs,
+    setInputs,
+    handleHideModalAdd,
+    handleInputChange,
+    inputsIncome,
+    setInputsIncome,
+    isDisabled,
+    setIsDisabled,
+    handleModalAddIncome,
+    inputsExpense,
+    setInputsExpense,
+    handleModalAddExpense,
+    unitsIncome,
+    trees,
+    costTypes,
+    unitsExpense,
+    handleModalPickHide,
     handleModalPickTree,
     handleModalPickUnitIncome,
-    handleModalPickUnitExpense,
     handleModalPickCostType,
-    handleInputChange,
+    handleModalPickUnitExpense,
+    isModalPick,
+    setIsModalPick,
+    titlePick,
+    setTitlePick,
+    valuePick,
+    setValuePick,
+    hanleHideModalPick,
+    selectedDateIncome,
+    setSelectedDateIncome,
+    selectedDateExpense,
+    setSelectedDateExpense,
     handleAdd,
-    inputs,
-    isDisabled,
+    isModalSuccess,
+    setIsModalSuccess,
+    titleHeader,
+    setTitleHeader,
+    titleBody,
+    setTitleBody,
+    isModalLoading,
+    setIsModalLoading,
   } = HandleAdd();
-  const { handlePickDate } = UseLogic();
 
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderTitle title="Income history" onPress={handleModalAddIncome} />
       </SafeAreaView>
+      {/* Modal pick date */}
+      <ModalPickDate
+        isModalPickDate={isModalPickDate}
+        setIsModalPickDate={setIsModalPickDate}
+        status={status}
+        setSelectedDateStart={setSelectedDateStart}
+        setSelectedDateEnd={setSelectedDateEnd}
+        setSelectedDateIncome={setSelectedDateIncome}
+        setSelectedDateExpense={setSelectedDateExpense}
+        selectedDateStart={selectedDateStart}
+        selectedDateEnd={selectedDateEnd}
+        selectedDateIncome={selectedDateIncome}
+        selectedDateExpense={selectedDateExpense}
+      />
+      {/* End modal pick date */}
+
+      {/* Modal add */}
       <ModalAdd
         isModaAdd={isModaAdd}
         handleHideModalAdd={handleHideModalAdd}
@@ -46,6 +110,7 @@ const IncomeHistory = () => {
         inputs={inputs}
         isDisabled={isDisabled}
       />
+      {/* End modal add */}
     </>
   );
 };
