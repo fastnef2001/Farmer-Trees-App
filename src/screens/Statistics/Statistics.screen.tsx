@@ -31,7 +31,7 @@ import IconCalendar from '../../assets/images/IconCalendar.svg';
 import {
   PopUpSuccess,
   PopUpLoading,
-} from '../../components/Statistics/GeneralPopUps.component';
+} from '../../components/Modal/GeneralPopUps.component';
 import { UseLogic } from './UserLogic';
 import { HandleAdd } from './HandleAdd';
 import { ModalAdd } from '../../components/Modal/ModalAdd';

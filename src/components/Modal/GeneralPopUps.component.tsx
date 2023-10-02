@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 import { COLORS } from '../../theme/color';
-import { Modal } from '../../components/Modal/Modal';
+import { Modal } from './Modal';
 import { StatusBar } from 'react-native';
-import { ModalLoading } from '../../components/Modal/ModalLoading';
+import { ModalLoading } from './ModalLoading';
 
 export type PopUpSuccessProps = {
   //   onPress: () => void;
