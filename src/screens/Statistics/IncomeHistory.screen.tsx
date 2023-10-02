@@ -6,6 +6,7 @@ import { ModalAdd } from '../../components/Modal/ModalAdd';
 import { UseLogic } from './UserLogic';
 import { HandleAdd } from './HandleAdd';
 import { ModalPickDate } from '../../components/Modal/ModalPickDate';
+import { ModalPick } from '../../components/Modal/ModalPick';
 
 const IncomeHistory = () => {
   const {
@@ -111,6 +112,22 @@ const IncomeHistory = () => {
         isDisabled={isDisabled}
       />
       {/* End modal add */}
+      {/* Modal pick */}
+      <ModalPick
+        isModalPick={isModalPick}
+        setIsModalPick={setIsModalPick}
+        titlePick={titlePick}
+        setTitlePick={setTitlePick}
+        valuePick={valuePick}
+        setValuePick={setValuePick}
+        trees={trees}
+        unitsIncome={unitsIncome}
+        costTypes={costTypes}
+        unitsExpense={unitsExpense}
+        handleModalPickHide={handleModalPickHide}
+        hanleHideModalPick={hanleHideModalPick}
+      />
+      {/* End modal pick */}
     </>
   );
 };
