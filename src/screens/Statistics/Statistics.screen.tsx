@@ -166,48 +166,19 @@ const Statistics = ({ navigation }: any) => {
         </ScrollView>
 
         {/* Modal pick date */}
-        <PickDate
-          isVisible={isModalPickDate}
-          onBackdropPress={() => setIsModalPickDate(false)}>
-          <StatusBar backgroundColor={'#07111B'} />
-          <PickDate.Container>
-            <PickDate.Body>
-              <DatePicker
-                onSelectedChange={date => {
-                  if (status === 'startDate') {
-                    setSelectedDateStart(date);
-                  } else if (status === 'endDate') {
-                    setSelectedDateEnd(date);
-                  } else if (status === 'incomeDate') {
-                    setSelectedDateIncome(date);
-                  } else {
-                    setSelectedDateExpense(date);
-                  }
-                  // setIsModalPickDate(false);
-                }}
-                mode="calendar"
-                options={{
-                  textHeaderColor: COLORS.blue,
-                  textDefaultColor: COLORS.blue,
-                  selectedTextColor: '#fff',
-                  mainColor: COLORS.blue,
-                  textSecondaryColor: COLORS.text2,
-                  defaultFont: 'Nunito-SemiBold',
-                }}
-                selected={
-                  status === 'startDate'
-                    ? selectedDateStart
-                    : status === 'endDate'
-                    ? selectedDateEnd
-                    : status === 'incomeDate'
-                    ? selectedDateIncome
-                    : selectedDateExpense
-                }
-                selectorStartingYear={2020}
-              />
-            </PickDate.Body>
-          </PickDate.Container>
-        </PickDate>
+        <ModalPickDate
+          isModalPickDate={isModalPickDate}
+          setIsModalPickDate={setIsModalPickDate}
+          status={status}
+          setSelectedDateStart={setSelectedDateStart}
+          setSelectedDateEnd={setSelectedDateEnd}
+          setSelectedDateIncome={setSelectedDateIncome}
+          setSelectedDateExpense={setSelectedDateExpense}
+          selectedDateStart={selectedDateStart}
+          selectedDateEnd={selectedDateEnd}
+          selectedDateIncome={selectedDateIncome}
+          selectedDateExpense={selectedDateExpense}
+        />
         {/* End modal pick date */}
 
         {/* Modal add */}
