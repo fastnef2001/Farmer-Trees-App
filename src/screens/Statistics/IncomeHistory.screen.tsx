@@ -11,6 +11,8 @@ import {
   PopUpSuccess,
   PopUpLoading,
 } from '../../components/Modal/GeneralPopUps.component';
+import { FilterComponent } from '../../components/Statistics/Filter.component';
+import IconSwitch from '../../assets/images/IconSwitch.svg';
 
 const IncomeHistory = () => {
   const {
@@ -79,8 +81,39 @@ const IncomeHistory = () => {
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }}>
-        <HeaderTitle title="Income history" onPress={handleModalAddIncome} />
+      <HeaderTitle title="Income history" onPress={handleModalAddIncome} />
+      <SafeAreaView style={{ flex: 1, paddingTop: 16 }}>
+        {/* Filter */}
+        <View style={stylesFilter.root}>
+          <FilterComponent
+            onPress={handlePickDate('startDate')}
+            titleDate={selectedDateStart}
+            title="startDate"
+            isCalendar={true}
+          />
+          <View style={{ width: 8 }} />
+          <FilterComponent
+            onPress={handlePickDate('endDate')}
+            titleDate={selectedDateEnd}
+            title="endDate"
+            isCalendar={true}
+          />
+        </View>
+        <View style={{ height: 8 }} />
+        <View style={stylesFilter.root}>
+          <FilterComponent
+            onPress={handlePickDate('startDate')}
+            titleDate={selectedDateStart}
+            isCalendar={false}
+          />
+          <View style={{ width: 8 }} />
+          <TouchableOpacity
+            style={stylesButtonReload.root}
+            onPress={handleReload}>
+            <IconSwitch />
+          </TouchableOpacity>
+        </View>
+        {/* End filter */}
       </SafeAreaView>
       {/* Modal pick date */}
       <ModalPickDate
@@ -143,5 +176,26 @@ const IncomeHistory = () => {
     </>
   );
 };
+const stylesFilter = StyleSheet.create({
+  root: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    width: '90%',
+    alignSelf: 'center',
+  },
+});
+
+const stylesButtonReload = StyleSheet.create({
+  root: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#163859',
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default IncomeHistory;

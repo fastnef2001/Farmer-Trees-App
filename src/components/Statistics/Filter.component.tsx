@@ -7,13 +7,15 @@ import { COLORS } from '../../theme/color';
 export type ButtonProps = {
   onPress: () => void;
   titleDate?: string;
-  isRight?: boolean;
+  isCalendar?: boolean;
+  title?: string;
 };
 
 export const FilterComponent = ({
   onPress,
   titleDate,
-  isRight,
+  isCalendar,
+  title,
 }: ButtonProps) => {
   return (
     <TouchableOpacity style={stylesFilter.frame} onPress={onPress}>
@@ -21,13 +23,15 @@ export const FilterComponent = ({
         <View style={stylesFilter.date}>
           {titleDate ? (
             <Text style={stylesFilter.dateText}>{titleDate}</Text>
-          ) : isRight ? (
+          ) : title === 'startDate' ? (
             <Text style={stylesFilter.dateText1}>Start date</Text>
-          ) : (
+          ) : title === 'endDate' ? (
             <Text style={stylesFilter.dateText1}>End date</Text>
+          ) : (
+            <Text style={stylesFilter.dateText1}>All tree</Text>
           )}
         </View>
-        <IconCalendar />
+        {isCalendar ? <IconCalendar /> : <IconDrop />}
       </View>
     </TouchableOpacity>
   );

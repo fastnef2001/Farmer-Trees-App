@@ -112,13 +112,15 @@ const Statistics = ({ navigation }: any) => {
             <FilterComponent
               onPress={handlePickDate('startDate')}
               titleDate={selectedDateStart}
-              isRight={true}
+              title="startDate"
+              isCalendar={true}
             />
             <View style={{ width: 8 }} />
             <FilterComponent
               onPress={handlePickDate('endDate')}
               titleDate={selectedDateEnd}
-              isRight={false}
+              title="endDate"
+              isCalendar={true}
             />
             <View style={{ width: 8 }} />
             <TouchableOpacity
