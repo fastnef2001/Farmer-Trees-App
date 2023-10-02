@@ -35,6 +35,7 @@ import {
 import { UseLogic } from './UserLogic';
 import { HandleAdd } from './HandleAdd';
 import { ModalAdd } from '../../components/Modal/ModalAdd';
+import { ModalPickDate } from '../../components/Modal/ModalPickDate';
 
 const Statistics = ({ navigation }: any) => {
   const {
