@@ -7,6 +7,10 @@ import { UseLogic } from './UserLogic';
 import { HandleAdd } from './HandleAdd';
 import { ModalPickDate } from '../../components/Modal/ModalPickDate';
 import { ModalPick } from '../../components/Modal/ModalPick';
+import {
+  PopUpSuccess,
+  PopUpLoading,
+} from '../../components/Modal/GeneralPopUps.component';
 
 const IncomeHistory = () => {
   const {
@@ -128,6 +132,14 @@ const IncomeHistory = () => {
         hanleHideModalPick={hanleHideModalPick}
       />
       {/* End modal pick */}
+      {/* Pop up noti and loading */}
+      <PopUpSuccess
+        isModalSuccess={isModalSuccess}
+        titleHeader={titleHeader}
+        titleBody={titleBody}
+      />
+      <PopUpLoading isModalSuccess={isModalLoading} />
+      {/* End up noti and loading */}
     </>
   );
 };
