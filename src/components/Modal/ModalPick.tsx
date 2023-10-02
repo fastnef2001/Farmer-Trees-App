@@ -35,7 +35,7 @@ export type ModalPickProps = {
   hanleHideModalPick: (value: string, title: string) => void;
 };
 
-const ModalPick = (
+export const ModalPick = (
   {
     isModalPick,
     setIsModalPick,
@@ -122,5 +122,3 @@ const ModalPick = (
     </>
   );
 };
-
-export default ModalPick;

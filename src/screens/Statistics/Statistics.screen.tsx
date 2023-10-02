@@ -36,6 +36,7 @@ import { UseLogic } from './UserLogic';
 import { HandleAdd } from './HandleAdd';
 import { ModalAdd } from '../../components/Modal/ModalAdd';
 import { ModalPickDate } from '../../components/Modal/ModalPickDate';
+import { ModalPick } from '../../components/Modal/ModalPick';
 
 const Statistics = ({ navigation }: any) => {
   const {
@@ -201,71 +202,20 @@ const Statistics = ({ navigation }: any) => {
         {/* End modal add */}
 
         {/* Modal pick */}
-        <ModalInsert isVisible={isModalPick}>
-          <StatusBar backgroundColor={'#010508'} />
-          <ModalInsert.Container isPick={true}>
-            <ModalInsert.Header>
-              <View style={styles.headSessionModal}>
-                <TouchableOpacity onPress={handleModalPickHide}>
-                  <IconBack> </IconBack>
-                </TouchableOpacity>
-                <View style={styles.txtContainer}>
-                  <Text style={styles.txtTitleModal}>{titlePick}</Text>
-                </View>
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                  }}
-                />
-              </View>
-            </ModalInsert.Header>
-
-            <ScrollView>
-              <ModalInsert.Body isPick={true}>
-                <RadioButton.Group
-                  onValueChange={value => hanleHideModalPick(value, titlePick)}
-                  value={valuePick}>
-                  {titlePick === 'Pick tree' ? (
-                    trees.map((tree, index) => (
-                      <RadioButton.Item
-                        color={COLORS.blue}
-                        label={tree.name}
-                        value={tree.name}
-                      />
-                    ))
-                  ) : titlePick === 'Pick unit income' ? (
-                    unitsIncome.map((unit, index) => (
-                      <RadioButton.Item
-                        color={COLORS.blue}
-                        label={unit.name}
-                        value={unit.name}
-                      />
-                    ))
-                  ) : titlePick === 'Pick cost type' ? (
-                    costTypes.map((costType, index) => (
-                      <RadioButton.Item
-                        color={COLORS.blue}
-                        label={costType.name}
-                        value={costType.name}
-                      />
-                    ))
-                  ) : titlePick === 'Pick unit expense' ? (
-                    unitsExpense.map((unit, index) => (
-                      <RadioButton.Item
-                        color={COLORS.blue}
-                        label={unit.name}
-                        value={unit.name}
-                      />
-                    ))
-                  ) : (
-                    <></>
-                  )}
-                </RadioButton.Group>
-              </ModalInsert.Body>
-            </ScrollView>
-          </ModalInsert.Container>
-        </ModalInsert>
+        <ModalPick
+          isModalPick={isModalPick}
+          setIsModalPick={setIsModalPick}
+          titlePick={titlePick}
+          setTitlePick={setTitlePick}
+          valuePick={valuePick}
+          setValuePick={setValuePick}
+          trees={trees}
+          unitsIncome={unitsIncome}
+          costTypes={costTypes}
+          unitsExpense={unitsExpense}
+          handleModalPickHide={handleModalPickHide}
+          hanleHideModalPick={hanleHideModalPick}
+        />
         {/* End modal pick */}
 
         {/* Pop up noti and loading */}
