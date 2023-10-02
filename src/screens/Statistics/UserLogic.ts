@@ -9,15 +9,19 @@ import {
   TreeInterface,
   UnitInterface,
 } from './Statistics.interface';
+import { HandleAdd } from './HandleAdd';
 
 export function UseLogic() {
   //Handlefilter
+  const [selectedTreeOrCostType, setSelectedTreeOrCostType] = useState('');
   const [selectedDateStart, setSelectedDateStart] = useState('');
   const [selectedDateEnd, setSelectedDateEnd] = useState('');
   const [selectedDateIncome, setSelectedDateIncome] = useState('');
   const [selectedDateExpense, setSelectedDateExpense] = useState('');
   const [status, setStatus] = useState('');
   const [isModalPickDate, setIsModalPickDate] = useState(false);
+  const [isModalPickFilter, setIsModalPickFilter] = useState(false);
+  const [titlePickFilter, setTitlePickFilter] = useState('');
   const handlePickDate = (text: string) => () => {
     setIsModalPickDate(true);
     setStatus(text);
@@ -25,6 +29,17 @@ export function UseLogic() {
   const handleReload = () => {
     setSelectedDateStart('');
     setSelectedDateEnd('');
+    setSelectedTreeOrCostType('');
+  };
+
+  const handleModalPickFilter = () => {
+    setIsModalPickFilter(!isModalPickFilter);
+    setTitlePickFilter('Pick tree');
+  };
+
+  const hanleHideModalPickFilter = (value: string, titlePick: string) => {
+    setIsModalPickFilter(false);
+    setSelectedTreeOrCostType(value);
   };
 
   // Handle general statistic
@@ -336,5 +351,11 @@ export function UseLogic() {
     setStatus,
     isModalPickDate,
     setIsModalPickDate,
+    selectedTreeOrCostType,
+    setSelectedTreeOrCostType,
+    isModalPickFilter,
+    hanleHideModalPickFilter,
+    handleModalPickFilter,
+    titlePickFilter,
   };
 }

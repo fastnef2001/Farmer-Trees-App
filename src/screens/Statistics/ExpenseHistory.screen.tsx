@@ -11,6 +11,8 @@ import {
   PopUpSuccess,
   PopUpLoading,
 } from '../../components/Modal/GeneralPopUps.component';
+import { FilterComponent } from '../../components/Statistics/Filter.component';
+import IconSwitch from '../../assets/images/IconSwitch.svg';
 
 const ExpenseHistory = () => {
   const {
@@ -28,6 +30,12 @@ const ExpenseHistory = () => {
     status,
     isModalPickDate,
     setIsModalPickDate,
+    setSelectedTreeOrCostType,
+    selectedTreeOrCostType,
+    isModalPickFilter,
+    hanleHideModalPickFilter,
+    titlePickFilter,
+    handleModalPickFilter,
   } = UseLogic();
   const {
     isModaAdd,
@@ -79,8 +87,39 @@ const ExpenseHistory = () => {
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }}>
-        <HeaderTitle title="Expense history" onPress={handleModalAddExpense} />
+      <HeaderTitle title="Expense history" onPress={handleModalAddExpense} />
+      <SafeAreaView style={{ flex: 1, padding: 16 }}>
+        {/* Filter */}
+        <View style={stylesFilter.root}>
+          <FilterComponent
+            onPress={handlePickDate('startDate')}
+            titleDate={selectedDateStart}
+            title="startDate"
+            isCalendar={true}
+          />
+          <View style={{ width: 8 }} />
+          <FilterComponent
+            onPress={handlePickDate('endDate')}
+            titleDate={selectedDateEnd}
+            title="endDate"
+            isCalendar={true}
+          />
+        </View>
+        <View style={{ height: 8 }} />
+        <View style={stylesFilter.root}>
+          <FilterComponent
+            onPress={handleModalPickFilter}
+            titleDate={selectedTreeOrCostType}
+            isCalendar={false}
+          />
+          <View style={{ width: 8 }} />
+          <TouchableOpacity
+            style={stylesButtonReload.root}
+            onPress={handleReload}>
+            <IconSwitch />
+          </TouchableOpacity>
+        </View>
+        {/* End filter */}
       </SafeAreaView>
       {/* Modal pick date */}
       <ModalPickDate
@@ -118,6 +157,20 @@ const ExpenseHistory = () => {
       {/* End modal add */}
       {/* Modal pick */}
       <ModalPick
+        isModalPick={isModalPickFilter}
+        setIsModalPick={setIsModalPick}
+        titlePick={titlePickFilter}
+        setTitlePick={setTitlePick}
+        valuePick={selectedTreeOrCostType}
+        setValuePick={setSelectedTreeOrCostType}
+        trees={trees}
+        unitsIncome={unitsIncome}
+        costTypes={costTypes}
+        unitsExpense={unitsExpense}
+        handleModalPickHide={handleModalPickFilter}
+        hanleHideModalPick={hanleHideModalPickFilter}
+      />
+      <ModalPick
         isModalPick={isModalPick}
         setIsModalPick={setIsModalPick}
         titlePick={titlePick}
@@ -145,3 +198,25 @@ const ExpenseHistory = () => {
 };
 
 export default ExpenseHistory;
+
+const stylesFilter = StyleSheet.create({
+  root: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    width: '100%',
+    alignSelf: 'center',
+  },
+});
+
+const stylesButtonReload = StyleSheet.create({
+  root: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#163859',
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
