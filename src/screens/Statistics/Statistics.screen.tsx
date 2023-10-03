@@ -216,7 +216,7 @@ const Statistics = ({ navigation }: any) => {
           costTypes={costTypes}
           unitsExpense={unitsExpense}
           handleModalPickHide={handleModalPickHide}
-          hanleHideModalPick={hanleHideModalPick}
+          hanlePickItem={hanleHideModalPick}
         />
         {/* End modal pick */}
 

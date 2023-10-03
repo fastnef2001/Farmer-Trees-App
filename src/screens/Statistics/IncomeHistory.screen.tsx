@@ -33,9 +33,10 @@ const IncomeHistory = () => {
     setSelectedTreeOrCostType,
     selectedTreeOrCostType,
     isModalPickFilter,
-    hanleHideModalPickFilter,
+    hanlePickItem,
     titlePickFilter,
     handleModalPickFilter,
+    handleModalPickHideFilter,
   } = UseLogic();
   const {
     isModaAdd,
@@ -108,7 +109,9 @@ const IncomeHistory = () => {
         <View style={{ height: 8 }} />
         <View style={stylesFilter.root}>
           <FilterComponent
-            onPress={handleModalPickFilter}
+            onPress={() => {
+              handleModalPickFilter('Pick tree');
+            }}
             titleDate={selectedTreeOrCostType}
             isCalendar={false}
           />
@@ -167,8 +170,8 @@ const IncomeHistory = () => {
         unitsIncome={unitsIncome}
         costTypes={costTypes}
         unitsExpense={unitsExpense}
-        handleModalPickHide={handleModalPickFilter}
-        hanleHideModalPick={hanleHideModalPickFilter}
+        handleModalPickHide={handleModalPickHideFilter}
+        hanlePickItem={hanlePickItem}
       />
       <ModalPick
         isModalPick={isModalPick}
@@ -182,7 +185,7 @@ const IncomeHistory = () => {
         costTypes={costTypes}
         unitsExpense={unitsExpense}
         handleModalPickHide={handleModalPickHide}
-        hanleHideModalPick={hanleHideModalPick}
+        hanlePickItem={hanleHideModalPick}
       />
       {/* End modal pick */}
       {/* Pop up noti and loading */}

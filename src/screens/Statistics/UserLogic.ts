@@ -32,12 +32,15 @@ export function UseLogic() {
     setSelectedTreeOrCostType('');
   };
 
-  const handleModalPickFilter = () => {
+  const handleModalPickFilter = (title: string) => {
     setIsModalPickFilter(!isModalPickFilter);
-    setTitlePickFilter('Pick tree');
+    setTitlePickFilter(title);
+  };
+  const handleModalPickHideFilter = () => {
+    setIsModalPickFilter(false);
   };
 
-  const hanleHideModalPickFilter = (value: string, titlePick: string) => {
+  const hanlePickItem = (value: string, titlePick: string) => {
     setIsModalPickFilter(false);
     setSelectedTreeOrCostType(value);
   };
@@ -354,8 +357,9 @@ export function UseLogic() {
     selectedTreeOrCostType,
     setSelectedTreeOrCostType,
     isModalPickFilter,
-    hanleHideModalPickFilter,
+    hanlePickItem,
     handleModalPickFilter,
     titlePickFilter,
+    handleModalPickHideFilter,
   };
 }

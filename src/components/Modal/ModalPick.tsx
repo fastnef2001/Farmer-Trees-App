@@ -32,7 +32,7 @@ export type ModalPickProps = {
   costTypes: UnitInterface[];
   unitsExpense: UnitInterface[];
   handleModalPickHide: () => void;
-  hanleHideModalPick: (value: string, title: string) => void;
+  hanlePickItem: (value: string, title: string) => void;
 };
 
 export const ModalPick = (
@@ -48,7 +48,7 @@ export const ModalPick = (
     costTypes,
     unitsExpense,
     handleModalPickHide,
-    hanleHideModalPick,
+    hanlePickItem,
   }: ModalPickProps,
   props: any,
 ) => {
@@ -77,7 +77,7 @@ export const ModalPick = (
           <ScrollView>
             <ModalInsert.Body isPick={true}>
               <RadioButton.Group
-                onValueChange={value => hanleHideModalPick(value, titlePick)}
+                onValueChange={value => hanlePickItem(value, titlePick)}
                 value={valuePick}>
                 {titlePick === 'Pick tree' ? (
                   trees.map((tree, index) => (
