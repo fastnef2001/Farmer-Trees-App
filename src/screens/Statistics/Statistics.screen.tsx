@@ -12,7 +12,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import GeneralStatistics from '../../components/Statistics/GeneralStatistics.component';
-import HistoryComponent from '../../components/Statistics/History.component';
+import { HistoryComponent } from '../../components/Statistics/History.component';
 import { HeaderComponent } from '../../components/Header/Header.component';
 import { FilterComponent } from '../../components/Statistics/Filter.component';
 import ButtonAddComponent from '../../components/Statistics/ButtonAdd.component';

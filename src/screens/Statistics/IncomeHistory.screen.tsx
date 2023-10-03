@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { HeaderTitle } from '../../components/Header/Header.component';
 import { ModalAdd } from '../../components/Modal/ModalAdd';
@@ -13,6 +19,7 @@ import {
 } from '../../components/Modal/GeneralPopUps.component';
 import { FilterComponent } from '../../components/Statistics/Filter.component';
 import IconSwitch from '../../assets/images/IconSwitch.svg';
+import { HistoryElemment } from '../../components/Statistics/History.component';
 
 const IncomeHistory = () => {
   const {
@@ -88,9 +95,10 @@ const IncomeHistory = () => {
 
   return (
     <>
-      <HeaderTitle title="Income history" onPress={handleModalAddIncome} />
-      <SafeAreaView style={{ flex: 1, paddingTop: 16 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderTitle title="Income history" onPress={handleModalAddIncome} />
         {/* Filter */}
+        <View style={{ height: 16 }} />
         <View style={stylesFilter.root}>
           <FilterComponent
             onPress={handlePickDate('startDate')}
@@ -122,7 +130,17 @@ const IncomeHistory = () => {
             <IconSwitch />
           </TouchableOpacity>
         </View>
+        <View style={{ height: 16 }} />
         {/* End filter */}
+        <ScrollView
+          style={{
+            flex: 1,
+            width: '90%',
+            alignSelf: 'center',
+          }}>
+          <HistoryElemment data={dataIncome} title="Income" isIncome={true} />
+          <View style={{ height: 16 }} />
+        </ScrollView>
       </SafeAreaView>
       {/* Modal pick date */}
       <ModalPickDate

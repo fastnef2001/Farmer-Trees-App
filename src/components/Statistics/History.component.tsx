@@ -13,7 +13,7 @@ export type HistoryProps = {
   handlePress?: () => void;
 };
 
-const HistoryComponent = ({
+export const HistoryComponent = ({
   data,
   title,
   isIncome,
@@ -77,7 +77,55 @@ const HistoryComponent = ({
   );
 };
 
-export default HistoryComponent;
+export const HistoryElemment = ({
+  data,
+  title,
+  isIncome,
+  handlePress,
+}: HistoryProps) => {
+  return (
+    <>
+      {data.map((item: any) => (
+        <TouchableOpacity style={stylesItem.root}>
+          <View style={isIncome ? stylesDate.root : stylesDate.root1}>
+            <Text style={stylesDate.tileMonth}>{item.month}</Text>
+            <Text style={stylesDate.tileDate}>{item.day}</Text>
+          </View>
+          <View style={{ width: 6 }} />
+          <View style={stylesBody.root}>
+            {isIncome ? (
+              <Text style={stylesBody.titleNameTree}>{item.tree}</Text>
+            ) : (
+              <Text style={stylesBody.titleNameTree}>{item.costType}</Text>
+            )}
+            <View style={{ height: 0 }} />
+            <View style={stylesContent.root}>
+              {isIncome ? (
+                <Text style={stylesContent.titleQuantity}>
+                  {item.quantityInKilograms} kg
+                </Text>
+              ) : (
+                <Text style={stylesContent.titleQuantity}>
+                  {item.quantity} {item.unit}
+                </Text>
+              )}
+              <Text
+                style={
+                  isIncome
+                    ? stylesContent.titlePrice
+                    : stylesContent.titlePrice1
+                }>
+                {item.totalPrice}$
+              </Text>
+            </View>
+          </View>
+          <View style={{ width: 24 }} />
+          <Detail />
+        </TouchableOpacity>
+      ))}
+    </>
+  );
+};
 
 const stylesHistory = StyleSheet.create({
   root: {
