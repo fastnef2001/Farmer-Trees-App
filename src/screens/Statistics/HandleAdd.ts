@@ -141,13 +141,26 @@ function getDataCostType() {
 }
 
 function convertTotimestamp(selectDate: string) {
-  const timeNow = new Date().toLocaleTimeString('en-US', {
-    hour12: true,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
-  console.log('timeNow', timeNow);
+  const now = new Date();
+  let hours = now.getHours();
+  let minutes = now.getMinutes();
+  let seconds = now.getSeconds();
+
+  // Xác định liệu là AM hay PM
+  let period = 'AM';
+  if (hours >= 12) {
+    period = 'PM';
+  }
+
+  // Thêm số 0 nếu cần thiết
+  hours = hours % 12; // Đổi giờ sang định dạng 12 giờ
+  const hoursString = hours < 10 ? `0${hours}` : hours;
+  const minutesString = minutes < 10 ? `0${minutes}` : minutes;
+  const secondsString = seconds < 10 ? `0${seconds}` : seconds;
+
+  // Tạo chuỗi thời gian hiện tại
+  const timeNow = `${hoursString}:${minutesString}:${secondsString} ${period}`;
+  console.log('timeNowdggsg', timeNow);
 
   const [year, month1, day] = selectDate.split('/').map(Number);
   const selectedDate = new Date(year, month1 - 1, day, 0, 0, 0);
