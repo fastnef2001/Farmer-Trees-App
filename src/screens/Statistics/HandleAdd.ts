@@ -146,19 +146,16 @@ function convertTotimestamp(selectDate: string) {
   let minutes = now.getMinutes();
   let seconds = now.getSeconds();
 
-  // Xác định liệu là AM hay PM
   let period = 'AM';
   if (hours >= 12) {
     period = 'PM';
   }
 
-  // Thêm số 0 nếu cần thiết
-  hours = hours % 12; // Đổi giờ sang định dạng 12 giờ
+  hours = hours % 12;
   const hoursString = hours < 10 ? `0${hours}` : hours;
   const minutesString = minutes < 10 ? `0${minutes}` : minutes;
   const secondsString = seconds < 10 ? `0${seconds}` : seconds;
 
-  // Tạo chuỗi thời gian hiện tại
   const timeNow = `${hoursString}:${minutesString}:${secondsString} ${period}`;
   console.log('timeNowdggsg', timeNow);
 

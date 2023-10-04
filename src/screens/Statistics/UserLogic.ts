@@ -63,9 +63,7 @@ export function UseLogic() {
     if (isStart) {
       timeNow = '00:00:00 AM';
     } else {
-      // timeNow = '1:14:03 PM'; // ĐÚNG GIỜ - HIỆN
-      // timeNow = '1:13:03 PM'; // NHỎ HƠN - ẨN
-      timeNow = '11:59:59 PM'; // LƠN HƠN - HIỆN
+      timeNow = '11:59:59 PM';
     }
 
     const [year, month1, day] = date.split('/').map(Number);
@@ -89,232 +87,117 @@ export function UseLogic() {
     );
     return timestamp;
   }
-  React.useEffect(() => {
-    const timestampStart = convertTotimestamp(selectedDateStart, true);
-    const timestampEnd = convertTotimestamp(selectedDateEnd, false);
-    let subscriber = firestore()
-      .collection('incomes')
-      .doc(auth().currentUser?.uid)
-      .collection('income')
-      .orderBy('timestamp', 'desc');
-    if (selectedDateStart) {
-      subscriber = subscriber.where('timestamp', '>=', timestampStart);
-    }
-    if (selectedDateEnd) {
-      subscriber = subscriber.where('timestamp', '<=', timestampEnd);
-    }
 
-    const query = subscriber.onSnapshot(querySnapshot => {
-      const incomes: any = [];
-      querySnapshot.forEach(documentSnapshot => {
-        incomes.push({
-          ...documentSnapshot.data(),
-          key: documentSnapshot.id,
-        });
-      });
-      const validIncomes = incomes.filter((income: { totalPrice: number }) => {
-        return !isNaN(income.totalPrice) && income.totalPrice >= 0;
-      });
+  function fetchDataAndCalculateTotal(
+    collectionName1: string,
+    collectionName2: string,
+    selectedDateStart: string,
+    selectedDateEnd: string,
+    selectedTreeOrCostType: string,
+    setData: React.Dispatch<React.SetStateAction<never[]>>,
+    setTotal: React.Dispatch<React.SetStateAction<number>>,
+    filter: string,
+  ) {
+    useEffect(() => {
+      const timestampStart = convertTotimestamp(selectedDateStart, true);
+      const timestampEnd = convertTotimestamp(selectedDateEnd, false);
 
-      const totalSumIncome = validIncomes.reduce(
-        (accumulator: any, income: { totalPrice: number }) => {
-          return accumulator + income.totalPrice;
-        },
-        0,
-      );
-      setDataIncome(incomes);
-      setTotalIncome(totalSumIncome);
-    });
+      let subscriberCollection = firestore()
+        .collection(collectionName1)
+        .doc(auth().currentUser?.uid)
+        .collection(collectionName2)
+        .orderBy('timestamp', 'desc');
 
-    return () => query();
-  }, [selectedDateEnd, selectedDateStart]);
-  // End get data income
-  // Get data expense
-  React.useEffect(() => {
-    const timestampStart = convertTotimestamp(selectedDateStart, true);
-    const timestampEnd = convertTotimestamp(selectedDateEnd, false);
-    let subscriber = firestore()
-      .collection('expenses')
-      .doc(auth().currentUser?.uid)
-      .collection('expense')
-      .orderBy('timestamp', 'desc');
-    if (selectedDateStart) {
-      subscriber = subscriber.where('timestamp', '>=', timestampStart);
-    }
-    if (selectedDateEnd) {
-      subscriber = subscriber.where('timestamp', '<=', timestampEnd);
-    }
-
-    const query = subscriber.onSnapshot(querySnapshot => {
-      const expenses: any = [];
-      querySnapshot.forEach(documentSnapshot => {
-        expenses.push({
-          ...documentSnapshot.data(),
-          key: documentSnapshot.id,
-        });
-      });
-      const validExpenses = expenses.filter(
-        (expense: { totalPrice: number }) => {
-          return !isNaN(expense.totalPrice) && expense.totalPrice >= 0;
-        },
-      );
-
-      const totalSumExpense = validExpenses.reduce(
-        (accumulator: any, expense: { totalPrice: number }) => {
-          return accumulator + expense.totalPrice;
-        },
-        0,
-      );
-      setDataExpense(expenses);
-      setTotalExpense(totalSumExpense);
-    });
-
-    return () => query();
-  }, [selectedDateEnd, selectedDateStart]);
-  // if (!selectedDateStart && !selectedDateEnd) {
-  //   React.useEffect(() => {
-  //     const subscriber = firestore()
-  //       .collection('expenses')
-  //       .doc(auth().currentUser?.uid)
-  //       .collection('expense')
-  //       .onSnapshot(querySnapshot => {
-  //         const expenses: any = [];
-  //         querySnapshot.forEach(documentSnapshot => {
-  //           expenses.push({
-  //             ...documentSnapshot.data(),
-  //             key: documentSnapshot.id,
-  //           });
-  //         });
-  //         const totalSumExpense = expenses.reduce(
-  //           (accumulator: any, expense: { totalPrice: number }) => {
-  //             if (!isNaN(expense.totalPrice)) {
-  //               return accumulator + expense.totalPrice;
-  //             }
-  //             return accumulator;
-  //           },
-  //           0,
-  //         );
-  //         setDataExpense(expenses);
-  //         setTotalExpense(totalSumExpense);
-  //       });
-  //     return () => subscriber();
-  //   }, []);
-  // } else if (!selectedDateStart && selectedDateEnd) {
-  //   React.useEffect(() => {
-  //     const subscriber = firestore()
-  //       .collection('expenses')
-  //       .doc(auth().currentUser?.uid)
-  //       .collection('expense')
-  //       .where('date', '<=', selectedDateEnd)
-  //       .onSnapshot(querySnapshot => {
-  //         const expenses: any = [];
-  //         querySnapshot.forEach(documentSnapshot => {
-  //           expenses.push({
-  //             ...documentSnapshot.data(),
-  //             key: documentSnapshot.id,
-  //           });
-  //         });
-  //         const totalSumExpense = expenses.reduce(
-  //           (accumulator: any, expense: { totalPrice: number }) => {
-  //             if (!isNaN(expense.totalPrice)) {
-  //               return accumulator + expense.totalPrice;
-  //             }
-  //             return accumulator;
-  //           },
-  //           0,
-  //         );
-  //         setDataExpense(expenses);
-  //         setTotalExpense(totalSumExpense);
-  //       });
-  //     return () => subscriber();
-  //   }, [selectedDateEnd]);
-  // } else if (selectedDateStart && !selectedDateEnd) {
-  //   React.useEffect(() => {
-  //     const subscriber = firestore()
-  //       .collection('expenses')
-  //       .doc(auth().currentUser?.uid)
-  //       .collection('expense')
-  //       .where('date', '>=', selectedDateStart)
-  //       .onSnapshot(querySnapshot => {
-  //         const expenses: any = [];
-  //         querySnapshot.forEach(documentSnapshot => {
-  //           expenses.push({
-  //             ...documentSnapshot.data(),
-  //             key: documentSnapshot.id,
-  //           });
-  //         });
-  //         const totalSumExpense = expenses.reduce(
-  //           (accumulator: any, expense: { totalPrice: number }) => {
-  //             if (!isNaN(expense.totalPrice)) {
-  //               return accumulator + expense.totalPrice;
-  //             }
-  //             return accumulator;
-  //           },
-  //           0,
-  //         );
-  //         setDataExpense(expenses);
-  //         setTotalExpense(totalSumExpense);
-  //       });
-  //     return () => subscriber();
-  //   }, [selectedDateStart]);
-  // } else {
-  //   React.useEffect(() => {
-  //     const subscriber = firestore()
-  //       .collection('expenses')
-  //       .doc(auth().currentUser?.uid)
-  //       .collection('expense')
-  //       .where('date', '>=', selectedDateStart)
-  //       .where('date', '<=', selectedDateEnd)
-  //       .onSnapshot(querySnapshot => {
-  //         const expenses: any = [];
-  //         querySnapshot.forEach(documentSnapshot => {
-  //           expenses.push({
-  //             ...documentSnapshot.data(),
-  //             key: documentSnapshot.id,
-  //           });
-  //         });
-  //         const totalSumExpense = expenses.reduce(
-  //           (accumulator: any, expense: { totalPrice: number }) => {
-  //             if (!isNaN(expense.totalPrice)) {
-  //               return accumulator + expense.totalPrice;
-  //             }
-  //             return accumulator;
-  //           },
-  //           0,
-  //         );
-  //         setDataExpense(expenses);
-  //         setTotalExpense(totalSumExpense);
-  //       });
-  //     return () => subscriber();
-  //   }, [selectedDateEnd, selectedDateStart]);
-  // }
-  // End get data expense
-  React.useEffect(() => {
-    const subscriber = firestore()
-      .collection('expenses')
-      .doc(auth().currentUser?.uid)
-      .collection('expense')
-      .onSnapshot(querySnapshot => {
-        const expenses: any = [];
+      if (selectedDateStart) {
+        subscriberCollection = subscriberCollection.where(
+          'timestamp',
+          '>=',
+          timestampStart,
+        );
+      }
+      if (selectedDateEnd) {
+        subscriberCollection = subscriberCollection.where(
+          'timestamp',
+          '<=',
+          timestampEnd,
+        );
+      }
+      const query = subscriberCollection.onSnapshot(querySnapshot => {
+        let data: any = [];
         querySnapshot.forEach(documentSnapshot => {
-          expenses.push({
+          data.push({
             ...documentSnapshot.data(),
             key: documentSnapshot.id,
           });
         });
-        const totalSumExpense = expenses.reduce(
-          (accumulator: any, expense: { totalPrice: number }) => {
-            if (!isNaN(expense.totalPrice)) {
-              return accumulator + expense.totalPrice;
-            }
-            return accumulator;
+
+        if (selectedTreeOrCostType && filter === 'tree') {
+          data = data.filter((item: { tree: string }) => {
+            return item.tree === selectedTreeOrCostType;
+          });
+        } else if (selectedTreeOrCostType && filter === 'costType') {
+          data = data.filter((item: { costType: string }) => {
+            return item.costType === selectedTreeOrCostType;
+          });
+        }
+
+        const validData = data.filter((item: { totalPrice: number }) => {
+          return !isNaN(item.totalPrice) && item.totalPrice >= 0;
+        });
+
+        const totalSum = validData.reduce(
+          (accumulator: any, item: { totalPrice: any }) => {
+            return accumulator + item.totalPrice;
           },
           0,
         );
-        setTotalExpense(totalSumExpense);
+        setData(data);
+        console.log('data', data);
+        setTotal(totalSum);
       });
-    return () => subscriber();
-  }, []);
+
+      return () => query();
+    }, [
+      selectedDateEnd,
+      selectedDateStart,
+      collectionName1,
+      setData,
+      setTotal,
+      selectedTreeOrCostType,
+      filter,
+      collectionName2,
+    ]);
+  }
+
+  // function filterDataIncome(data: any) {
+  //   data.filter = (item: { tree: string }) => {
+  //     return item.tree === selectedTreeOrCostType;
+  //   };
+
+  //   return data;
+  // }
+
+  fetchDataAndCalculateTotal(
+    'incomes',
+    'income',
+    selectedDateStart,
+    selectedDateEnd,
+    selectedTreeOrCostType,
+    setDataIncome,
+    setTotalIncome,
+    'tree',
+  );
+
+  fetchDataAndCalculateTotal(
+    'expenses',
+    'expense',
+    selectedDateStart,
+    selectedDateEnd,
+    selectedTreeOrCostType,
+    setDataExpense,
+    setTotalExpense,
+    'costType',
+  );
 
   return {
     selectedDateStart,

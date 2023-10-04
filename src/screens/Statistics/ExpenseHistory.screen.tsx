@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { HeaderTitle } from '../../components/Header/Header.component';
 import { ModalAdd } from '../../components/Modal/ModalAdd';
@@ -13,6 +19,7 @@ import {
 } from '../../components/Modal/GeneralPopUps.component';
 import { FilterComponent } from '../../components/Statistics/Filter.component';
 import IconSwitch from '../../assets/images/IconSwitch.svg';
+import { HistoryElemment } from '../../components/Statistics/History.component';
 
 const ExpenseHistory = () => {
   const {
@@ -33,10 +40,10 @@ const ExpenseHistory = () => {
     setSelectedTreeOrCostType,
     selectedTreeOrCostType,
     isModalPickFilter,
+    hanlePickItem,
     titlePickFilter,
     handleModalPickFilter,
     handleModalPickHideFilter,
-    hanlePickItem,
   } = UseLogic();
   const {
     isModaAdd,
@@ -88,9 +95,10 @@ const ExpenseHistory = () => {
 
   return (
     <>
-      <HeaderTitle title="Expense history" onPress={handleModalAddExpense} />
-      <SafeAreaView style={{ flex: 1, padding: 16 }}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <HeaderTitle title="Expense history" onPress={handleModalAddExpense} />
         {/* Filter */}
+        <View style={{ height: 16 }} />
         <View style={stylesFilter.root}>
           <FilterComponent
             onPress={handlePickDate('startDate')}
@@ -122,7 +130,21 @@ const ExpenseHistory = () => {
             <IconSwitch />
           </TouchableOpacity>
         </View>
+        <View style={{ height: 16 }} />
         {/* End filter */}
+        <ScrollView
+          style={{
+            flex: 1,
+            width: '90%',
+            alignSelf: 'center',
+          }}>
+          <HistoryElemment
+            data={dataExpense}
+            title="Expense"
+            isIncome={false}
+          />
+          <View style={{ height: 16 }} />
+        </ScrollView>
       </SafeAreaView>
       {/* Modal pick date */}
       <ModalPickDate
@@ -199,14 +221,11 @@ const ExpenseHistory = () => {
     </>
   );
 };
-
-export default ExpenseHistory;
-
 const stylesFilter = StyleSheet.create({
   root: {
     alignItems: 'center',
     flexDirection: 'row',
-    width: '100%',
+    width: '90%',
     alignSelf: 'center',
   },
 });
@@ -223,3 +242,5 @@ const stylesButtonReload = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+export default ExpenseHistory;
