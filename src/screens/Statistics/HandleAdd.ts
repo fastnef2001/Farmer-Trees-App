@@ -140,6 +140,37 @@ function getDataCostType() {
   return costTypes;
 }
 
+function convertTotimestamp(selectDate: string) {
+  const timeNow = new Date().toLocaleTimeString('en-US', {
+    hour12: true,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+  console.log('timeNow', timeNow);
+
+  const [year, month1, day] = selectDate.split('/').map(Number);
+  const selectedDate = new Date(year, month1 - 1, day, 0, 0, 0);
+  const selectedTimestamp = selectedDate.getTime();
+  const formattedTimestamp = new Date(selectedTimestamp).toLocaleString(
+    'en-US',
+    {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZoneName: 'short',
+    },
+  );
+  const timestamp = formattedTimestamp.replace(
+    /(\d{1,2}:\d{1,2}:\d{1,2})[ ]([APap][Mm])/,
+    `${timeNow} $2`,
+  );
+  return timestamp;
+}
+
 export function HandleAdd() {
   const [selectedDateIncome, setSelectedDateIncome] = useState('');
   const [selectedDateExpense, setSelectedDateExpense] = useState('');
@@ -292,35 +323,9 @@ export function HandleAdd() {
         const totalPrice = Number(inputs[3].value);
         const quantityInKilograms = convertToKilograms(quantity, unit);
         const month = changeMonthToSrting(date.slice(5, 7));
+        const timestamp = convertTotimestamp(selectedDateIncome);
+        const day = date.slice(8, 10);
 
-        const timeNow = new Date().toLocaleTimeString('en-US', {
-          hour12: true,
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        });
-
-        const [year, month1, day] = selectedDateIncome.split('/').map(Number);
-        const selectedDate = new Date(year, month1 - 1, day, 0, 0, 0);
-        const selectedTimestamp = selectedDate.getTime();
-        const formattedTimestamp = new Date(selectedTimestamp).toLocaleString(
-          'en-US',
-          {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZoneName: 'short',
-          },
-        );
-        const timestamp = formattedTimestamp.replace(
-          /(\d{1,2}:\d{1,2}:\d{1,2})[ ]([APap][Mm])/,
-          `${timeNow} $2`,
-        );
-
-        console.log('timestamp', timestamp);
         firestore()
           .collection('incomes')
           .doc(userid)
@@ -358,13 +363,13 @@ export function HandleAdd() {
       setIsModalLoading(true);
       try {
         const userid = auth().currentUser?.uid;
-        const time = new Date().getTime();
         const date = selectedDateExpense;
         const costType = inputs[0].value;
         const quantity = Number(inputs[1].value);
         const unit = inputs[2].value.toLowerCase();
         const totalPrice = Number(inputs[3].value);
         const month = changeMonthToSrting(date.slice(5, 7));
+        const timestamp = convertTotimestamp(selectedDateExpense);
         const day = date.slice(8, 10);
         firestore()
           .collection('expenses')
@@ -374,7 +379,7 @@ export function HandleAdd() {
             month,
             day,
             date,
-            time,
+            timestamp,
             costType,
             quantity,
             unit,
