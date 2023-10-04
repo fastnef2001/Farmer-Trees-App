@@ -10,6 +10,9 @@ import {
   UnitInterface,
 } from './Statistics.interface';
 import { HandleAdd } from './HandleAdd';
+import { is } from 'date-fns/locale';
+import { set } from 'date-fns';
+const { format } = require('date-fns');
 
 export function UseLogic() {
   //Handlefilter
@@ -55,22 +58,102 @@ export function UseLogic() {
     setTotalProfit(totalIncome - totalExpense);
   }, [totalIncome, totalExpense]);
   // Get data income
-  // if (!selectedDateStart && !selectedDateEnd) {
+  // React.useEffect(() => {
+  //   let subscriber = firestore()
+  //     .collection('incomes')
+  //     .doc(auth().currentUser?.uid)
+  //     .collection('income')
+  //     .orderBy('date', 'desc')
+  //     .orderBy('time', 'desc');
+  //   if (selectedDateStart) {
+  //     subscriber = subscriber.where('date', '>=', selectedDateStart);
+  //   }
+  //   if (selectedDateEnd) {
+  //     subscriber = subscriber.where('date', '<=', selectedDateEnd);
+  //   }
+
+  //   const unsubscribe = subscriber.onSnapshot(querySnapshot => {
+  //     if (!querySnapshot || querySnapshot.empty) {
+  //       // Kiểm tra nếu querySnapshot không tồn tại hoặc không có dữ liệu
+  //       console.log('No documents found');
+  //       return;
+  //     }
+  //     const incomes: any = [];
+  //     querySnapshot.forEach(documentSnapshot => {
+  //       incomes.push({
+  //         ...documentSnapshot.data(),
+  //         key: documentSnapshot.id,
+  //       });
+  //     });
+  //     const validIncomes = incomes.filter((income: { totalPrice: number }) => {
+  //       return !isNaN(income.totalPrice) && income.totalPrice >= 0;
+  //     });
+  //     const totalSumIncome = validIncomes.reduce(
+  //       (accumulator: any, income: { totalPrice: number }) => {
+  //         return accumulator + income.totalPrice;
+  //       },
+  //       0,
+  //     );
+  //     setDataIncome(incomes);
+  //     setTotalIncome(totalSumIncome);
+  //   });
+
+  //   return () => unsubscribe();
+  // }, [selectedDateEnd, selectedDateStart, totalIncome]);
   React.useEffect(() => {
+    function convertTotimestamp(date: string, isStart?: boolean) {
+      let timeNow = format(new Date(), 'hh:mm:ss a');
+      if (isStart) {
+        timeNow = '00:00:00 AM';
+      } else {
+        timeNow = '11:59:59 PM';
+      }
+
+      const [year, month1, day] = date.split('/').map(Number);
+      const selectedDate = new Date(year, month1 - 1, day, 0, 0, 0);
+      const selectedTimestamp = selectedDate.getTime();
+      const formattedTimestamp = new Date(selectedTimestamp).toLocaleString(
+        'en-US',
+        {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          timeZoneName: 'short',
+        },
+      );
+      const timestamp = formattedTimestamp.replace(
+        /(\d{1,2}:\d{1,2}:\d{1,2})[ ]([APap][Mm])/,
+        `${timeNow} $2`,
+      );
+      return timestamp;
+    }
+    // const timestampStart = convertTotimestamp(selectedDateStart);
+    // const timestampStart = 'October 12, 2023, 10:14:52 AM AM GMT+7';
+    // const timestampStart = 'October 12, 2023, 10:14:51 AM AM GMT+7';
+    // const timestampStart = 'October 12, 2023, 10:14:53 AM AM GMT+7';
+    // const timestampStart = 'October 12, 2023, 00:00:00 AM AM GMT+7';
+
+    const timestampStart = convertTotimestamp(selectedDateStart, true);
+
+    const timestampEnd = convertTotimestamp(selectedDateEnd);
+    console.log('timestampStart', timestampStart);
+    console.log('timestampEnd', timestampEnd);
     let subscriber = firestore()
       .collection('incomes')
       .doc(auth().currentUser?.uid)
       .collection('income')
-      .orderBy('date', 'desc')
-      .orderBy('time', 'desc');
+      .orderBy('timestamp', 'desc');
     if (selectedDateStart) {
-      subscriber = subscriber.where('date', '>=', selectedDateStart);
+      subscriber = subscriber.where('timestamp', '>=', timestampStart);
     }
     if (selectedDateEnd) {
-      subscriber = subscriber.where('date', '<=', selectedDateEnd);
+      subscriber = subscriber.where('timestamp', '<=', timestampEnd);
     }
 
-    const unsubscribe = subscriber.onSnapshot(querySnapshot => {
+    const query = subscriber.onSnapshot(querySnapshot => {
       const incomes: any = [];
       querySnapshot.forEach(documentSnapshot => {
         incomes.push({
@@ -81,6 +164,7 @@ export function UseLogic() {
       const validIncomes = incomes.filter((income: { totalPrice: number }) => {
         return !isNaN(income.totalPrice) && income.totalPrice >= 0;
       });
+
       const totalSumIncome = validIncomes.reduce(
         (accumulator: any, income: { totalPrice: number }) => {
           return accumulator + income.totalPrice;
@@ -91,8 +175,39 @@ export function UseLogic() {
       setTotalIncome(totalSumIncome);
     });
 
-    return () => unsubscribe();
-  }, [selectedDateEnd, selectedDateStart, totalIncome]);
+    return () => query();
+  }, [selectedDateEnd, selectedDateStart]);
+  // if (!selectedDateStart && !selectedDateEnd) {
+  //   React.useEffect(() => {
+  //     const subscriber = firestore()
+  //       .collection('incomes')
+  //       .doc(auth().currentUser?.uid)
+  //       .collection('income')
+  //       .onSnapshot(querySnapshot => {
+  //         const incomes: any = [];
+  //         querySnapshot.forEach(documentSnapshot => {
+  //           incomes.push({
+  //             ...documentSnapshot.data(),
+  //             key: documentSnapshot.id,
+  //           });
+  //         });
+  //         const validIncomes = incomes.filter(
+  //           (income: { totalPrice: number }) => {
+  //             return !isNaN(income.totalPrice) && income.totalPrice >= 0;
+  //           },
+  //         );
+
+  //         const totalSumIncome = validIncomes.reduce(
+  //           (accumulator: any, income: { totalPrice: number }) => {
+  //             return accumulator + income.totalPrice;
+  //           },
+  //           0,
+  //         );
+  //         setDataIncome(incomes);
+  //         setTotalIncome(totalSumIncome);
+  //       });
+  //     return () => subscriber();
+  //   }, []);
   // } else if (!selectedDateStart && selectedDateEnd) {
   //   React.useEffect(() => {
   //     const subscriber = firestore()

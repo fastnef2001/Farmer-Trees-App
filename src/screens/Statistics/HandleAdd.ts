@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-shadow */
 import { useState, useEffect } from 'react';
-import firestore from '@react-native-firebase/firestore';
+import firestore, { firebase } from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import React from 'react';
 import {
@@ -285,7 +285,6 @@ export function HandleAdd() {
       setIsModalLoading(true);
       try {
         const userid = auth().currentUser?.uid;
-        const time = new Date().getTime();
         const date = selectedDateIncome;
         const tree = inputs[0].value;
         const quantity = Number(inputs[1].value);
@@ -293,20 +292,49 @@ export function HandleAdd() {
         const totalPrice = Number(inputs[3].value);
         const quantityInKilograms = convertToKilograms(quantity, unit);
         const month = changeMonthToSrting(date.slice(5, 7));
-        const day = date.slice(8, 10);
+
+        const timeNow = new Date().toLocaleTimeString('en-US', {
+          hour12: true,
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        });
+
+        const [year, month1, day] = selectedDateIncome.split('/').map(Number);
+        const selectedDate = new Date(year, month1 - 1, day, 0, 0, 0);
+        const selectedTimestamp = selectedDate.getTime();
+        const formattedTimestamp = new Date(selectedTimestamp).toLocaleString(
+          'en-US',
+          {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short',
+          },
+        );
+        const timestamp = formattedTimestamp.replace(
+          /(\d{1,2}:\d{1,2}:\d{1,2})[ ]([APap][Mm])/,
+          `${timeNow} $2`,
+        );
+
+        console.log('timestamp', timestamp);
         firestore()
           .collection('incomes')
           .doc(userid)
           .collection('income')
           .add({
-            unit,
+            timestamp,
             month,
             day,
             date,
-            time,
             tree,
-            quantityInKilograms,
+            quantity,
+            unit,
             totalPrice,
+            quantityInKilograms,
           })
           .then(() => {
             setIsModalAdd(false);
