@@ -22,13 +22,16 @@ const ChatAIScreen = () => {
   const apiUrl = 'https://api.openai.com/v1/engines/davinci/completions';
 
   const sendUserMessage = async () => {
+    if (textInput.trim() === '') {
+      return; // Tránh gửi tin nhắn trống
+    }
     const prompt = textInput;
     const response = await axios.post(
       apiUrl,
       {
         prompt: prompt,
         max_tokens: 150,
-        temperature: 0.9,
+        temperature: 1,
       },
       {
         headers: {
