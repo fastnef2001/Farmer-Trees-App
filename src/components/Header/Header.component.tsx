@@ -18,6 +18,7 @@ import Logo35 from '../../assets/images/Logo72.svg';
 import IconBackWhite40 from '../../assets/images/IconBackWhite40.svg';
 import IconPlusWhite40 from '../../assets/images/IconPlusWhite40.svg';
 import { useNavigation } from '@react-navigation/native';
+import Profile from '../../screens/Home/Profile.screen';
 
 export type ButtonProps = {
   onPress?: () => void;
@@ -87,9 +88,13 @@ export const HeaderTitle = ({ title, onPress }: HeaderTitleProps) => {
               <IconBackWhite40 />
             </TouchableOpacity>
             <Text style={stylesHeaderTitle.incomeHistory}>{title}</Text>
-            <TouchableOpacity onPress={onPress}>
-              <IconPlusWhite40 />
-            </TouchableOpacity>
+            {title === 'Profile' ? (
+              <View style={{ width: 24 }} />
+            ) : (
+              <TouchableOpacity onPress={onPress}>
+                <IconPlusWhite40 />
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </SafeAreaView>
