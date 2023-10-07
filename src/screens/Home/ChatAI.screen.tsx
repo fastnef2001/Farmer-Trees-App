@@ -6,16 +6,25 @@ import {
   Button,
   FlatList,
   StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import OpenAI from 'openai';
 import axios from 'axios';
+import IconComplete from '../../assets/images/IconComplete.svg';
+import styles1 from '../Setupfarm/Addtree.style';
+import IconAdd from '../../assets/images/IconAdd.svg';
+import Input from '../../components/Input/Input.component';
+import { COLORS } from '../../theme/color';
+import IconButtonSend48 from '../../assets/images/IconButtonSend48.svg';
+import { HeaderComponent } from '../../components/Header/Header.component';
 
 type MessageType = {
-  type: 'user' | 'bot'; // Chỉ cho TypeScript biết kiểu của role là 'user' hoặc 'assistant'
+  type: 'user' | 'bot';
   text: string;
 };
 
-const ChatAIScreen = () => {
+const ChatAIScreen = ({ navigation }: any) => {
   const [textInput, setTextInput] = useState('');
   const [data, setData] = useState<MessageType[]>([]);
   const apiKey = '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';
@@ -25,7 +34,19 @@ const ChatAIScreen = () => {
     if (textInput.trim() === '') {
       return; // Tránh gửi tin nhắn trống
     }
+    setData([
+      ...data,
+      {
+        type: 'user',
+        text: textInput,
+      },
+      {
+        type: 'bot',
+        text: 'Loading...',
+      },
+    ]);
     const prompt = textInput;
+    setTextInput('');
     const response = await axios.post(
       apiUrl,
       {
@@ -52,36 +73,72 @@ const ChatAIScreen = () => {
         text: text,
       },
     ]);
-    setTextInput('');
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Chat AI</Text>
-      <FlatList
-        data={data}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View
-            style={
-              item.type === 'user'
-                ? styles.userMessage
-                : styles.assistantMessage
-            }>
-            <Text style={{ color: 'black' }}>{item.text}</Text>
-          </View>
-        )}
-      />
-      <TextInput
-        style={styles.input}
-        value={textInput}
-        onChangeText={text => setTextInput(text)}
-        placeholder="Type your message..."
-      />
-      <Button title="Send" onPress={sendUserMessage} />
-    </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
+      <HeaderComponent onPress={() => navigation.navigate('Profile')} />
+      <View style={styles.container}>
+        <Text style={styles.header}>Smafa AI</Text>
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          data={data}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <View
+              style={
+                item.type === 'user'
+                  ? styles.userMessage
+                  : styles.assistantMessage
+              }>
+              <Text
+                style={
+                  item.type === 'user'
+                    ? styles.textUserMessage
+                    : styles.textAssistantMessage
+                }>
+                {item.text}
+              </Text>
+            </View>
+          )}
+        />
+        <View
+          style={{
+            paddingTop: 8,
+            width: '100%',
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
+          <TextInput
+            style={stylesInputMessage.root}
+            value={textInput}
+            onChangeText={text => setTextInput(text)}
+            placeholder="Type your message..."
+            placeholderTextColor={COLORS.text2}
+            cursorColor={COLORS.blue}
+          />
+          <View style={{ width: 8 }} />
+          <TouchableOpacity onPress={sendUserMessage}>
+            <IconButtonSend48 />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 };
+
+const stylesInputMessage = StyleSheet.create({
+  root: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    color: COLORS.text1,
+    borderWidth: 1,
+    flex: 1,
+    paddingHorizontal: 16,
+    borderRadius: 100,
+  },
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -90,19 +147,20 @@ const styles = StyleSheet.create({
   },
   header: {
     fontSize: 24,
-    fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20,
+    fontFamily: 'Nunito-Bold',
+    color: COLORS.blue,
   },
   userMessage: {
-    backgroundColor: '#E5E5E5',
+    backgroundColor: COLORS.blue,
     padding: 8,
     alignSelf: 'flex-end',
     marginVertical: 4,
     borderRadius: 8,
   },
   assistantMessage: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#EAE8E8',
     padding: 8,
     alignSelf: 'flex-start',
     marginVertical: 4,
@@ -114,6 +172,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 8,
     padding: 8,
+  },
+  textUserMessage: {
+    color: COLORS.white,
+    fontFamily: 'Nunito-Regular',
+  },
+  textAssistantMessage: {
+    color: COLORS.text1,
+    fontFamily: 'Nunito-Regular',
   },
 });
 
