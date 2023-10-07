@@ -178,6 +178,7 @@ const RegistrationScreen = ({ navigation }: any) => {
         await firestore().collection('users').doc(idUser).set({
           fullName: fullNameInput.value,
           phoneNumber: phoneNumberInput.value,
+          email: emailInput.value,
         });
       }
       handleModal();

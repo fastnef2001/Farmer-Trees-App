@@ -18,7 +18,7 @@ import Logo35 from '../../assets/images/Logo72.svg';
 import IconBackWhite40 from '../../assets/images/IconBackWhite40.svg';
 import IconPlusWhite40 from '../../assets/images/IconPlusWhite40.svg';
 import { useNavigation } from '@react-navigation/native';
-import Profile from '../../screens/Home/Profile.screen';
+import Profile from '../../screens/Profile/Profile.screen';
 
 export type ButtonProps = {
   onPress?: () => void;
