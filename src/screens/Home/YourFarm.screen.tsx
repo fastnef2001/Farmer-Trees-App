@@ -473,7 +473,7 @@ const YourFarm = ({ navigation }: any) => {
                 isRight={false}
                 isDelete={false}
                 title="CANCEL"
-                onPress={handleModalAddTree}
+                onPress={() => setIsModalDelete(false)}
               />
               <View style={{ width: 16 }} />
               <ButtonDelete
