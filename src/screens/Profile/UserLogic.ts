@@ -59,6 +59,7 @@ export function UseLogic() {
               setPhoneNumber(documentSnapshot.data()?.phoneNumber);
               setEmail(documentSnapshot.data()?.email);
               setAvatar(documentSnapshot.data()?.imageUrl);
+              setSelectImage(documentSnapshot.data()?.imageUrl);
             } else {
               console.log('Document does not exist');
               setFarmName('');
@@ -140,13 +141,6 @@ export function UseLogic() {
         await storageRef.putFile(image);
         imageUrl = await storageRef.getDownloadURL();
       }
-      // await firestore()
-      //       .collection('users')
-      //       .doc(auth().currentUser?.uid)
-      //       .set({
-      //         fullName: fullNameGoogle,
-      //         email: emailGoogle,
-      //       });
       firestore()
         .collection('users')
         .doc(userId)

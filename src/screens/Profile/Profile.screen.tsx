@@ -85,10 +85,6 @@ const Profile = ({ navigation }: any) => {
               style={{ width: 80, height: 80, borderRadius: 100 }}
             />
           )}
-          {/* <Image
-            source={require('../../assets/images/avatarUser.png')}
-            style={{ width: 57, height: 57, borderRadius: 100 }}
-          /> */}
           <View style={{ width: 16 }} />
           <View style={styleElement1.frame625291}>
             <Text style={styleElement1.$name}>{fullName}</Text>
