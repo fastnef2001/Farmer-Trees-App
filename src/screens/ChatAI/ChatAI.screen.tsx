@@ -18,6 +18,7 @@ import Input from '../../components/Input/Input.component';
 import { COLORS } from '../../theme/color';
 import IconButtonSend48 from '../../assets/images/IconButtonSend48.svg';
 import { HeaderComponent } from '../../components/Header/Header.component';
+import { stylesInputMessage, styles, stylesChatAI } from './ChatAI.style';
 
 type MessageType = {
   type: 'user' | 'bot';
@@ -102,14 +103,7 @@ const ChatAIScreen = ({ navigation }: any) => {
             </View>
           )}
         />
-        <View
-          style={{
-            paddingTop: 8,
-            width: '100%',
-            alignItems: 'center',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
+        <View style={stylesChatAI.root}>
           <TextInput
             style={stylesInputMessage.root}
             value={textInput}
@@ -127,60 +121,5 @@ const ChatAIScreen = ({ navigation }: any) => {
     </SafeAreaView>
   );
 };
-
-const stylesInputMessage = StyleSheet.create({
-  root: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    color: COLORS.text1,
-    borderWidth: 1,
-    flex: 1,
-    paddingHorizontal: 16,
-    borderRadius: 100,
-  },
-});
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  header: {
-    fontSize: 24,
-    textAlign: 'center',
-    marginBottom: 20,
-    fontFamily: 'Nunito-Bold',
-    color: COLORS.blue,
-  },
-  userMessage: {
-    backgroundColor: COLORS.blue,
-    padding: 8,
-    alignSelf: 'flex-end',
-    marginVertical: 4,
-    borderRadius: 8,
-  },
-  assistantMessage: {
-    backgroundColor: '#EAE8E8',
-    padding: 8,
-    alignSelf: 'flex-start',
-    marginVertical: 4,
-    borderRadius: 8,
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 8,
-    padding: 8,
-  },
-  textUserMessage: {
-    color: COLORS.white,
-    fontFamily: 'Nunito-Regular',
-  },
-  textAssistantMessage: {
-    color: COLORS.text1,
-    fontFamily: 'Nunito-Regular',
-  },
-});
 
 export default ChatAIScreen;
