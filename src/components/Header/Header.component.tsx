@@ -27,6 +27,7 @@ export type ButtonProps = {
 export const HeaderComponent = ({ onPress }: ButtonProps) => {
   const user = auth().currentUser;
   const [fullName, setFullName] = useState('');
+  const [avatar, setAvatar] = useState('');
   if (user) {
     useEffect(() => {
       const subscriber = firestore()
@@ -34,6 +35,7 @@ export const HeaderComponent = ({ onPress }: ButtonProps) => {
         .doc(user?.uid)
         .onSnapshot(documentSnapshot => {
           setFullName(documentSnapshot.data()?.fullName);
+          setAvatar(documentSnapshot.data()?.imageUrl);
         });
       return () => subscriber();
     }, [user]);
@@ -55,10 +57,18 @@ export const HeaderComponent = ({ onPress }: ButtonProps) => {
             <TouchableOpacity style={styles.root} onPress={onPress}>
               <Text style={styles.username}>{fullNameClipped}</Text>
               <View style={{ width: 8 }} />
-              <Image
-                source={require('../../assets/images/avatarUser.png')}
-                style={styles.ellipse59}
-              />
+              {avatar ? (
+                <Image
+                  source={{ uri: avatar }}
+                  style={styles.ellipse59}
+                  resizeMode="cover"
+                />
+              ) : (
+                <Image
+                  source={require('../../assets/images/avatarUser.png')}
+                  style={styles.ellipse59}
+                />
+              )}
             </TouchableOpacity>
           ) : null}
         </View>

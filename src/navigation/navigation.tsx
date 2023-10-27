@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import RegistrationScreen from '../screens/Login/Registration.screen';
 import LoginScreen from '../screens/Login/Login.screen';
-import ChatAIScreen from '../screens/Home/ChatAI.screen';
+import ChatAIScreen from '../screens/ChatAI/ChatAI.screen';
 import Statistics from '../screens/Statistics/Statistics.screen';
 import ForgotPassword from '../screens/Password/ForgotPassword.sceen';
 import Profile from '../screens/Profile/Profile.screen';
