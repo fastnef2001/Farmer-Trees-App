@@ -205,6 +205,8 @@ const RegistrationScreen = ({ navigation }: any) => {
         handleModalLoading();
         await auth().signInWithCredential(googleCredential);
         const fullNameGoogle = userInfo.user.name;
+        const emailGoogle = userInfo.user.email;
+        console.log('emailGoogle', emailGoogle);
         const user = await firestore()
           .collection('users')
           .doc(auth().currentUser?.uid)
@@ -215,6 +217,7 @@ const RegistrationScreen = ({ navigation }: any) => {
             .doc(auth().currentUser?.uid)
             .set({
               fullName: fullNameGoogle,
+              email: emailGoogle,
             });
         }
         await GoogleSignin.revokeAccess();

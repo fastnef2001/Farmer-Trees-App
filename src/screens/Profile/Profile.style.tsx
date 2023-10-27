@@ -21,6 +21,12 @@ export const styleElement2 = StyleSheet.create<any>({
     fontFamily: 'Nunito-Bold',
     fontSize: 16,
   },
+  farmName1: {
+    alignSelf: 'stretch',
+    color: COLORS.grey,
+    fontFamily: 'Nunito-Bold',
+    fontSize: 16,
+  },
   title: {
     alignSelf: 'stretch',
     color: COLORS.text2,
