@@ -19,62 +19,11 @@ import { COLORS } from '../../theme/color';
 import IconButtonSend48 from '../../assets/images/IconButtonSend48.svg';
 import { HeaderComponent } from '../../components/Header/Header.component';
 import { stylesInputMessage, styles, stylesChatAI } from './ChatAI.style';
-
-type MessageType = {
-  type: 'user' | 'bot';
-  text: string;
-};
+import { UseLogic } from './UseLogic';
 
 const ChatAIScreen = ({ navigation }: any) => {
-  const [textInput, setTextInput] = useState('');
-  const [data, setData] = useState<MessageType[]>([]);
-  const apiKey = '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';
-  const apiUrl = 'https://api.openai.com/v1/engines/davinci/completions';
-
-  const sendUserMessage = async () => {
-    if (textInput.trim() === '') {
-      return; // Tránh gửi tin nhắn trống
-    }
-    setData([
-      ...data,
-      {
-        type: 'user',
-        text: textInput,
-      },
-      {
-        type: 'bot',
-        text: 'Loading...',
-      },
-    ]);
-    const prompt = textInput;
-    setTextInput('');
-    const response = await axios.post(
-      apiUrl,
-      {
-        prompt: prompt,
-        max_tokens: 150,
-        temperature: 1,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,
-        },
-      },
-    );
-    const text = response.data.choices[0].text;
-    setData([
-      ...data,
-      {
-        type: 'user',
-        text: textInput,
-      },
-      {
-        type: 'bot',
-        text: text,
-      },
-    ]);
-  };
+  const { textInput, setTextInput, data, setData, sendUserMessage } =
+    UseLogic();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>

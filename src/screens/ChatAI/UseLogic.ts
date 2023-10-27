@@ -8,7 +8,7 @@ type MessageType = {
 export function UseLogic() {
   const [textInput, setTextInput] = useState('');
   const [data, setData] = useState<MessageType[]>([]);
-  const apiKey = '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';
+  const apiKey = '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';
   const apiUrl = 'https://api.openai.com/v1/engines/davinci/completions';
 
   const sendUserMessage = async () => {
