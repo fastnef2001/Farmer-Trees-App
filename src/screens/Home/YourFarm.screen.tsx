@@ -21,6 +21,7 @@ import IconAdd from '../../assets/images/IconAdd.svg';
 import { MediaType, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import styles from '../Setupfarm/Addtree.style';
+import { styles1 } from './YourFarm.style';
 import { ModalInsert } from '../../components/Modal/ModalInsert';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconSave from '../../assets/images/IconSave.svg';
@@ -33,268 +34,34 @@ import { COLORS } from '../../theme/color';
 import { ButtonBack, ButtonDelete } from '../../components/Button/Button';
 import LottieView from 'lottie-react-native';
 import { ModalLoading } from '../../components/Modal/ModalLoading';
+import { UseLogic } from './UseLogic';
 
 const YourFarm = ({ navigation }: any) => {
-  const [isModalAddTree, setIsModalAddTree] = React.useState(false);
-  const [selectImage, setSelectImage] = useState('');
-  const [isModalSuccess, setIsModalSuccess] = React.useState(false);
-  const [isModalDelete, setIsModalDelete] = React.useState(false);
-  const [key, setKey] = React.useState('');
-  const [isTrees, setIsTrees] = useState(false);
-  const [inputs, setInputs] = useState([
-    { label: 'Tree name', value: '', error: '' },
-    { label: 'Quanlity', value: '', error: '' },
-  ]);
-
-  // 1. Modal add tree
-  const handleModalAddTree = () => {
-    setIsModalAddTree(() => !isModalAddTree);
-    setInputs(
-      inputs.map(input => ({
-        ...input,
-        value: '',
-        error: '',
-      })),
-    );
-  };
-  // 2. Modal pick image and delete image
-  const handleModalImagePicker = () => {
-    const option = {
-      mediaType: 'photo' as MediaType,
-      storageOptions: {
-        path: 'image',
-      },
-    };
-    launchImageLibrary(option, response => {
-      if (response.assets && response.assets.length > 0) {
-        const selectedImage = response.assets[0].uri;
-        if (selectedImage) {
-          setSelectImage(selectedImage);
-        }
-      }
-    });
-  };
-  const handleDeleteImage = () => setSelectImage('');
-  // 3. Handle validate input
-  const handleInputChange = (index: any, value: any) => {
-    const newInputs = [...inputs];
-    newInputs[index].value = value;
-    newInputs[index].error = '';
-    setInputs(newInputs);
-  };
-  // 4. Handle add tree
-  const handleAddTree = async () => {
-    const treeNameInput = inputs.find(input => input.label === 'Tree name');
-    const quanlityInput = inputs.find(input => input.label === 'Quanlity');
-    if (!treeNameInput?.value || !quanlityInput?.value) {
-      setInputs(
-        inputs.map(input => ({
-          ...input,
-          error: !input.value ? `Please enter ${input.label}` : '',
-        })),
-      );
-      return;
-    }
-    handleModalLoading();
-    try {
-      const name = treeNameInput?.value;
-      const quanlity = quanlityInput?.value;
-      const image = selectImage;
-      const timeAdd = new Date().getTime();
-      let imageUrl = '';
-      const userId = auth().currentUser?.uid;
-      if (image) {
-        const filename = userId + name;
-        const storageRef = storage().ref(`imageTree/${filename}`);
-        await storageRef.putFile(image);
-        imageUrl = await storageRef.getDownloadURL();
-      }
-      firestore()
-        .collection('trees')
-        .doc(userId)
-        .collection('tree')
-        .add({
-          name,
-          quanlity,
-          imageUrl,
-          timeAdd,
-        })
-        .then(() => {
-          setIsModalAddTree(() => false);
-          handleModalLoading();
-          handleModalSuccess();
-        });
-    } catch (error: any) {
-      console.log('error', error);
-    }
-  };
-  // 5. Modal success
-  const handleModalSuccess = () => {
-    setIsModalSuccess(() => !isModalSuccess);
-    setSelectImage('');
-    setInputs(
-      inputs.map(input => ({
-        ...input,
-        value: '',
-        error: '',
-      })),
-    );
-  };
-
-  // 6. Modal delete
-  const handleModalDelete = (key: string) => {
-    setKey(key);
-    setIsModalDelete(() => !isModalDelete);
-  };
-
-  // 7. Handle delete tree
-  const handleDeleteTree = (key: string) => {
-    firestore()
-      .collection('trees')
-      .doc(auth().currentUser?.uid)
-      .collection('tree')
-      .doc(key)
-      .delete();
-    setIsModalDelete(() => false);
-  };
-
-  interface Tree {
-    [x: string]: string;
-    name: string;
-    quanlity: string;
-    imageUrl: string;
-  }
-
-  // 8. Get all tree
-  const [trees, setTrees] = useState<Tree[]>([]);
-  React.useEffect(() => {
-    const subscriber = firestore()
-      .collection('trees')
-      .doc(auth().currentUser?.uid)
-      .collection('tree')
-      .orderBy('timeAdd', 'desc')
-      .onSnapshot(querySnapshot => {
-        const trees: any = [];
-        querySnapshot.forEach(documentSnapshot => {
-          trees.push({
-            ...documentSnapshot.data(),
-            key: documentSnapshot.id,
-          });
-        });
-        setTrees(trees);
-      });
-    return () => subscriber();
-  }, []);
-
-  // 9. Get farm name
-  const [farmName, setFarmName] = useState('');
-  React.useEffect(() => {
-    const subscriber = firestore()
-      .collection('users')
-      .doc(auth().currentUser?.uid)
-      .onSnapshot(documentSnapshot => {
-        const farmName = documentSnapshot.data()?.farmName;
-        setFarmName(farmName);
-      });
-    return () => subscriber();
-  }, []);
-
-  // 10. Modal edit tree
-  const [isModalEditTree, setIsModalEditTree] = React.useState(false);
-  const handleModalEditTree = (key: any) => {
-    setSelectImage('');
-    setInputs(
-      inputs.map(input => ({
-        ...input,
-        value: '',
-        error: '',
-      })),
-    );
-
-    const tree = trees.find(tree => tree.key === (key as any));
-    if (tree) {
-      setSelectImage(tree.imageUrl);
-      setInputs([
-        { label: 'Tree name', value: tree.name, error: '' },
-        { label: 'Quanlity', value: tree.quanlity, error: '' },
-      ]);
-      setKey(key);
-    }
-    setIsModalEditTree(() => !isModalEditTree);
-  };
-
-  // 11. Handle edit tree
-  const handleEditTree = async () => {
-    const treeNameInput = inputs.find(input => input.label === 'Tree name');
-    const quanlityInput = inputs.find(input => input.label === 'Quanlity');
-
-    if (!treeNameInput?.value || !quanlityInput?.value) {
-      setInputs(
-        inputs.map(input => ({
-          ...input,
-          error: !input.value ? `Please enter ${input.label}` : '',
-        })),
-      );
-      return;
-    }
-    handleModalLoading();
-    try {
-      const name = treeNameInput?.value;
-      const quanlity = quanlityInput?.value;
-      const image = selectImage;
-      let imageUrl = '';
-      const userId = auth().currentUser?.uid;
-      // if image là url với http thì không cần thay đổi ảnh
-      if (image && image.includes('http')) {
-        imageUrl = image;
-      } else if (image) {
-        // xóa ảnh cũ trong storage
-        const tree = trees.find(tree => tree.key === (key as any));
-        if (tree) {
-          const filename = auth().currentUser?.uid + tree.name;
-          const storageRef = storage().ref(`imageTree/${filename}`);
-          storageRef.delete();
-        }
-
-        const filename = userId + name;
-        const storageRef = storage().ref(`imageTree/${filename}`);
-        await storageRef.putFile(image);
-        imageUrl = await storageRef.getDownloadURL();
-      }
-      firestore()
-        .collection('trees')
-        .doc(userId)
-        .collection('tree')
-        .doc(key)
-        .update({
-          name,
-          quanlity,
-          imageUrl,
-        })
-        .then(() => {
-          setIsModalEditTree(() => false);
-          handleModalLoading();
-          setIsModalSuccess(() => true);
-        });
-
-      setSelectImage('');
-      setInputs(
-        inputs.map(input => ({
-          ...input,
-          value: '',
-          error: '',
-        })),
-      );
-    } catch (error: any) {
-      console.log('error', error);
-    }
-  };
-
-  // 12. Modal loading
-  const [isModalLoading, setIsModalLoading] = React.useState(false);
-  const handleModalLoading = () => {
-    setIsModalLoading(prev => !prev);
-  };
+  const {
+    isModalAddTree,
+    handleModalAddTree,
+    handleModalImagePicker,
+    handleDeleteImage,
+    selectImage,
+    inputs,
+    handleInputChange,
+    handleAddTree,
+    isModalSuccess,
+    handleModalSuccess,
+    isModalDelete,
+    handleModalDelete,
+    handleDeleteTree,
+    trees,
+    farmName,
+    isModalEditTree,
+    handleModalEditTree,
+    handleEditTree,
+    isModalLoading,
+    handleModalLoading,
+    setIsModalSuccess,
+    setIsModalDelete,
+    key,
+  } = UseLogic();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
@@ -591,85 +358,3 @@ const YourFarm = ({ navigation }: any) => {
 };
 
 export default YourFarm;
-
-const styles1 = StyleSheet.create({
-  container: {
-    flex: 1,
-    height: '100%',
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  root: {
-    width: '100%',
-    height: 72,
-    flexShrink: 0,
-    elevation: 8, // Áp dụng shadow cho Android
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 8, // Độ cong của shadow
-    backgroundColor: '#ffffff',
-  },
-  menu: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    marginTop: 8,
-    backgroundColor: '#ffffff',
-  },
-
-  frame48095: {
-    width: '134rem',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    gap: '4rem',
-  },
-  textTime: {
-    fontFamily: 'Nunito',
-    fontSize: 16,
-    fontStyle: 'italic',
-    fontWeight: '500',
-    lineHeight: 22,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#636366',
-  },
-  textLocation: {
-    fontFamily: 'Nunito',
-    fontSize: 18,
-    fontWeight: '700',
-    lineHeight: 25,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#163859',
-  },
-  textWeather: {
-    fontFamily: 'Nunito',
-    fontSize: 14,
-    fontWeight: '500',
-    lineHeight: 19,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#636366',
-  },
-  txtTitle: {
-    fontSize: 20,
-    lineHeight: 27,
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#163859',
-    marginLeft: 8,
-    fontFamily: 'Nunito-SemiBold',
-  },
-  headSession: {
-    flexDirection: 'row',
-    width: '90%',
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-});
