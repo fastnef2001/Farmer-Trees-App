@@ -5,14 +5,15 @@ import { COLORS } from '../../theme/color';
 import { Modal } from './Modal';
 import { StatusBar } from 'react-native';
 import { ModalLoading } from './ModalLoading';
+import { ButtonBack, ButtonDelete } from '../../components/Button/Button';
 
 export type PopUpSuccessProps = {
-  //   onPress: () => void;
-  //   titleDate?: string;
-  //   isRight?: boolean;
   isModalSuccess: boolean;
   titleHeader: string;
   titleBody: string;
+  isFooter?: boolean;
+  handleDeleteTree: () => void;
+  setIsModalSuccess: (isModalSuccess: boolean) => void;
 };
 
 export type PopUpLoadingProps = {
@@ -23,6 +24,9 @@ export const PopUpSuccess = ({
   isModalSuccess,
   titleHeader,
   titleBody,
+  handleDeleteTree,
+  isFooter = false,
+  setIsModalSuccess,
 }: PopUpSuccessProps) => {
   const [isModalVisible, setModalVisible] = useState(false);
   useEffect(() => {
@@ -33,11 +37,57 @@ export const PopUpSuccess = ({
     <>
       <Modal
         isVisible={isModalVisible}
-        onBackdropPress={() => setModalVisible(false)}>
+        onBackdropPress={() => setIsModalSuccess(false)}>
         <StatusBar backgroundColor={'#07111B'} />
         <Modal.Container>
           <Modal.Header title={titleHeader} />
           <Modal.Body title={titleBody} />
+          {isFooter ? (
+            <Modal.Footer>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 8,
+                }}>
+                <ButtonBack
+                  isRight={false}
+                  isDelete={false}
+                  title="CANCEL"
+                  onPress={() => setModalVisible(false)}
+                />
+                <View style={{ width: 16 }} />
+                <ButtonDelete
+                  isRight={true}
+                  isDelete={true}
+                  title="DELETE"
+                  onPress={handleDeleteTree}
+                />
+              </View>
+            </Modal.Footer>
+          ) : null}
+          {/* <Modal.Footer>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingHorizontal: 8,
+              }}>
+              <ButtonBack
+                isRight={false}
+                isDelete={false}
+                title="CANCEL"
+                onPress={() => setModalVisible(false)}
+              />
+              <View style={{ width: 16 }} />
+              <ButtonDelete
+                isRight={true}
+                isDelete={true}
+                title="LOGIN"
+                onPress={() => handleDeleteTree(key)}
+              />
+            </View>
+          </Modal.Footer> */}
         </Modal.Container>
       </Modal>
     </>

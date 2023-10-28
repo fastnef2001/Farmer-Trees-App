@@ -14,7 +14,7 @@ import ChangePassword from '../screens/Password/ChangePassword.screen';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AddTree from '../screens/Setupfarm/Addtree.screen';
 import Farmname from '../screens/Setupfarm/Farmname.screen';
-import YourFarm from '../screens/Home/YourFarm.screen';
+import YourFarm from '../screens/YourFarm/YourFarm.screen';
 import { StatusBar, Text, View } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import IncomeHistory from '../screens/Statistics/IncomeHistory.screen';
