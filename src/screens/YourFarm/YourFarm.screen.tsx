@@ -62,6 +62,7 @@ const YourFarm = ({ navigation }: any) => {
     titleBody,
     isFooter,
     setIsModalSuccess,
+    handleModalSuccess,
   } = UseLogic();
 
   return (
@@ -213,7 +214,7 @@ const YourFarm = ({ navigation }: any) => {
         titleBody={titleBody}
         handleDeleteTree={() => handleDeleteTree(key)}
         isFooter={isFooter}
-        setIsModalSuccess={setIsModalSuccess}
+        handleModalSuccess={handleModalSuccess}
       />
 
       <ModalInsert isVisible={isModalEditTree} isPick={false}>

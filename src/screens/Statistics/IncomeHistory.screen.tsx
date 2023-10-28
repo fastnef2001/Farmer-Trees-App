@@ -211,6 +211,9 @@ const IncomeHistory = () => {
         isModalSuccess={isModalSuccess}
         titleHeader={titleHeader}
         titleBody={titleBody}
+        isFooter={false}
+        handleDeleteTree={() => {}}
+        handleModalSuccess={() => setIsModalSuccess(!isModalSuccess)}
       />
       <PopUpLoading isModalSuccess={isModalLoading} />
       {/* End up noti and loading */}

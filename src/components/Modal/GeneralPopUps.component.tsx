@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
-import PieChart from 'react-native-pie-chart';
-import { COLORS } from '../../theme/color';
 import { Modal } from './Modal';
 import { StatusBar } from 'react-native';
 import { ModalLoading } from './ModalLoading';
@@ -13,7 +11,7 @@ export type PopUpSuccessProps = {
   titleBody: string;
   isFooter?: boolean;
   handleDeleteTree: () => void;
-  setIsModalSuccess: (isModalSuccess: boolean) => void;
+  handleModalSuccess: () => void;
 };
 
 export type PopUpLoadingProps = {
@@ -26,7 +24,7 @@ export const PopUpSuccess = ({
   titleBody,
   handleDeleteTree,
   isFooter = false,
-  setIsModalSuccess,
+  handleModalSuccess,
 }: PopUpSuccessProps) => {
   const [isModalVisible, setModalVisible] = useState(false);
   useEffect(() => {
@@ -35,9 +33,7 @@ export const PopUpSuccess = ({
 
   return (
     <>
-      <Modal
-        isVisible={isModalVisible}
-        onBackdropPress={() => setIsModalSuccess(false)}>
+      <Modal isVisible={isModalVisible} onBackdropPress={handleModalSuccess}>
         <StatusBar backgroundColor={'#07111B'} />
         <Modal.Container>
           <Modal.Header title={titleHeader} />
@@ -54,7 +50,7 @@ export const PopUpSuccess = ({
                   isRight={false}
                   isDelete={false}
                   title="CANCEL"
-                  onPress={() => setModalVisible(false)}
+                  onPress={handleModalSuccess}
                 />
                 <View style={{ width: 16 }} />
                 <ButtonDelete

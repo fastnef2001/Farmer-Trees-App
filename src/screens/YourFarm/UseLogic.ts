@@ -124,7 +124,7 @@ export function UseLogic() {
     setTitleBody('Do you want to delete the coffee tree?');
     setTitleHeader('Delete');
     setIsFooter(true);
-    setIsModalSuccess(true);
+    handleModalSuccess();
   };
 
   // 7. Handle delete tree
