@@ -225,6 +225,9 @@ const Statistics = ({ navigation }: any) => {
           isModalSuccess={isModalSuccess}
           titleHeader={titleHeader}
           titleBody={titleBody}
+          handleModalSuccess={() => setIsModalSuccess(!isModalSuccess)}
+          isFooter={false}
+          handleDeleteTree={() => {}}
         />
         <PopUpLoading isModalSuccess={isModalLoading} />
         {/* End up noti and loading */}
