@@ -9,6 +9,7 @@ import {
   TreeInterface,
   UnitInterface,
 } from './Statistics.interface';
+import { set } from 'date-fns';
 
 function convertToKilograms(quantity: number, unit: string) {
   switch (unit) {
@@ -415,6 +416,7 @@ export function HandleAdd() {
       }
     }
   };
+
   return {
     isModaAdd,
     setIsModalAdd,

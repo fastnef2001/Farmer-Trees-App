@@ -8,6 +8,7 @@ import {
   InputInterface,
   TreeInterface,
   UnitInterface,
+  DataExpenseInterface,
 } from './Statistics.interface';
 import { HandleAdd } from './HandleAdd';
 import { is } from 'date-fns/locale';
@@ -53,6 +54,7 @@ export function UseLogic() {
   const [dataIncome, setDataIncome] = useState([]);
   const [totalExpense, setTotalExpense] = useState(0);
   const [dataExpense, setDataExpense] = useState([]);
+
   const [totalProfit, setTotalProfit] = useState(0);
   useEffect(() => {
     setTotalProfit(totalIncome - totalExpense);
