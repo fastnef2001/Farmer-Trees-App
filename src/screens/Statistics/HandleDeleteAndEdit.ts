@@ -25,9 +25,6 @@ export function HandleDeleteAndEdit() {
   };
 
   const item = data.find(item => item.key === key);
-
-  console.log('item', item);
-
   return {
     isModalDetail,
     setIsModalDetail,
@@ -35,5 +32,6 @@ export function HandleDeleteAndEdit() {
     setKey,
     handlePressDetail,
     handleModalDetail,
+    item,
   };
 }

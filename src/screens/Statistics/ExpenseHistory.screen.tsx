@@ -76,7 +76,7 @@ const ExpenseHistory = () => {
     titleBody,
     isModalLoading,
   } = HandleAdd();
-  const { isModalDetail, handleModalDetail, handlePressDetail } =
+  const { isModalDetail, handleModalDetail, handlePressDetail, item } =
     HandleDeleteAndEdit();
 
   return (
@@ -204,6 +204,7 @@ const ExpenseHistory = () => {
         isModaDetail={isModalDetail}
         handleModalDetail={handleModalDetail}
         titleModalAdd={'Detail expense'}
+        item={item}
       />
 
       {/* Pop up noti and loading */}

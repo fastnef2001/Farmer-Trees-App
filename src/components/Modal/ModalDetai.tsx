@@ -13,11 +13,13 @@ import IconBack from '../../assets/images/IconBack.svg';
 import IconCalendar from '../../assets/images/IconCalendar.svg';
 import { ButtonEdit, ButtonDelete } from '../Button/Button';
 import { COLORS } from '../../theme/color';
+import { DataExpenseInterface } from '../../screens/Statistics/Statistics.interface';
 
 export type ModalAddProps = {
   isModaDetail: boolean;
   handleModalDetail: () => void;
   titleModalAdd: string;
+  item: DataExpenseInterface | undefined;
   //   handlePickDate: (type: string) => () => void;
   //   selectedDateIncome: string;
   //   selectedDateExpense: string;
@@ -39,7 +41,13 @@ export const ModalDetail = ({
   isModaDetail,
   handleModalDetail,
   titleModalAdd,
+  item,
 }: ModalAddProps) => {
+  console.log('item33333', item);
+  if (!item) {
+    console.log('item4444', item);
+    return null;
+  }
   //   handleHideModalAdd,
   //   titleModalAdd,
   //   handlePickDate,
@@ -84,22 +92,25 @@ export const ModalDetail = ({
                 <View style={styles1.root}>
                   <View style={styles1.row1}>
                     <View style={styles1.date}>
-                      <Text style={styles1.dateText}>{'25/12/2025'}</Text>
+                      <Text style={styles1.dateText}>{item.date}</Text>
                       <View style={{ width: 4 }} />
                       <IconCalendar />
                     </View>
-                    <Text style={styles1.priceText}>{'2.000.000 $'}</Text>
+                    <Text style={styles1.priceText}>{item.totalPrice}$</Text>
                   </View>
                   <View style={{ height: 16 }} />
                   <View style={styles1.row2}>
-                    <Text style={styles1.title}>{'Crop produce:'}</Text>
-                    <Text style={styles1.titleText}>{'Coffee'}</Text>
+                    <Text style={styles1.title}>{'Cost type:'}</Text>
+                    <View style={{ width: 8 }} />
+                    <Text style={styles1.titleText}>{item.costType}</Text>
                   </View>
                   <View style={{ height: 16 }} />
                   <View style={styles1.row2}>
-                    <Text style={styles1.title}>{'Crop yield:'}</Text>
-                    <Text style={styles1.titleText}>{'200'}</Text>
-                    <Text style={styles1.titleText}>{'kg'}</Text>
+                    <Text style={styles1.title}>{'Quantity:'}</Text>
+                    <View style={{ width: 8 }} />
+                    <Text style={styles1.titleText}>{item.quantity}</Text>
+                    <View style={{ width: 8 }} />
+                    <Text style={styles1.titleText}>{item.unit}</Text>
                   </View>
                   <View style={{ height: 8 }} />
                 </View>
