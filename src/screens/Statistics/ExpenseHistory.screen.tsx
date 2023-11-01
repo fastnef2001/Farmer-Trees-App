@@ -78,6 +78,7 @@ const ExpenseHistory = () => {
   } = HandleAdd();
   const { isModalDetail, handleModalDetail, handlePressDetail, item } =
     HandleDeleteAndEdit();
+  console.log('isModalDetail1', isModalDetail);
 
   return (
     <>

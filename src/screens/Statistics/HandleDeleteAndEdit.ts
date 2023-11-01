@@ -2,22 +2,28 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import { useState, useEffect } from 'react';
 import { UseLogic } from './UseLogic';
-import { DataExpenseInterface } from './Statistics.interface';
+import {
+  DataExpenseInterface,
+  DataIncomeInterface,
+} from './Statistics.interface';
 
 export function HandleDeleteAndEdit() {
-  const { dataExpense } = UseLogic();
+  const { dataExpense, dataIncome } = UseLogic();
 
   const [data, setData] = useState<DataExpenseInterface[]>([]);
+  const [dataIncome1, setDataIncome] = useState<DataIncomeInterface[]>([]);
 
   useEffect(() => {
     setData(dataExpense);
-  }, [dataExpense]);
+    setDataIncome(dataIncome);
+  }, [dataExpense, dataIncome]);
 
-  console.log('dataExpense', dataExpense);
   const [isModalDetail, setIsModalDetail] = useState(false);
   const [key, setKey] = useState('');
   const handlePressDetail = (key: string) => {
+    console.log('có bấm');
     setIsModalDetail(true);
+    console.log(isModalDetail);
     setKey(key);
   };
   const handleModalDetail = () => {
@@ -25,6 +31,7 @@ export function HandleDeleteAndEdit() {
   };
 
   const item = data.find(item => item.key === key);
+  const itemIncome = dataIncome1.find(item => item.key === key);
   return {
     isModalDetail,
     setIsModalDetail,
@@ -33,5 +40,6 @@ export function HandleDeleteAndEdit() {
     handlePressDetail,
     handleModalDetail,
     item,
+    itemIncome,
   };
 }

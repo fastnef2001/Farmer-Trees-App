@@ -154,7 +154,6 @@ export function UseLogic() {
           0,
         );
         setData(data);
-        console.log('data', data);
         setTotal(totalSum);
       });
 
@@ -170,14 +169,6 @@ export function UseLogic() {
       collectionName2,
     ]);
   }
-
-  // function filterDataIncome(data: any) {
-  //   data.filter = (item: { tree: string }) => {
-  //     return item.tree === selectedTreeOrCostType;
-  //   };
-
-  //   return data;
-  // }
 
   fetchDataAndCalculateTotal(
     'incomes',

@@ -21,6 +21,7 @@ import { FilterComponent } from '../../components/Statistics/Filter.component';
 import IconSwitch from '../../assets/images/IconSwitch.svg';
 import { HistoryElemment } from '../../components/Statistics/History.component';
 import { HandleDeleteAndEdit } from './HandleDeleteAndEdit';
+import { ModalDetail } from '../../components/Modal/ModalDetai';
 
 const IncomeHistory = () => {
   const {
@@ -78,7 +79,8 @@ const IncomeHistory = () => {
     isModalLoading,
   } = HandleAdd();
 
-  const { handleModalDetail, handlePressDetail } = HandleDeleteAndEdit();
+  const { isModalDetail, handleModalDetail, handlePressDetail, itemIncome } =
+    HandleDeleteAndEdit();
 
   return (
     <>
@@ -169,6 +171,14 @@ const IncomeHistory = () => {
         isDisabled={isDisabled}
       />
       {/* End modal add */}
+      {/* Modal detail */}
+      <ModalDetail
+        isModaDetail={isModalDetail}
+        handleModalDetail={handleModalDetail}
+        titleModalAdd={'Detail income'}
+        itemIncome={itemIncome}
+      />
+      {/* End modal detail */}
       {/* Modal pick */}
       <ModalPick
         isModalPick={isModalPickFilter}

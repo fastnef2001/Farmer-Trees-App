@@ -13,13 +13,17 @@ import IconBack from '../../assets/images/IconBack.svg';
 import IconCalendar from '../../assets/images/IconCalendar.svg';
 import { ButtonEdit, ButtonDelete } from '../Button/Button';
 import { COLORS } from '../../theme/color';
-import { DataExpenseInterface } from '../../screens/Statistics/Statistics.interface';
+import {
+  DataExpenseInterface,
+  DataIncomeInterface,
+} from '../../screens/Statistics/Statistics.interface';
 
 export type ModalAddProps = {
   isModaDetail: boolean;
   handleModalDetail: () => void;
   titleModalAdd: string;
-  item: DataExpenseInterface | undefined;
+  item?: DataExpenseInterface | undefined;
+  itemIncome?: DataIncomeInterface | undefined;
   //   handlePickDate: (type: string) => () => void;
   //   selectedDateIncome: string;
   //   selectedDateExpense: string;
@@ -42,12 +46,8 @@ export const ModalDetail = ({
   handleModalDetail,
   titleModalAdd,
   item,
+  itemIncome,
 }: ModalAddProps) => {
-  console.log('item33333', item);
-  if (!item) {
-    console.log('item4444', item);
-    return null;
-  }
   //   handleHideModalAdd,
   //   titleModalAdd,
   //   handlePickDate,
@@ -92,25 +92,48 @@ export const ModalDetail = ({
                 <View style={styles1.root}>
                   <View style={styles1.row1}>
                     <View style={styles1.date}>
-                      <Text style={styles1.dateText}>{item.date}</Text>
+                      <Text style={styles1.dateText}>
+                        {titleModalAdd === 'Detail income'
+                          ? itemIncome?.date
+                          : item?.date}
+                      </Text>
                       <View style={{ width: 4 }} />
                       <IconCalendar />
                     </View>
-                    <Text style={styles1.priceText}>{item.totalPrice}$</Text>
+                    <Text style={styles1.priceText}>
+                      {titleModalAdd === 'Detail income'
+                        ? itemIncome?.totalPrice
+                        : item?.totalPrice}
+                      $
+                    </Text>
                   </View>
                   <View style={{ height: 16 }} />
                   <View style={styles1.row2}>
-                    <Text style={styles1.title}>{'Cost type:'}</Text>
+                    <Text style={styles1.title}>
+                      {titleModalAdd === 'Detail income'
+                        ? 'Tree:'
+                        : 'Cost type:'}
+                    </Text>
                     <View style={{ width: 8 }} />
-                    <Text style={styles1.titleText}>{item.costType}</Text>
+                    <Text style={styles1.titleText}>
+                      {titleModalAdd === 'Detail income'
+                        ? itemIncome?.tree
+                        : item?.costType}
+                    </Text>
                   </View>
                   <View style={{ height: 16 }} />
                   <View style={styles1.row2}>
                     <Text style={styles1.title}>{'Quantity:'}</Text>
                     <View style={{ width: 8 }} />
-                    <Text style={styles1.titleText}>{item.quantity}</Text>
+                    <Text style={styles1.titleText}>
+                      {titleModalAdd === 'Detail income'
+                        ? itemIncome?.quantityInKilograms
+                        : item?.quantity}
+                    </Text>
                     <View style={{ width: 8 }} />
-                    <Text style={styles1.titleText}>{item.unit}</Text>
+                    <Text style={styles1.titleText}>
+                      {titleModalAdd === 'Detail income' ? '' : item?.unit}
+                    </Text>
                   </View>
                   <View style={{ height: 8 }} />
                 </View>

@@ -12,7 +12,6 @@ export type HistoryProps = {
   isIncome: boolean;
   handlePress: () => void;
   handlePressDetail: (key: string) => void;
-  item?: any;
 };
 
 export const HistoryComponent = ({
@@ -21,7 +20,6 @@ export const HistoryComponent = ({
   isIncome,
   handlePress,
   handlePressDetail,
-  item,
 }: HistoryProps) => {
   data = data.slice(0, 5);
 

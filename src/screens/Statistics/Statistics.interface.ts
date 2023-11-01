@@ -24,3 +24,11 @@ export interface DataExpenseInterface {
   totalPrice: any;
   unit: string;
 }
+
+export interface DataIncomeInterface {
+  key: string;
+  tree: string;
+  date: string;
+  quantityInKilograms: any;
+  totalPrice: any;
+}
