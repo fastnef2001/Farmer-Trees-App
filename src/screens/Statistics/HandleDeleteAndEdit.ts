@@ -6,6 +6,9 @@ import {
   DataExpenseInterface,
   DataIncomeInterface,
 } from './Statistics.interface';
+import { set } from 'date-fns';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 export function HandleDeleteAndEdit() {
   const { dataExpense, dataIncome } = UseLogic();
@@ -20,14 +23,37 @@ export function HandleDeleteAndEdit() {
 
   const [isModalDetail, setIsModalDetail] = useState(false);
   const [key, setKey] = useState('');
-  const handlePressDetail = (key: string) => {
-    console.log('có bấm');
+  const [title, setTitle] = useState('');
+  const handlePressDetail = (key: string, title: string) => {
+    setTitle(title);
     setIsModalDetail(true);
-    console.log(isModalDetail);
     setKey(key);
   };
   const handleModalDetail = () => {
     setIsModalDetail(false);
+  };
+
+  const handleDeleteIncome = () => {
+    firestore()
+      .collection('incomes')
+      .doc(auth().currentUser?.uid)
+      .collection('income')
+      .doc(key)
+      .delete();
+    // setTitleBody('You have successfully deleted the tree.');
+    // setTitleHeader('Successfully');
+    // handleModalSuccess();
+  };
+  const handleDeleteExpense = () => {
+    firestore()
+      .collection('expenses')
+      .doc(auth().currentUser?.uid)
+      .collection('expense')
+      .doc(key)
+      .delete();
+    // setTitleBody('You have successfully deleted the tree.');
+    // setTitleHeader('Successfully');
+    // handleModalSuccess();
   };
 
   const item = data.find(item => item.key === key);
@@ -41,5 +67,8 @@ export function HandleDeleteAndEdit() {
     handleModalDetail,
     item,
     itemIncome,
+    title,
+    handleDeleteIncome,
+    handleDeleteExpense,
   };
 }

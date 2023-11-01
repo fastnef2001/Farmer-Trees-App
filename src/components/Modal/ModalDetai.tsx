@@ -24,6 +24,7 @@ export type ModalAddProps = {
   titleModalAdd: string;
   item?: DataExpenseInterface | undefined;
   itemIncome?: DataIncomeInterface | undefined;
+  deleteItem: (key: string) => void;
   //   handlePickDate: (type: string) => () => void;
   //   selectedDateIncome: string;
   //   selectedDateExpense: string;
@@ -47,6 +48,7 @@ export const ModalDetail = ({
   titleModalAdd,
   item,
   itemIncome,
+  deleteItem,
 }: ModalAddProps) => {
   //   handleHideModalAdd,
   //   titleModalAdd,
@@ -61,6 +63,8 @@ export const ModalDetail = ({
   //   handleAdd,
   //   inputs,
   //   isDisabled,
+  const key = item?.key;
+
   return (
     <>
       <ModalInsert isVisible={isModaDetail} isPick={false}>
@@ -149,7 +153,9 @@ export const ModalDetail = ({
                     isRight={true}
                     isDelete={true}
                     title="DELETE"
-                    onPress={() => {}}
+                    // nếu là income thì truyền vào itemIncome?.key
+                    // nếu là expense thì truyền vào item?.key
+                    onPress={() => deleteItem(key || '')}
                   />
                   <View style={{ width: 16 }} />
                   <ButtonEdit

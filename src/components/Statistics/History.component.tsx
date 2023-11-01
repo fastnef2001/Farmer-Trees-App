@@ -11,7 +11,7 @@ export type HistoryProps = {
   title: string;
   isIncome: boolean;
   handlePress: () => void;
-  handlePressDetail: (key: string) => void;
+  handlePressDetail: (key: string, title: string) => void;
 };
 
 export const HistoryComponent = ({
@@ -34,8 +34,7 @@ export const HistoryComponent = ({
       {data.map((item: any) => (
         <TouchableOpacity
           style={stylesItem.root}
-          // onPress={() => handlePressDetail(item.key)}
-          >
+          onPress={() => handlePressDetail(item.key, title)}>
           <View style={isIncome ? stylesDate.root : stylesDate.root1}>
             <Text style={stylesDate.tileMonth}>{item.month}</Text>
             <Text style={stylesDate.tileDate}>{item.day}</Text>
@@ -83,10 +82,9 @@ export const HistoryComponent = ({
 };
 
 export const HistoryElemment = ({
-  data,
   title,
+  data,
   isIncome,
-  handlePress,
   handlePressDetail,
 }: HistoryProps) => {
   return (
@@ -94,7 +92,7 @@ export const HistoryElemment = ({
       {data.map((item: any) => (
         <TouchableOpacity
           style={stylesItem.root}
-          onPress={() => handlePressDetail(item.key)}>
+          onPress={() => handlePressDetail(item.key, title)}>
           <View style={isIncome ? stylesDate.root : stylesDate.root1}>
             <Text style={stylesDate.tileMonth}>{item.month}</Text>
             <Text style={stylesDate.tileDate}>{item.day}</Text>

@@ -1,11 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { HeaderTitle } from '../../components/Header/Header.component';
 import { ModalAdd } from '../../components/Modal/ModalAdd';
@@ -79,8 +73,13 @@ const IncomeHistory = () => {
     isModalLoading,
   } = HandleAdd();
 
-  const { isModalDetail, handleModalDetail, handlePressDetail, itemIncome } =
-    HandleDeleteAndEdit();
+  const {
+    isModalDetail,
+    handleModalDetail,
+    handlePressDetail,
+    itemIncome,
+    handleDeleteIncome,
+  } = HandleDeleteAndEdit();
 
   return (
     <>
@@ -177,6 +176,7 @@ const IncomeHistory = () => {
         handleModalDetail={handleModalDetail}
         titleModalAdd={'Detail income'}
         itemIncome={itemIncome}
+        deleteItem={handleDeleteIncome}
       />
       {/* End modal detail */}
       {/* Modal pick */}

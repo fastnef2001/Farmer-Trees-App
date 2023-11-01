@@ -23,9 +23,11 @@ import {
 } from '../../components/Modal/GeneralPopUps.component';
 import { UseLogic } from './UseLogic';
 import { HandleAdd } from './HandleAdd';
+import { HandleDeleteAndEdit } from './HandleDeleteAndEdit';
 import { ModalAdd } from '../../components/Modal/ModalAdd';
 import { ModalPickDate } from '../../components/Modal/ModalPickDate';
 import { ModalPick } from '../../components/Modal/ModalPick';
+import { ModalDetail } from '../../components/Modal/ModalDetai';
 
 const Statistics = ({ navigation }: any) => {
   const {
@@ -80,6 +82,16 @@ const Statistics = ({ navigation }: any) => {
     titleBody,
     isModalLoading,
   } = HandleAdd();
+  const {
+    isModalDetail,
+    handleModalDetail,
+    handlePressDetail,
+    item,
+    title,
+    itemIncome,
+    handleDeleteIncome,
+    handleDeleteExpense,
+  } = HandleDeleteAndEdit();
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }}>
@@ -136,12 +148,14 @@ const Statistics = ({ navigation }: any) => {
             data={dataIncome}
             title="Income history"
             isIncome={true}
+            handlePressDetail={handlePressDetail}
           />
           <HistoryComponent
             handlePress={() => navigation.navigate('ExpenseHistory')}
             data={dataExpense}
             title="Expense history"
             isIncome={false}
+            handlePressDetail={handlePressDetail}
           />
           {/* End history */}
         </ScrollView>
@@ -197,6 +211,20 @@ const Statistics = ({ navigation }: any) => {
           hanlePickItem={hanleHideModalPick}
         />
         {/* End modal pick */}
+        <ModalDetail
+          isModaDetail={isModalDetail}
+          handleModalDetail={handleModalDetail}
+          titleModalAdd={
+            title === 'Expense history' ? 'Detail expense' : 'Detail income'
+          }
+          itemIncome={itemIncome}
+          item={item}
+          deleteItem={
+            title === 'Expense history'
+              ? handleDeleteExpense
+              : handleDeleteIncome
+          }
+        />
 
         {/* Pop up noti and loading */}
         <PopUpSuccess
