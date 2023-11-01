@@ -1,14 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  StatusBar,
   ImageBackground,
 } from 'react-native';
 import GeneralStatistics from '../../components/Statistics/GeneralStatistics.component';
@@ -18,25 +16,18 @@ import { FilterComponent } from '../../components/Statistics/Filter.component';
 import ButtonAddComponent from '../../components/Statistics/ButtonAdd.component';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLORS } from '../../theme/color';
-import DatePicker from 'react-native-modern-datepicker';
-import { PickDate } from '../../components/Modal/PickDate';
-import { ModalInsert } from '../../components/Modal/ModalInsert';
-import IconBack from '../../assets/images/IconBack.svg';
-import styles from '../Setupfarm/Addtree.style';
 import IconSwitch from '../../assets/images/IconSwitch.svg';
-import Input from '../../components/Input/Input.component';
-import IconSave from '../../assets/images/IconSave.svg';
-import { RadioButton } from 'react-native-paper';
-import IconCalendar from '../../assets/images/IconCalendar.svg';
 import {
   PopUpSuccess,
   PopUpLoading,
 } from '../../components/Modal/GeneralPopUps.component';
-import { UseLogic } from './UserLogic';
+import { UseLogic } from './UseLogic';
 import { HandleAdd } from './HandleAdd';
+import { HandleDeleteAndEdit } from './HandleDeleteAndEdit';
 import { ModalAdd } from '../../components/Modal/ModalAdd';
 import { ModalPickDate } from '../../components/Modal/ModalPickDate';
 import { ModalPick } from '../../components/Modal/ModalPick';
+import { ModalDetail } from '../../components/Modal/ModalDetai';
 
 const Statistics = ({ navigation }: any) => {
   const {
@@ -57,20 +48,12 @@ const Statistics = ({ navigation }: any) => {
   } = UseLogic();
   const {
     isModaAdd,
-    setIsModalAdd,
     titleModalAdd,
-    setTitleModalAdd,
     inputs,
-    setInputs,
     handleHideModalAdd,
     handleInputChange,
-    inputsIncome,
-    setInputsIncome,
     isDisabled,
-    setIsDisabled,
     handleModalAddIncome,
-    inputsExpense,
-    setInputsExpense,
     handleModalAddExpense,
     unitsIncome,
     trees,
@@ -96,12 +79,19 @@ const Statistics = ({ navigation }: any) => {
     isModalSuccess,
     setIsModalSuccess,
     titleHeader,
-    setTitleHeader,
     titleBody,
-    setTitleBody,
     isModalLoading,
-    setIsModalLoading,
   } = HandleAdd();
+  const {
+    isModalDetail,
+    handleModalDetail,
+    handlePressDetail,
+    item,
+    title,
+    itemIncome,
+    handleDeleteIncome,
+    handleDeleteExpense,
+  } = HandleDeleteAndEdit();
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }}>
@@ -158,12 +148,14 @@ const Statistics = ({ navigation }: any) => {
             data={dataIncome}
             title="Income history"
             isIncome={true}
+            handlePressDetail={handlePressDetail}
           />
           <HistoryComponent
             handlePress={() => navigation.navigate('ExpenseHistory')}
             data={dataExpense}
             title="Expense history"
             isIncome={false}
+            handlePressDetail={handlePressDetail}
           />
           {/* End history */}
         </ScrollView>
@@ -219,6 +211,20 @@ const Statistics = ({ navigation }: any) => {
           hanlePickItem={hanleHideModalPick}
         />
         {/* End modal pick */}
+        <ModalDetail
+          isModaDetail={isModalDetail}
+          handleModalDetail={handleModalDetail}
+          titleModalAdd={
+            title === 'Expense history' ? 'Detail expense' : 'Detail income'
+          }
+          itemIncome={itemIncome}
+          item={item}
+          deleteItem={
+            title === 'Expense history'
+              ? handleDeleteExpense
+              : handleDeleteIncome
+          }
+        />
 
         {/* Pop up noti and loading */}
         <PopUpSuccess

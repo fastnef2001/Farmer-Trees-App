@@ -6,6 +6,7 @@ import IconSignUp from '../../assets/images/IconSignUp.svg';
 import IconBackSmall from '../../assets/images/IconBackSmall.svg';
 import IconDelete36 from '../../assets/images/IconDelete36.svg';
 import IconDelete24 from '../../assets/images/IconDelete24.svg';
+import IconEdit20 from '../../assets/images/IconEdit20.svg';
 
 export type ButtonProps = {
   title: string;
@@ -71,6 +72,25 @@ export const ButtonDelete = ({ isDelete, title, onPress }: ButtonProps) => {
   );
 };
 
+export const ButtonEdit = ({ isRight, title, onPress }: ButtonProps) => {
+  return (
+    <TouchableOpacity
+      style={isRight ? styles.button : styles.buttonLeft}
+      onPress={onPress}>
+      <View
+        style={{
+          flexDirection: 'row',
+          // tôi muốn hai cái icon và text nằm trên cùng một hàng và cách nhau 4px
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        <IconEdit20 />
+        <View style={{ width: 4 }} />
+        <Text style={isRight ? styles.text : styles.textLeft}>{title}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 const styles = StyleSheet.create({
   button: {
     justifyContent: 'center',

@@ -8,6 +8,7 @@ import {
   InputInterface,
   TreeInterface,
   UnitInterface,
+  DataExpenseInterface,
 } from './Statistics.interface';
 import { HandleAdd } from './HandleAdd';
 import { is } from 'date-fns/locale';
@@ -53,6 +54,7 @@ export function UseLogic() {
   const [dataIncome, setDataIncome] = useState([]);
   const [totalExpense, setTotalExpense] = useState(0);
   const [dataExpense, setDataExpense] = useState([]);
+
   const [totalProfit, setTotalProfit] = useState(0);
   useEffect(() => {
     setTotalProfit(totalIncome - totalExpense);
@@ -152,7 +154,6 @@ export function UseLogic() {
           0,
         );
         setData(data);
-        console.log('data', data);
         setTotal(totalSum);
       });
 
@@ -168,14 +169,6 @@ export function UseLogic() {
       collectionName2,
     ]);
   }
-
-  // function filterDataIncome(data: any) {
-  //   data.filter = (item: { tree: string }) => {
-  //     return item.tree === selectedTreeOrCostType;
-  //   };
-
-  //   return data;
-  // }
 
   fetchDataAndCalculateTotal(
     'incomes',

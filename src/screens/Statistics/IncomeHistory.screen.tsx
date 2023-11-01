@@ -1,15 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { HeaderTitle } from '../../components/Header/Header.component';
 import { ModalAdd } from '../../components/Modal/ModalAdd';
-import { UseLogic } from './UserLogic';
+import { UseLogic } from './UseLogic';
 import { HandleAdd } from './HandleAdd';
 import { ModalPickDate } from '../../components/Modal/ModalPickDate';
 import { ModalPick } from '../../components/Modal/ModalPick';
@@ -20,6 +14,8 @@ import {
 import { FilterComponent } from '../../components/Statistics/Filter.component';
 import IconSwitch from '../../assets/images/IconSwitch.svg';
 import { HistoryElemment } from '../../components/Statistics/History.component';
+import { HandleDeleteAndEdit } from './HandleDeleteAndEdit';
+import { ModalDetail } from '../../components/Modal/ModalDetai';
 
 const IncomeHistory = () => {
   const {
@@ -29,11 +25,7 @@ const IncomeHistory = () => {
     setSelectedDateEnd,
     handlePickDate,
     handleReload,
-    totalIncome,
-    totalExpense,
-    totalProfit,
     dataIncome,
-    dataExpense,
     status,
     isModalPickDate,
     setIsModalPickDate,
@@ -47,21 +39,12 @@ const IncomeHistory = () => {
   } = UseLogic();
   const {
     isModaAdd,
-    setIsModalAdd,
     titleModalAdd,
-    setTitleModalAdd,
     inputs,
-    setInputs,
     handleHideModalAdd,
     handleInputChange,
-    inputsIncome,
-    setInputsIncome,
     isDisabled,
-    setIsDisabled,
     handleModalAddIncome,
-    inputsExpense,
-    setInputsExpense,
-    handleModalAddExpense,
     unitsIncome,
     trees,
     costTypes,
@@ -86,12 +69,17 @@ const IncomeHistory = () => {
     isModalSuccess,
     setIsModalSuccess,
     titleHeader,
-    setTitleHeader,
     titleBody,
-    setTitleBody,
     isModalLoading,
-    setIsModalLoading,
   } = HandleAdd();
+
+  const {
+    isModalDetail,
+    handleModalDetail,
+    handlePressDetail,
+    itemIncome,
+    handleDeleteIncome,
+  } = HandleDeleteAndEdit();
 
   return (
     <>
@@ -138,7 +126,13 @@ const IncomeHistory = () => {
             width: '90%',
             alignSelf: 'center',
           }}>
-          <HistoryElemment data={dataIncome} title="Income" isIncome={true} />
+          <HistoryElemment
+            data={dataIncome}
+            title="Income"
+            isIncome={true}
+            handlePress={handleModalDetail}
+            handlePressDetail={handlePressDetail}
+          />
           <View style={{ height: 16 }} />
         </ScrollView>
       </SafeAreaView>
@@ -176,6 +170,15 @@ const IncomeHistory = () => {
         isDisabled={isDisabled}
       />
       {/* End modal add */}
+      {/* Modal detail */}
+      <ModalDetail
+        isModaDetail={isModalDetail}
+        handleModalDetail={handleModalDetail}
+        titleModalAdd={'Detail income'}
+        itemIncome={itemIncome}
+        deleteItem={handleDeleteIncome}
+      />
+      {/* End modal detail */}
       {/* Modal pick */}
       <ModalPick
         isModalPick={isModalPickFilter}
