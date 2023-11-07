@@ -91,6 +91,11 @@ const Statistics = ({ navigation }: any) => {
     itemIncome,
     handleDeleteIncome,
     handleDeleteExpense,
+    isModalSuccess1,
+    setIsModalSuccess1,
+    titleBody1,
+    titleHeader1,
+    isModalLoading1,
   } = HandleDeleteAndEdit();
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -131,7 +136,7 @@ const Statistics = ({ navigation }: any) => {
           <View style={stylesFilter.root}>
             <ButtonAddComponent
               onPress={handleModalAddIncome}
-              title="Icome"
+              title="Income"
               isRight={false}
             />
             <View style={{ width: 8 }} />
@@ -236,6 +241,18 @@ const Statistics = ({ navigation }: any) => {
           handleDeleteTree={() => {}}
         />
         <PopUpLoading isModalSuccess={isModalLoading} />
+        {/* End up noti and loading */}
+
+        {/* Pop up noti and loading */}
+        <PopUpSuccess
+          isModalSuccess={isModalSuccess1}
+          titleHeader={titleHeader1}
+          titleBody={titleBody1}
+          handleModalSuccess={() => setIsModalSuccess1(!isModalSuccess1)}
+          isFooter={false}
+          handleDeleteTree={() => {}}
+        />
+        <PopUpLoading isModalSuccess={isModalLoading1} />
         {/* End up noti and loading */}
       </ImageBackground>
     </SafeAreaView>
