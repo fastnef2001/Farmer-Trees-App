@@ -15,6 +15,10 @@ export function HandleDeleteAndEdit() {
 
   const [data, setData] = useState<DataExpenseInterface[]>([]);
   const [dataIncome1, setDataIncome] = useState<DataIncomeInterface[]>([]);
+  const [titleBody1, setTitleBody1] = useState('');
+  const [titleHeader1, setTitleHeader1] = useState('');
+  const [isModalSuccess1, setIsModalSuccess1] = useState(false);
+  const [isModalLoading1, setIsModalLoading1] = useState(false);
 
   useEffect(() => {
     setData(dataExpense);
@@ -34,26 +38,32 @@ export function HandleDeleteAndEdit() {
   };
 
   const handleDeleteIncome = () => {
+    setTitleBody1('You have successfully deleted the income.');
+    setTitleHeader1('Successfully');
     firestore()
       .collection('incomes')
       .doc(auth().currentUser?.uid)
       .collection('income')
       .doc(key)
       .delete();
-    // setTitleBody('You have successfully deleted the tree.');
-    // setTitleHeader('Successfully');
-    // handleModalSuccess();
+    handleModalDetail();
+    setIsModalSuccess1(true);
   };
   const handleDeleteExpense = () => {
+    setTitleBody1('You have successfully deleted the expense.');
+    setTitleHeader1('Successfully');
     firestore()
       .collection('expenses')
       .doc(auth().currentUser?.uid)
       .collection('expense')
       .doc(key)
       .delete();
-    // setTitleBody('You have successfully deleted the tree.');
-    // setTitleHeader('Successfully');
-    // handleModalSuccess();
+    handleModalDetail();
+    setIsModalSuccess1(true);
+  };
+
+  const handleModalSuccess = () => {
+    setIsModalSuccess1(!isModalSuccess1);
   };
 
   const item = data.find(item => item.key === key);
@@ -70,5 +80,11 @@ export function HandleDeleteAndEdit() {
     title,
     handleDeleteIncome,
     handleDeleteExpense,
+    isModalSuccess1,
+    setIsModalSuccess1,
+    titleBody1,
+    titleHeader1,
+    handleModalSuccess,
+    isModalLoading1,
   };
 }
