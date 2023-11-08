@@ -9,6 +9,7 @@ import {
 import { set } from 'date-fns';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import { tr } from 'date-fns/locale';
 
 export function HandleDeleteAndEdit() {
   const { dataExpense, dataIncome } = UseLogic();
@@ -19,6 +20,7 @@ export function HandleDeleteAndEdit() {
   const [titleHeader1, setTitleHeader1] = useState('');
   const [isModalSuccess1, setIsModalSuccess1] = useState(false);
   const [isModalLoading1, setIsModalLoading1] = useState(false);
+  const [isModalEditItem, setIsModalEditItem] = useState(false);
 
   useEffect(() => {
     setData(dataExpense);
@@ -28,6 +30,7 @@ export function HandleDeleteAndEdit() {
   const [isModalDetail, setIsModalDetail] = useState(false);
   const [key, setKey] = useState('');
   const [title, setTitle] = useState('');
+
   const handlePressDetail = (key: string, title: string) => {
     setTitle(title);
     setIsModalDetail(true);
@@ -68,6 +71,10 @@ export function HandleDeleteAndEdit() {
 
   const item = data.find(item => item.key === key);
   const itemIncome = dataIncome1.find(item => item.key === key);
+
+  const handleModalEditItem = () => {
+    setIsModalEditItem(true);
+  };
   return {
     isModalDetail,
     setIsModalDetail,
@@ -86,5 +93,7 @@ export function HandleDeleteAndEdit() {
     titleHeader1,
     handleModalSuccess,
     isModalLoading1,
+    handleModalEditItem,
+    isModalEditItem,
   };
 }

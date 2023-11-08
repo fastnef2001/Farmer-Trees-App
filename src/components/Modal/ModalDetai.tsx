@@ -25,6 +25,7 @@ export type ModalAddProps = {
   item?: DataExpenseInterface | undefined;
   itemIncome?: DataIncomeInterface | undefined;
   deleteItem: (key: string) => void;
+  editItem: () => void;
   //   handlePickDate: (type: string) => () => void;
   //   selectedDateIncome: string;
   //   selectedDateExpense: string;
@@ -49,6 +50,7 @@ export const ModalDetail = ({
   item,
   itemIncome,
   deleteItem,
+  editItem,
 }: ModalAddProps) => {
   //   handleHideModalAdd,
   //   titleModalAdd,
@@ -161,8 +163,8 @@ export const ModalDetail = ({
                   <ButtonEdit
                     isRight={false}
                     isDelete={false}
-                    title="DETAIL"
-                    onPress={() => {}}
+                    title="EDIT"
+                    onPress={editItem}
                   />
                 </View>
               </ModalInsert.Footer>

@@ -10,6 +10,11 @@ import {
   UnitInterface,
 } from './Statistics.interface';
 import { set } from 'date-fns';
+import { UseLogic } from './UseLogic';
+import {
+  DataExpenseInterface,
+  DataIncomeInterface,
+} from './Statistics.interface';
 
 function convertToKilograms(quantity: number, unit: string) {
   switch (unit) {
@@ -417,6 +422,70 @@ export function HandleAdd() {
     }
   };
 
+  // Delete
+  const { dataExpense, dataIncome } = UseLogic();
+  const [data, setData] = useState<DataExpenseInterface[]>([]);
+  const [dataIncome1, setDataIncome] = useState<DataIncomeInterface[]>([]);
+  // const [titleBody1, setTitleBody1] = useState('');
+  // const [titleHeader1, setTitleHeader1] = useState('');
+  // const [isModalSuccess1, setIsModalSuccess1] = useState(false);
+  // const [isModalLoading1, setIsModalLoading1] = useState(false);
+  // const [isModalEditItem, setIsModalEditItem] = useState(false);
+
+  useEffect(() => {
+    setData(dataExpense);
+    setDataIncome(dataIncome);
+  }, [dataExpense, dataIncome]);
+
+  const [isModalDetail, setIsModalDetail] = useState(false);
+  const [key, setKey] = useState('');
+  const [title, setTitle] = useState('');
+
+  const handlePressDetail = (key: string, title: string) => {
+    setTitle(title);
+    setIsModalDetail(true);
+    setKey(key);
+  };
+  const handleModalDetail = () => {
+    setIsModalDetail(false);
+  };
+
+  const handleDeleteIncome = () => {
+    setTitleBody('You have successfully deleted the income.');
+    setTitleHeader('Successfully');
+    firestore()
+      .collection('incomes')
+      .doc(auth().currentUser?.uid)
+      .collection('income')
+      .doc(key)
+      .delete();
+    handleModalDetail();
+    setIsModalSuccess(true);
+  };
+  const handleDeleteExpense = () => {
+    setTitleBody('You have successfully deleted the expense.');
+    setTitleHeader('Successfully');
+    firestore()
+      .collection('expenses')
+      .doc(auth().currentUser?.uid)
+      .collection('expense')
+      .doc(key)
+      .delete();
+    handleModalDetail();
+    setIsModalSuccess(true);
+  };
+
+  const handleModalSuccess = () => {
+    setIsModalSuccess(!isModalSuccess);
+  };
+
+  const item = data.find(item => item.key === key);
+  const itemIncome = dataIncome1.find(item => item.key === key);
+
+  // const handleModalEditItem = () => {
+  //   setIsModalEditItem(true);
+  // };
+
   return {
     isModaAdd,
     setIsModalAdd,
@@ -463,5 +532,15 @@ export function HandleAdd() {
     setTitleBody,
     isModalLoading,
     setIsModalLoading,
+
+    // Delete
+    isModalDetail,
+    handleModalDetail,
+    handlePressDetail,
+    item,
+    title,
+    itemIncome,
+    handleDeleteIncome,
+    handleDeleteExpense,
   };
 }
