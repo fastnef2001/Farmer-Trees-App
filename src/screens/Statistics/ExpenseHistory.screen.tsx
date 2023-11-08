@@ -19,7 +19,6 @@ import { ModalDetail } from '../../components/Modal/ModalDetai';
 
 import { UseLogic } from './UseLogic';
 import { HandleAdd } from './HandleAdd';
-import { HandleDeleteAndEdit } from './HandleDeleteAndEdit';
 
 const ExpenseHistory = () => {
   const {
@@ -80,9 +79,6 @@ const ExpenseHistory = () => {
     handleModalDetail,
     handlePressDetail,
     item,
-    title,
-    itemIncome,
-    handleDeleteIncome,
     handleDeleteExpense,
   } = HandleAdd();
 

@@ -6,10 +6,8 @@ import {
   DataExpenseInterface,
   DataIncomeInterface,
 } from './Statistics.interface';
-import { set } from 'date-fns';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { tr } from 'date-fns/locale';
 
 export function HandleDeleteAndEdit() {
   const { dataExpense, dataIncome } = UseLogic();

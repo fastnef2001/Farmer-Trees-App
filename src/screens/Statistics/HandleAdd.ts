@@ -426,11 +426,6 @@ export function HandleAdd() {
   const { dataExpense, dataIncome } = UseLogic();
   const [data, setData] = useState<DataExpenseInterface[]>([]);
   const [dataIncome1, setDataIncome] = useState<DataIncomeInterface[]>([]);
-  // const [titleBody1, setTitleBody1] = useState('');
-  // const [titleHeader1, setTitleHeader1] = useState('');
-  // const [isModalSuccess1, setIsModalSuccess1] = useState(false);
-  // const [isModalLoading1, setIsModalLoading1] = useState(false);
-  // const [isModalEditItem, setIsModalEditItem] = useState(false);
 
   useEffect(() => {
     setData(dataExpense);
@@ -460,7 +455,7 @@ export function HandleAdd() {
       .doc(key)
       .delete();
     handleModalDetail();
-    setIsModalSuccess(true);
+    handleModalSuccess();
   };
   const handleDeleteExpense = () => {
     setTitleBody('You have successfully deleted the expense.');
@@ -472,7 +467,7 @@ export function HandleAdd() {
       .doc(key)
       .delete();
     handleModalDetail();
-    setIsModalSuccess(true);
+    handleModalSuccess();
   };
 
   const handleModalSuccess = () => {
@@ -482,9 +477,30 @@ export function HandleAdd() {
   const item = data.find(item => item.key === key);
   const itemIncome = dataIncome1.find(item => item.key === key);
 
-  // const handleModalEditItem = () => {
-  //   setIsModalEditItem(true);
-  // };
+  // Edit
+
+  const handleModalEditIncome = () => {
+    setSelectedDateIncome(itemIncome?.date || '');
+    setTitleModalAdd('Edit income');
+    const newInputs = [...inputsIncome];
+    newInputs[0].value = itemIncome?.tree || '';
+    newInputs[1].value = itemIncome?.quantityInKilograms.toString();
+    newInputs[2].value = 'Kilogram';
+    newInputs[3].value = itemIncome?.totalPrice.toString();
+    setInputs(newInputs);
+    setIsModalAdd(!isModaAdd);
+  };
+  const handleModalEditExpense = () => {
+    setSelectedDateExpense(item?.date || '');
+    setTitleModalAdd('Edit expense');
+    const newInputs = [...inputsExpense];
+    newInputs[0].value = item?.costType || '';
+    newInputs[1].value = item?.quantity.toString();
+    newInputs[2].value = item?.unit || '';
+    newInputs[3].value = item?.totalPrice.toString();
+    setInputs(newInputs);
+    setIsModalAdd(!isModaAdd);
+  };
 
   return {
     isModaAdd,
@@ -542,5 +558,9 @@ export function HandleAdd() {
     itemIncome,
     handleDeleteIncome,
     handleDeleteExpense,
+
+    // Edit
+    handleModalEditIncome,
+    handleModalEditExpense,
   };
 }

@@ -90,6 +90,9 @@ const Statistics = ({ navigation }: any) => {
     itemIncome,
     handleDeleteIncome,
     handleDeleteExpense,
+    //Edit
+    handleModalEditExpense,
+    handleModalEditIncome,
   } = HandleAdd();
   // const {
   //   isModalDetail,
@@ -240,7 +243,11 @@ const Statistics = ({ navigation }: any) => {
               ? handleDeleteExpense
               : handleDeleteIncome
           }
-          editItem={() => {}}
+          editItem={
+            title === 'Expense history'
+              ? handleModalEditExpense
+              : handleModalEditIncome
+          }
         />
 
         {/* Pop up noti and loading */}

@@ -75,11 +75,8 @@ const IncomeHistory = () => {
     isModalDetail,
     handleModalDetail,
     handlePressDetail,
-    item,
-    title,
     itemIncome,
     handleDeleteIncome,
-    handleDeleteExpense,
   } = HandleAdd();
   return (
     <>
