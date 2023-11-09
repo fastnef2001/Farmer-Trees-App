@@ -93,6 +93,7 @@ const Statistics = ({ navigation }: any) => {
     //Edit
     handleModalEditExpense,
     handleModalEditIncome,
+    handleEditItem,
   } = HandleAdd();
   // const {
   //   isModalDetail,

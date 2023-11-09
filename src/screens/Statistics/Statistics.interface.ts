@@ -31,4 +31,5 @@ export interface DataIncomeInterface {
   date: string;
   quantityInKilograms: any;
   totalPrice: any;
+  unit: string;
 }
