@@ -71,16 +71,13 @@ const IncomeHistory = () => {
     titleHeader,
     titleBody,
     isModalLoading,
-  } = HandleAdd();
-
-  const {
+    //Delete
     isModalDetail,
     handleModalDetail,
     handlePressDetail,
     itemIncome,
     handleDeleteIncome,
-  } = HandleDeleteAndEdit();
-
+  } = HandleAdd();
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
@@ -177,6 +174,7 @@ const IncomeHistory = () => {
         titleModalAdd={'Detail income'}
         itemIncome={itemIncome}
         deleteItem={handleDeleteIncome}
+        editItem={() => {}}
       />
       {/* End modal detail */}
       {/* Modal pick */}

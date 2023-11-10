@@ -81,8 +81,7 @@ const Statistics = ({ navigation }: any) => {
     titleHeader,
     titleBody,
     isModalLoading,
-  } = HandleAdd();
-  const {
+    //Delete
     isModalDetail,
     handleModalDetail,
     handlePressDetail,
@@ -91,12 +90,28 @@ const Statistics = ({ navigation }: any) => {
     itemIncome,
     handleDeleteIncome,
     handleDeleteExpense,
-    isModalSuccess1,
-    setIsModalSuccess1,
-    titleBody1,
-    titleHeader1,
-    isModalLoading1,
-  } = HandleDeleteAndEdit();
+    //Edit
+    handleModalEditExpense,
+    handleModalEditIncome,
+    handleEditItem,
+  } = HandleAdd();
+  // const {
+  //   isModalDetail,
+  //   handleModalDetail,
+  //   handlePressDetail,
+  //   item,
+  //   title,
+  //   itemIncome,
+  //   handleDeleteIncome,
+  //   handleDeleteExpense,
+  //   isModalSuccess1,
+  //   setIsModalSuccess1,
+  //   titleBody1,
+  //   titleHeader1,
+  //   isModalLoading1,
+  //   handleModalEditItem,
+  //   isModalEditItem,
+  // } = HandleDeleteAndEdit();
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }}>
@@ -229,6 +244,11 @@ const Statistics = ({ navigation }: any) => {
               ? handleDeleteExpense
               : handleDeleteIncome
           }
+          editItem={
+            title === 'Expense history'
+              ? handleModalEditExpense
+              : handleModalEditIncome
+          }
         />
 
         {/* Pop up noti and loading */}
@@ -241,18 +261,6 @@ const Statistics = ({ navigation }: any) => {
           handleDeleteTree={() => {}}
         />
         <PopUpLoading isModalSuccess={isModalLoading} />
-        {/* End up noti and loading */}
-
-        {/* Pop up noti and loading */}
-        <PopUpSuccess
-          isModalSuccess={isModalSuccess1}
-          titleHeader={titleHeader1}
-          titleBody={titleBody1}
-          handleModalSuccess={() => setIsModalSuccess1(!isModalSuccess1)}
-          isFooter={false}
-          handleDeleteTree={() => {}}
-        />
-        <PopUpLoading isModalSuccess={isModalLoading1} />
         {/* End up noti and loading */}
       </ImageBackground>
     </SafeAreaView>

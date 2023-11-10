@@ -10,6 +10,11 @@ import {
   UnitInterface,
 } from './Statistics.interface';
 import { set } from 'date-fns';
+import { UseLogic } from './UseLogic';
+import {
+  DataExpenseInterface,
+  DataIncomeInterface,
+} from './Statistics.interface';
 
 function convertToKilograms(quantity: number, unit: string) {
   switch (unit) {
@@ -370,7 +375,7 @@ export function HandleAdd() {
       } catch (error) {
         console.log(error);
       }
-    } else {
+    } else if (text === 'expense') {
       setIsModalLoading(true);
       try {
         const userid = auth().currentUser?.uid;
@@ -414,9 +419,194 @@ export function HandleAdd() {
       } catch (error) {
         console.log(error);
       }
+    } else if (text === 'incomeEdit') {
+      handleEditItem('income');
+    } else {
+      handleEditItem('expense');
     }
   };
 
+  // Delete
+  const { dataExpense, dataIncome } = UseLogic();
+  const [data, setData] = useState<DataExpenseInterface[]>([]);
+  const [dataIncome1, setDataIncome] = useState<DataIncomeInterface[]>([]);
+
+  useEffect(() => {
+    setData(dataExpense);
+    setDataIncome(dataIncome);
+  }, [dataExpense, dataIncome]);
+
+  const [isModalDetail, setIsModalDetail] = useState(false);
+  const [key, setKey] = useState('');
+  const [title, setTitle] = useState('');
+
+  const handlePressDetail = (key: string, title: string) => {
+    setTitle(title);
+    setIsModalDetail(true);
+    setKey(key);
+  };
+  const handleModalDetail = () => {
+    setIsModalDetail(false);
+  };
+
+  const handleDeleteIncome = () => {
+    setTitleBody('You have successfully deleted the income.');
+    setTitleHeader('Successfully');
+    firestore()
+      .collection('incomes')
+      .doc(auth().currentUser?.uid)
+      .collection('income')
+      .doc(key)
+      .delete();
+    handleModalDetail();
+    handleModalSuccess();
+  };
+  const handleDeleteExpense = () => {
+    setTitleBody('You have successfully deleted the expense.');
+    setTitleHeader('Successfully');
+    firestore()
+      .collection('expenses')
+      .doc(auth().currentUser?.uid)
+      .collection('expense')
+      .doc(key)
+      .delete();
+    handleModalDetail();
+    handleModalSuccess();
+  };
+
+  const handleModalSuccess = () => {
+    setIsModalSuccess(!isModalSuccess);
+  };
+
+  const item = data.find(item => item.key === key);
+  const itemIncome = dataIncome1.find(item => item.key === key);
+
+  // Edit
+
+  const handleModalEditIncome = () => {
+    setIsModalDetail(false);
+    setIsDisabled(!isDisabled);
+    setSelectedDateIncome(itemIncome?.date || '');
+    // setTitleModalAdd('Add income');
+    setTitleModalAdd('Edit income');
+    const newInputs = [...inputsIncome];
+    newInputs[0].value = itemIncome?.tree || '';
+    newInputs[1].value = itemIncome?.quantityInKilograms.toString();
+    newInputs[2].value = itemIncome?.unit || '';
+    newInputs[3].value = itemIncome?.totalPrice.toString();
+    setInputs(newInputs);
+    setIsModalAdd(!isModaAdd);
+  };
+  const handleModalEditExpense = () => {
+    setIsModalDetail(false);
+    setIsDisabled(!isDisabled);
+    setSelectedDateExpense(item?.date || '');
+    setTitleModalAdd('Edit expense');
+    const newInputs = [...inputsExpense];
+    newInputs[0].value = item?.costType || '';
+    newInputs[1].value = item?.quantity.toString();
+    newInputs[2].value = item?.unit || '';
+    newInputs[3].value = item?.totalPrice.toString();
+    setInputs(newInputs);
+    setIsModalAdd(!isModaAdd);
+  };
+
+  const handleEditItem = (text: string) => {
+    if (text === 'income') {
+      setIsModalLoading(true);
+      try {
+        const userid = auth().currentUser?.uid;
+        const date = selectedDateIncome;
+        const tree = inputs[0].value;
+        const quantity = Number(inputs[1].value);
+        const unit = inputs[2].value;
+        const totalPrice = Number(inputs[3].value);
+        const quantityInKilograms = convertToKilograms(quantity, unit);
+        const month = changeMonthToSrting(date.slice(5, 7));
+        const timestamp = convertTotimestamp(selectedDateIncome);
+        const day = date.slice(8, 10);
+
+        firestore()
+          .collection('incomes')
+          .doc(userid)
+          .collection('income')
+          .doc(key)
+          .update({
+            timestamp,
+            month,
+            day,
+            date,
+            tree,
+            quantity,
+            unit,
+            totalPrice,
+            quantityInKilograms,
+          })
+          .then(() => {
+            setIsModalAdd(false);
+            setIsModalLoading(false);
+            setTitleHeader('Successfully');
+            setTitleBody('You have successfully edited income');
+            setIsModalSuccess(true);
+            setTimeout(() => {
+              setIsModalSuccess(false);
+            }, 5000);
+            const newInputs = [...inputs];
+            newInputs.forEach((input, index) => {
+              newInputs[index].value = '';
+              newInputs[index].error = '';
+            });
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setIsModalLoading(true);
+      try {
+        const userid = auth().currentUser?.uid;
+        const date = selectedDateExpense;
+        const costType = inputs[0].value;
+        const quantity = Number(inputs[1].value);
+        const unit = inputs[2].value.toLowerCase();
+        const totalPrice = Number(inputs[3].value);
+        const month = changeMonthToSrting(date.slice(5, 7));
+        const timestamp = convertTotimestamp(selectedDateExpense);
+        const day = date.slice(8, 10);
+        firestore()
+          .collection('expenses')
+          .doc(userid)
+          .collection('expense')
+          .doc(key)
+          .update({
+            month,
+            day,
+            date,
+            timestamp,
+            costType,
+            quantity,
+            unit,
+            totalPrice,
+          })
+          .then(() => {
+            setIsModalAdd(false);
+            setIsModalLoading(false);
+            setTitleHeader('Successfully');
+            setTitleBody('You have successfully edited expense');
+            setIsModalSuccess(true);
+            setTimeout(() => {
+              setIsModalSuccess(false);
+            }, 5000);
+            const newInputs = [...inputs];
+            newInputs.forEach((input, index) => {
+              newInputs[index].value = '';
+              newInputs[index].error = '';
+            });
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
   return {
     isModaAdd,
     setIsModalAdd,
@@ -463,5 +653,20 @@ export function HandleAdd() {
     setTitleBody,
     isModalLoading,
     setIsModalLoading,
+
+    // Delete
+    isModalDetail,
+    handleModalDetail,
+    handlePressDetail,
+    item,
+    title,
+    itemIncome,
+    handleDeleteIncome,
+    handleDeleteExpense,
+
+    // Edit
+    handleModalEditIncome,
+    handleModalEditExpense,
+    handleEditItem,
   };
 }

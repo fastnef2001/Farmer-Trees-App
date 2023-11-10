@@ -64,10 +64,27 @@ export const ModalAdd = ({
                   <IconBack> </IconBack>
                 </TouchableOpacity>
                 <View style={styles.txtContainer}>
-                  {titleModalAdd === 'Add income' ? (
+                  {/* {titleModalAdd === 'Add income' ? (
                     <Text style={styles.txtTitleModal1}>Add income</Text>
                   ) : (
                     <Text style={styles.txtTitleModal2}>Add expense</Text>
+                  )} */}
+                  {/* {titleModalAdd === 'Add income' ? (
+                    <Text style={styles.txtTitleModal1}>Add income</Text>
+                  ) : {titleModalAdd === 'Add expense' ? (
+                    <Text style={styles.txtTitleModal2}>Add expense</Text>
+                  ) : (
+                    <Text style={styles.txtTitleModal3}>Add income</Text>
+                  )}} */}
+
+                  {titleModalAdd === 'Add income' ? (
+                    <Text style={styles.txtTitleModal1}>Add income</Text>
+                  ) : titleModalAdd === 'Add expense' ? (
+                    <Text style={styles.txtTitleModal2}>Add expense</Text>
+                  ) : titleModalAdd === 'Edit income' ? (
+                    <Text style={styles.txtTitleModal1}>Edit income</Text>
+                  ) : (
+                    <Text style={styles.txtTitleModal2}>Edit expense</Text>
                   )}
                 </View>
                 <View
@@ -81,7 +98,8 @@ export const ModalAdd = ({
             <ScrollView>
               <ModalInsert.Body>
                 <View style={styles.inputSession}>
-                  {titleModalAdd === 'Add income' ? (
+                  {titleModalAdd === 'Add income' ||
+                  titleModalAdd === 'Edit income' ? (
                     <TouchableOpacity
                       style={stylesPickDate.root}
                       onPress={handlePickDate('incomeDate')}>
@@ -106,7 +124,8 @@ export const ModalAdd = ({
                   <View style={{ height: 8 }} />
                   {inputs.map((input, index) => (
                     <View key={index}>
-                      {titleModalAdd === 'Add income' ? (
+                      {titleModalAdd === 'Add income' ||
+                      titleModalAdd === 'Edit income' ? (
                         <Input
                           onPress={
                             input.label === 'Tree'
@@ -187,10 +206,16 @@ export const ModalAdd = ({
                     </View>
                   ))}
                 </View>
-                {titleModalAdd === 'Add income' && isDisabled === false ? (
+                {(titleModalAdd === 'Add income' && isDisabled === false) ||
+                (titleModalAdd === 'Edit income' && isDisabled === false) ? (
                   <TouchableOpacity
                     style={styles.btnSendSession1}
-                    onPress={() => handleAdd('income')}>
+                    // if titleModalAdd === 'Add income' ? handleAdd('income') : handleAdd('Add expense')
+                    onPress={
+                      titleModalAdd === 'Add income'
+                        ? () => handleAdd('income')
+                        : () => handleAdd('incomeEdit')
+                    }>
                     <View style={styles.txtBtnSignup}>
                       <IconSave />
                       <View style={{ width: 16 }} />
@@ -205,10 +230,15 @@ export const ModalAdd = ({
                       </Text>
                     </View>
                   </TouchableOpacity>
-                ) : titleModalAdd === 'Add expense' && isDisabled === false ? (
+                ) : (titleModalAdd === 'Add expense' && isDisabled === false) ||
+                  (titleModalAdd === 'Edit expense' && isDisabled === false) ? (
                   <TouchableOpacity
                     style={styles.btnSendSession2}
-                    onPress={() => handleAdd('expense')}>
+                    onPress={
+                      titleModalAdd === 'Add expense'
+                        ? () => handleAdd('expense')
+                        : () => handleAdd('expenseEdit')
+                    }>
                     <View style={styles.txtBtnSignup}>
                       <IconSave />
                       <View style={{ width: 16 }} />

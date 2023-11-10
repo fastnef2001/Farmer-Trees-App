@@ -19,7 +19,6 @@ import { ModalDetail } from '../../components/Modal/ModalDetai';
 
 import { UseLogic } from './UseLogic';
 import { HandleAdd } from './HandleAdd';
-import { HandleDeleteAndEdit } from './HandleDeleteAndEdit';
 
 const ExpenseHistory = () => {
   const {
@@ -75,19 +74,13 @@ const ExpenseHistory = () => {
     titleHeader,
     titleBody,
     isModalLoading,
-  } = HandleAdd();
-  const {
+    //Delete
     isModalDetail,
     handleModalDetail,
     handlePressDetail,
     item,
     handleDeleteExpense,
-    titleBody1,
-    titleHeader1,
-    isModalSuccess1,
-    setIsModalSuccess1,
-    isModalLoading1,
-  } = HandleDeleteAndEdit();
+  } = HandleAdd();
 
   return (
     <>
@@ -216,6 +209,7 @@ const ExpenseHistory = () => {
         titleModalAdd={'Detail expense'}
         item={item}
         deleteItem={handleDeleteExpense}
+        editItem={() => {}}
       />
 
       {/* Pop up noti and loading */}
@@ -228,18 +222,6 @@ const ExpenseHistory = () => {
         handleModalSuccess={() => setIsModalSuccess(!isModalSuccess)}
       />
       <PopUpLoading isModalSuccess={isModalLoading} />
-      {/* End up noti and loading */}
-
-      {/* Pop up noti and loading */}
-      <PopUpSuccess
-        isModalSuccess={isModalSuccess1}
-        titleHeader={titleHeader1}
-        titleBody={titleBody1}
-        isFooter={false}
-        handleDeleteTree={() => {}}
-        handleModalSuccess={() => setIsModalSuccess1(!isModalSuccess1)}
-      />
-      <PopUpLoading isModalSuccess={isModalLoading1} />
       {/* End up noti and loading */}
     </>
   );
