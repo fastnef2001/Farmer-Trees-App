@@ -19,6 +19,7 @@ import { StatusBar, Text, View } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import IncomeHistory from '../screens/Statistics/IncomeHistory.screen';
 import ExpenseHistory from '../screens/Statistics/ExpenseHistory.screen';
+import InforPayment from '../screens/Payment/InforPayment.screen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -28,15 +29,14 @@ export function MyTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarStyle: { height: 60, paddingBottom: 16, paddingTop: 10 },
-        tabBarLabelStyle: { fontSize: 12 }, // Kích thước chữ
-        tabBarActiveTintColor: '#163859', // Màu khi tab được chọn
-        tabBarInactiveTintColor: '#636366', // Màu khi tab không được chọn
-        tabBarIcon: () => null, // Loại bỏ biểu tượng
+        tabBarLabelStyle: { fontSize: 12 },
+        tabBarActiveTintColor: '#163859',
+        tabBarInactiveTintColor: '#636366',
+        tabBarIcon: () => null,
         tabBarLabel: ({ focused }) => {
           const isSelected = focused;
-          const borderBottomWidth = isSelected ? 2 : 0; // Độ dày thanh ngang khi tab được chọn
-          const borderColor = isSelected ? '#163859' : 'transparent'; // Màu thanh ngang khi tab được chọn
-
+          const borderBottomWidth = isSelected ? 2 : 0;
+          const borderColor = isSelected ? '#163859' : 'transparent';
           const colorText = isSelected ? '#163859' : '#636366';
 
           return (
@@ -226,6 +226,11 @@ const AppNavigator = () => {
           name="ExpenseHistory"
           options={{ headerShown: false }}
           component={ExpenseHistory}
+        />
+        <Stack.Screen
+          name="InforPayment"
+          options={{ headerShown: false }}
+          component={InforPayment}
         />
       </Stack.Navigator>
     </NavigationContainer>
