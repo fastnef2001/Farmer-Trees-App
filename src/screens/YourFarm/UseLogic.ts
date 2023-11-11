@@ -297,8 +297,10 @@ export function UseLogic() {
     if (tree) {
       setSelectImage(tree.imageUrl);
       setInputs([
-        { label: 'Tree name', value: tree.name, error: '' },
-        { label: 'Quanlity', value: tree.quanlity, error: '' },
+        { label: 'Quantity tree', value: tree.quanlity, error: '' },
+        { label: 'Quantity to buy for each tree', value: '', error: '' },
+        { label: 'Unit', value: '', error: '' },
+        { label: 'Purchase price per unit', value: '', error: '' },
       ]);
       setKey(key);
     }

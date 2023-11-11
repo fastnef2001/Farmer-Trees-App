@@ -341,7 +341,7 @@ const YourFarm = ({ navigation }: any) => {
                   <View key={index}>
                     <Input
                       label={input.label}
-                      textPlaceholder={`Enter your ${input.label.toLowerCase()}`}
+                      textPlaceholder={input.label === 'Quantity to buy for each tree' ? 'Ex: 10' : 'Enter your quantity to buy for each tree'}
                       value={input.value}
                       onChangeText={(text: string) =>
                         handleInputChange(index, text)
