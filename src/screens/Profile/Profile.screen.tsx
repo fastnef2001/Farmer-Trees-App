@@ -26,6 +26,7 @@ import IconBack from '../../assets/images/IconBack.svg';
 import IconUpload from '../../assets/images/IconUpload.svg';
 import IconDeleteRed from '../../assets/images/IconDeleteRed.svg';
 import IconSave from '../../assets/images/IconSave.svg';
+import IconPremium40 from '../../assets/images/IconPremium40.svg';
 import Input from '../../components/Input/Input.component';
 import { COLORS } from '../../theme/color';
 import {
@@ -57,6 +58,7 @@ const Profile = ({ navigation }: any) => {
     profile,
     handleInputChange,
     handleEditProfile,
+    setIsModalSuccess,
     isModalLoading,
     isModalSuccess,
     titleHeader,
@@ -142,6 +144,19 @@ const Profile = ({ navigation }: any) => {
             <View style={{ width: 16 }} />
             <View style={styleElement2.content}>
               <Text style={styleElement2.farmName}>About App</Text>
+            </View>
+            <View style={{ width: 16 }} />
+            <IconDetailBold />
+          </TouchableOpacity>
+          <View style={{ height: 16 }} />
+          <TouchableOpacity
+            style={styleElement2.item}
+            // opress đến trang InforPayment
+            onPress={() => navigation.navigate('InforPayment')}>
+            <IconPremium40 />
+            <View style={{ width: 16 }} />
+            <View style={styleElement2.content}>
+              <Text style={styleElement2.farmName}>Upgrade premium</Text>
             </View>
             <View style={{ width: 16 }} />
             <IconDetailBold />
@@ -275,6 +290,9 @@ const Profile = ({ navigation }: any) => {
         isModalSuccess={isModalSuccess}
         titleHeader={titleHeader}
         titleBody={titleBody}
+        handleModalSuccess={() => setIsModalSuccess(!isModalSuccess)}
+        isFooter={false}
+        handleDeleteTree={() => {}}
       />
       <PopUpLoading isModalSuccess={isModalLoading} />
       {/* End up noti and loading */}

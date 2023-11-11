@@ -30,6 +30,8 @@ import IconSave from '../../assets/images/IconSave.svg';
 import IconDeleteRed from '../../assets/images/IconDeleteRed.svg';
 import IconUpload from '../../assets/images/IconUpload.svg';
 import IconAdd36 from '../../assets/images/IconAdd36.svg';
+import Iconcalculatesmallwhite from '../../assets/images/Iconcalculatesmallwhite.svg';
+
 //Style
 import styles from '../Setupfarm/Addtree.style';
 import { stylesTitle, stylesScrollView } from './YourFarm.style';
@@ -63,6 +65,8 @@ const YourFarm = ({ navigation }: any) => {
     isFooter,
     setIsModalSuccess,
     handleModalSuccess,
+    handleModalCalculate,
+    isModalCalculate,
   } = UseLogic();
 
   return (
@@ -96,6 +100,7 @@ const YourFarm = ({ navigation }: any) => {
                   onPressDelete={() => handleModalDelete(tree.key)}
                   caculate={true}
                   onPressEdit={() => handleModalEditTree(tree.key)}
+                  onPressCalculate={() => handleModalCalculate(tree.key)}
                 />
               ))}
             </ScrollView>
@@ -302,6 +307,68 @@ const YourFarm = ({ navigation }: any) => {
                       fontFamily: 'Nunito-Bold',
                     }}>
                     SAVE
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </ModalInsert.Body>
+          </ScrollView>
+        </ModalInsert.Container>
+      </ModalInsert>
+
+      <ModalInsert isVisible={isModalCalculate} isPick={false}>
+        <StatusBar backgroundColor={'#07111B'} />
+        <ModalInsert.Container>
+          <ModalInsert.Header>
+            <View style={styles.headSessionModal}>
+              <TouchableOpacity onPress={handleModalCalculate}>
+                <IconBack />
+              </TouchableOpacity>
+              <View style={styles.txtContainer}>
+                <Text style={styles.txtTitleModal}>Calculate</Text>
+              </View>
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                }}
+              />
+            </View>
+          </ModalInsert.Header>
+          <ScrollView>
+            <ModalInsert.Body>
+              <View style={styles.inputSession}>
+                {inputs.map((input, index) => (
+                  <View key={index}>
+                    <Input
+                      label={input.label}
+                      textPlaceholder={`Enter your ${input.label.toLowerCase()}`}
+                      value={input.value}
+                      onChangeText={(text: string) =>
+                        handleInputChange(index, text)
+                      }
+                      textError={input.error}
+                      keyboardType={
+                        input.label === 'Quanlity' ? 'numeric' : 'default'
+                      }
+                      span="*"
+                    />
+                  </View>
+                ))}
+              </View>
+              <TouchableOpacity
+                style={styles.btnSendSession}
+                onPress={handleEditTree}>
+                <View style={styles.txtBtnSignup}>
+                  <Iconcalculatesmallwhite />
+                  <View style={{ width: 16 }} />
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      textAlign: 'center',
+                      color: '#FFFFFF',
+                      fontFamily: 'Nunito-Bold',
+                    }}>
+                    CALCULATE
                   </Text>
                 </View>
               </TouchableOpacity>

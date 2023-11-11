@@ -14,9 +14,11 @@ export type ButtonProps = {
   caculate: boolean;
   onPressDelete: () => void;
   onPressEdit: () => void;
+  onPressCalculate: () => void;
 };
 
 const RectangularTree = ({
+  onPressCalculate,
   onPressDelete,
   onPressEdit,
   nameTree,
@@ -53,6 +55,7 @@ const RectangularTree = ({
         <View style={styles.frame48295}>
           {caculate ? (
             <TouchableOpacity
+              onPress={onPressCalculate}
               style={{
                 height: 40,
                 width: 40,

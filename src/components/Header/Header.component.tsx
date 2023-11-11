@@ -98,7 +98,7 @@ export const HeaderTitle = ({ title, onPress }: HeaderTitleProps) => {
               <IconBackWhite40 />
             </TouchableOpacity>
             <Text style={stylesHeaderTitle.incomeHistory}>{title}</Text>
-            {title === 'Profile' ? (
+            {title === 'Profile' || title === 'Upgarde premium' ? (
               <View style={{ width: 24 }} />
             ) : (
               <TouchableOpacity onPress={onPress}>

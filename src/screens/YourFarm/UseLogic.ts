@@ -11,6 +11,7 @@ export function UseLogic() {
   const [isModalSuccess, setIsModalSuccess] = React.useState(false);
   const [isModalDelete, setIsModalDelete] = React.useState(false);
   const [key, setKey] = React.useState('');
+  const [isModalCalculate, setIsModalCalculate] = React.useState(false);
   const [isTrees, setIsTrees] = useState(false);
   const [inputs, setInputs] = useState([
     { label: 'Tree name', value: '', error: '' },
@@ -281,6 +282,29 @@ export function UseLogic() {
     setIsModalLoading(prev => !prev);
   };
 
+  // 14. Calculate
+  const handleModalCalculate = (key: any) => {
+    setSelectImage('');
+    setInputs(
+      inputs.map(input => ({
+        ...input,
+        value: '',
+        error: '',
+      })),
+    );
+
+    const tree = trees.find(tree => tree.key === (key as any));
+    if (tree) {
+      setSelectImage(tree.imageUrl);
+      setInputs([
+        { label: 'Tree name', value: tree.name, error: '' },
+        { label: 'Quanlity', value: tree.quanlity, error: '' },
+      ]);
+      setKey(key);
+    }
+    setIsModalCalculate(() => !isModalCalculate);
+  };
+
   return {
     isModalAddTree,
     handleModalAddTree,
@@ -308,5 +332,7 @@ export function UseLogic() {
     titleHeader,
     titleBody,
     isFooter,
+    handleModalCalculate,
+    isModalCalculate,
   };
 }
