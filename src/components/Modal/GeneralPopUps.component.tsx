@@ -33,7 +33,12 @@ export const PopUpSuccess = ({
 
   return (
     <>
-      <Modal isVisible={isModalVisible} onBackdropPress={handleModalSuccess}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        isVisible={isModalVisible}
+        onRequestClose={handleModalSuccess}
+        onBackdropPress={handleModalSuccess}>
         <StatusBar backgroundColor={'#07111B'} />
         <Modal.Container>
           <Modal.Header title={titleHeader} />
