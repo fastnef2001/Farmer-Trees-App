@@ -65,3 +65,33 @@ export const styles = StyleSheet.create({
     fontFamily: 'Nunito-Regular',
   },
 });
+
+export const stylesPayment = StyleSheet.create({
+  root: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    justifyContent: 'center',
+    position: 'absolute',
+  },
+  titleParent: {
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 32,
+    textAlign: 'center',
+    color: COLORS.blue,
+    fontFamily: 'Nunito-Bold',
+  },
+  body: {
+    fontSize: 20,
+    fontFamily: 'Nunito-SemiBold',
+    color: COLORS.text2,
+    marginTop: 24,
+    textAlign: 'center',
+  },
+});

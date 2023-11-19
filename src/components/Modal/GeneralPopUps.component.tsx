@@ -33,7 +33,12 @@ export const PopUpSuccess = ({
 
   return (
     <>
-      <Modal isVisible={isModalVisible} onBackdropPress={handleModalSuccess}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        isVisible={isModalVisible}
+        onRequestClose={handleModalSuccess}
+        onBackdropPress={handleModalSuccess}>
         <StatusBar backgroundColor={'#07111B'} />
         <Modal.Container>
           <Modal.Header title={titleHeader} />
@@ -57,6 +62,76 @@ export const PopUpSuccess = ({
                   isRight={true}
                   isDelete={true}
                   title="DELETE"
+                  onPress={handleDeleteTree}
+                />
+              </View>
+            </Modal.Footer>
+          ) : null}
+          {/* <Modal.Footer>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingHorizontal: 8,
+              }}>
+              <ButtonBack
+                isRight={false}
+                isDelete={false}
+                title="CANCEL"
+                onPress={() => setModalVisible(false)}
+              />
+              <View style={{ width: 16 }} />
+              <ButtonDelete
+                isRight={true}
+                isDelete={true}
+                title="LOGIN"
+                onPress={() => handleDeleteTree(key)}
+              />
+            </View>
+          </Modal.Footer> */}
+        </Modal.Container>
+      </Modal>
+    </>
+  );
+};
+
+export const PopUpSuccessPayment = ({
+  isModalSuccess,
+  titleHeader,
+  titleBody,
+  handleDeleteTree,
+  isFooter = false,
+  handleModalSuccess,
+}: PopUpSuccessProps) => {
+  const [isModalVisible, setModalVisible] = useState(false);
+  useEffect(() => {
+    setModalVisible(isModalSuccess);
+  }, [isModalSuccess]);
+
+  return (
+    <>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        isVisible={isModalVisible}
+        onRequestClose={handleModalSuccess}
+        onBackdropPress={handleModalSuccess}>
+        <StatusBar backgroundColor={'#07111B'} />
+        <Modal.Container>
+          <Modal.Header title={titleHeader} />
+          <Modal.Body title={titleBody} />
+          {isFooter ? (
+            <Modal.Footer>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 8,
+                }}>
+                <ButtonBack
+                  isRight={false}
+                  isDelete={false}
+                  title="Chat With AI"
                   onPress={handleDeleteTree}
                 />
               </View>
