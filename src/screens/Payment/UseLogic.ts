@@ -81,12 +81,30 @@ export function UseLogic() {
   };
 
   const clearPaypalState = () => {
+    //Update isPayment to true
+    const user = auth().currentUser;
+    if (user) {
+      firestore().collection('users').doc(user?.uid).update({
+        isPayment: true,
+      });
+    }
     setPaypalUrl(null);
     setAccessToken(null);
-    // setIsModalPayment(false);
-    // setShowPopUpSuccess(false);
     setShowPopUpSuccess(true);
   };
+
+  const user = auth().currentUser;
+  const [isPayment, setIsPayment] = useState(false);
+
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('users')
+      .doc(user?.uid)
+      .onSnapshot(documentSnapshot => {
+        setIsPayment(documentSnapshot.data()?.isPayment);
+      });
+    return () => subscriber();
+  }, [user]);
 
   return {
     handleModalPayment,
@@ -102,5 +120,6 @@ export function UseLogic() {
     onUrlChange,
     showPopUpSuccess,
     setShowPopUpSuccess,
+    isPayment,
   };
 }
