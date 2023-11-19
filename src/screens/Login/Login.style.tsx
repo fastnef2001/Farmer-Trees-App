@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { COLORS } from '../../theme/color';
 
 export default StyleSheet.create({
   container: {
@@ -57,6 +58,26 @@ export default StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#163859',
+    marginBottom: 24,
+    alignSelf: 'center',
+  },
+  signupGoogleBtn1: {
+    marginTop: 12,
+    width: '100%',
+    height: 48,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#163859',
+    marginBottom: 24,
+    alignSelf: 'center',
+  },
+  signupGoogleBtnDesable: {
+    marginTop: 12,
+    width: '90%',
+    height: 48,
+    backgroundColor: COLORS.grey,
+    borderRadius: 10,
     marginBottom: 24,
     alignSelf: 'center',
   },

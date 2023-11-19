@@ -31,13 +31,14 @@ import IconPremium40 from '../../assets/images/IconPremium40.svg';
 import Input from '../../components/Input/Input.component';
 import { COLORS } from '../../theme/color';
 import {
-  PopUpSuccess,
   PopUpLoading,
+  PopUpSuccessPayment,
 } from '../../components/Modal/GeneralPopUps.component';
 import LottieView from 'lottie-react-native';
 import { UseLogic } from './UseLogic';
 import styles from '../Setupfarm/Addtree.style';
 import { WebView } from 'react-native-webview';
+import { is } from 'date-fns/locale';
 
 // interface UserData {
 //   fullName: string;
@@ -58,6 +59,8 @@ const InforPayment = ({ navigation }: any) => {
     onUrlChange,
     showPopUpSuccess,
     setShowPopUpSuccess,
+    isLoading,
+    isPayment,
   } = UseLogic();
   return (
     <>
@@ -131,25 +134,35 @@ const InforPayment = ({ navigation }: any) => {
           </View>
 
           <View style={{ height: 40 }} />
-          <TouchableOpacity
-            style={stylesButton.signupGoogleBtn}
-            onPress={onPressPaypal}>
-            <View style={stylesButton.txtBtnSignup}>
-              <IconDola />
-              <View style={{ width: 0 }} />
-              <Text style={stylesButton.btnTextBlue}>Pay immediately</Text>
+          {isPayment === true ? (
+            <View style={stylesButton.signupGoogleBtnDesable}>
+              <View style={stylesButton.txtBtnSignup}>
+                <View style={{ width: 0 }} />
+                <Text style={stylesButton.btnText}>Upgraded</Text>
+              </View>
             </View>
-          </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={stylesButton.signupGoogleBtn}
+              onPress={onPressPaypal}>
+              <View style={stylesButton.txtBtnSignup}>
+                <IconDola />
+                <View style={{ width: 0 }} />
+                <Text style={stylesButton.btnTextBlue}>Pay immediately</Text>
+              </View>
+            </TouchableOpacity>
+          )}
         </SafeAreaView>
       )}
-      <PopUpSuccess
+      <PopUpSuccessPayment
         isModalSuccess={showPopUpSuccess}
-        titleHeader={'Payment success'}
+        titleHeader={'Successfully'}
         titleBody={'Your account has been upgraded to Premium'}
         handleModalSuccess={() => setShowPopUpSuccess(false)}
-        isFooter={false}
-        handleDeleteTree={() => {}}
+        isFooter={true}
+        handleDeleteTree={() => navigation.navigate('Chat AI')}
       />
+      <PopUpLoading isModalSuccess={isLoading} />
       {/* </SafeAreaView> */}
 
       {/* <ModalInsert isVisible={isModalPayment} isPick={false}>

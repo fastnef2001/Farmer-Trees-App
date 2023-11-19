@@ -1,3 +1,4 @@
+import { is } from 'date-fns/locale';
 import { useState } from 'react';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -160,6 +161,7 @@ export function UseLogic() {
           fullName: fullNameInput.value,
           phoneNumber: phoneNumberInput.value,
           email: emailInput.value,
+          isPayment: false,
         });
       }
       handleModal();
@@ -199,6 +201,7 @@ export function UseLogic() {
             .set({
               fullName: fullNameGoogle,
               email: emailGoogle,
+              isPayment: false,
             });
         }
         await GoogleSignin.revokeAccess();
