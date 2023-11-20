@@ -319,6 +319,9 @@ export function UseLogic() {
     setTitlePick('Pick unit expense');
     setIsModalPick(!isModalPick);
   };
+  const handleModalPickHide = () => {
+    setIsModalPick(false);
+  };
   const hanleHideModalPick = (value: string, titlePick: string) => {
     setIsModalPick(false);
     setValuePick(value);
@@ -380,5 +383,6 @@ export function UseLogic() {
     resultTotalQuantity,
     handleCalculate,
     resultTotalPrice,
+    handleModalPickHide,
   };
 }

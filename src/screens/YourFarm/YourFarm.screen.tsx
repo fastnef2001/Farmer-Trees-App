@@ -77,6 +77,7 @@ const YourFarm = ({ navigation }: any) => {
     resultTotalQuantity,
     handleCalculate,
     resultTotalPrice,
+    handleModalPickHide,
   } = UseLogic();
 
   const {
@@ -88,7 +89,7 @@ const YourFarm = ({ navigation }: any) => {
     unitsIncome,
     costTypes,
     unitsExpense,
-    handleModalPickHide,
+    // handleModalPickHide,
     // isModalPick,
     // hanleHideModalPick,
   } = HandleAdd();
