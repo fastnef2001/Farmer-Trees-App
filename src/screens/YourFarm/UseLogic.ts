@@ -4,8 +4,10 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { MediaType, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
+import { HandleAdd } from '../Statistics/HandleAdd';
 
 export function UseLogic() {
+  const [isModalPick, setIsModalPick] = useState(false);
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);
   const [selectImage, setSelectImage] = useState('');
   const [isModalSuccess, setIsModalSuccess] = React.useState(false);
@@ -20,6 +22,11 @@ export function UseLogic() {
   const [titleBody, setTitleBody] = useState('');
   const [titleHeader, setTitleHeader] = useState('');
   const [isFooter, setIsFooter] = useState(false);
+  const [valuePick, setValuePick] = React.useState('Unit');
+  const [titlePick, setTitlePick] = useState('');
+  const [resultTotalQuantity, setResultTotalQuantity] = useState(0);
+  const [resultTotalPrice, setResultTotalPrice] = useState(0);
+  // const [isModalPick, setIsModalPick] = useState(false);
 
   // 1. Modal add tree
   const handleModalAddTree = () => {
@@ -297,12 +304,40 @@ export function UseLogic() {
     if (tree) {
       setSelectImage(tree.imageUrl);
       setInputs([
-        { label: 'Tree name', value: tree.name, error: '' },
-        { label: 'Quanlity', value: tree.quanlity, error: '' },
+        { label: 'Quantity tree', value: tree.quanlity, error: '' },
+        { label: 'Quantity to buy for each tree', value: '', error: '' },
+        { label: 'Unit', value: '', error: '' },
+        { label: 'Purchase price per unit', value: '', error: '' },
       ]);
       setKey(key);
     }
     setIsModalCalculate(() => !isModalCalculate);
+  };
+  const handleModalPickUnitExpense = () => {
+    // const newInputs = [...inputs];
+    // setValuePick(newInputs[2].value);
+    setTitlePick('Pick unit expense');
+    setIsModalPick(!isModalPick);
+  };
+  const hanleHideModalPick = (value: string, titlePick: string) => {
+    setIsModalPick(false);
+    setValuePick(value);
+    const newInputs = [...inputs];
+    newInputs[2].value = value;
+  };
+
+  const handleCalculate = () => {
+    // convert to number
+    const convertToNumber = (value: string) => {
+      const number = Number(value);
+      return number;
+    };
+    setResultTotalQuantity(
+      convertToNumber(inputs[0].value) * convertToNumber(inputs[1].value),
+    );
+    setResultTotalPrice(
+      convertToNumber(inputs[0].value) * convertToNumber(inputs[3].value),
+    );
   };
 
   return {
@@ -334,5 +369,16 @@ export function UseLogic() {
     isFooter,
     handleModalCalculate,
     isModalCalculate,
+    hanleHideModalPick,
+    isModalPick,
+    valuePick,
+    titlePick,
+    setIsModalPick,
+    setValuePick,
+    setTitlePick,
+    handleModalPickUnitExpense,
+    resultTotalQuantity,
+    handleCalculate,
+    resultTotalPrice,
   };
 }

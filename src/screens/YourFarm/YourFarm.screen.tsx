@@ -34,9 +34,11 @@ import Iconcalculatesmallwhite from '../../assets/images/Iconcalculatesmallwhite
 
 //Style
 import styles from '../Setupfarm/Addtree.style';
-import { stylesTitle, stylesScrollView } from './YourFarm.style';
+import { stylesTitle, stylesScrollView, stylesResult } from './YourFarm.style';
 
 import { UseLogic } from './UseLogic';
+import { HandleAdd } from '../Statistics/HandleAdd';
+import { ModalPick } from '../../components/Modal/ModalPick';
 
 const YourFarm = ({ navigation }: any) => {
   const {
@@ -67,8 +69,29 @@ const YourFarm = ({ navigation }: any) => {
     handleModalSuccess,
     handleModalCalculate,
     isModalCalculate,
+    hanleHideModalPick,
+    valuePick,
+    isModalPick,
+    handleModalPickUnitExpense,
+    titlePick,
+    resultTotalQuantity,
+    handleCalculate,
+    resultTotalPrice,
   } = UseLogic();
 
+  const {
+    // handleModalPickUnitExpense,
+    setIsModalPick,
+    // titlePick,
+    setTitlePick,
+    setValuePick,
+    unitsIncome,
+    costTypes,
+    unitsExpense,
+    handleModalPickHide,
+    // isModalPick,
+    // hanleHideModalPick,
+  } = HandleAdd();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
       <HeaderComponent onPress={() => navigation.navigate('Profile')} />
@@ -340,24 +363,36 @@ const YourFarm = ({ navigation }: any) => {
                 {inputs.map((input, index) => (
                   <View key={index}>
                     <Input
+                      onPress={
+                        input.label === 'Unit'
+                          ? handleModalPickUnitExpense
+                          : () => {}
+                      }
                       label={input.label}
-                      textPlaceholder={`Enter your ${input.label.toLowerCase()}`}
+                      textPlaceholder={
+                        input.label === 'Quantity to buy for each tree'
+                          ? 'Ex: 10'
+                          : input.label === 'Unit'
+                          ? 'Choose unit'
+                          : 'Ex: 10$'
+                      }
                       value={input.value}
                       onChangeText={(text: string) =>
                         handleInputChange(index, text)
                       }
                       textError={input.error}
-                      keyboardType={
-                        input.label === 'Quanlity' ? 'numeric' : 'default'
-                      }
+                      keyboardType="numeric"
                       span="*"
+                      dropDown={input.label === 'Unit'}
+                      editable={input.label === 'Unit' ? false : true}
+                      iconDolar={input.label === 'Purchase price per unit'}
                     />
                   </View>
                 ))}
               </View>
               <TouchableOpacity
                 style={styles.btnSendSession}
-                onPress={handleEditTree}>
+                onPress={handleCalculate}>
                 <View style={styles.txtBtnSignup}>
                   <Iconcalculatesmallwhite />
                   <View style={{ width: 16 }} />
@@ -372,12 +407,57 @@ const YourFarm = ({ navigation }: any) => {
                   </Text>
                 </View>
               </TouchableOpacity>
+              <View style={stylesResult.result}>
+                <View style={stylesResult.itemFlexBox}>
+                  <Text style={[stylesResult.title, stylesResult.unitTypo]}>
+                    {'Total quantity : '}
+                  </Text>
+                  <View style={stylesResult.valueParent}>
+                    <Text style={stylesResult.unitTypo}>
+                      <Text style={stylesResult.text}>
+                        {resultTotalQuantity}
+                      </Text>
+                    </Text>
+                    <Text style={[stylesResult.unit, stylesResult.unitTypo]}>
+                      <Text style={stylesResult.kg}>{valuePick}</Text>
+                    </Text>
+                  </View>
+                </View>
+                <View style={[stylesResult.item1, stylesResult.itemFlexBox]}>
+                  <Text style={[stylesResult.title, stylesResult.unitTypo]}>
+                    {'Total price : '}
+                  </Text>
+                  <View style={stylesResult.valueParent}>
+                    <Text style={stylesResult.unitTypo}>
+                      <Text style={stylesResult.text}>{resultTotalPrice}</Text>
+                    </Text>
+                    <Text style={[stylesResult.unit, stylesResult.unitTypo]}>
+                      <Text style={stylesResult.kg}> $</Text>
+                    </Text>
+                  </View>
+                </View>
+              </View>
             </ModalInsert.Body>
           </ScrollView>
         </ModalInsert.Container>
       </ModalInsert>
 
       <PopUpLoading isModalSuccess={isModalLoading} />
+
+      <ModalPick
+        isModalPick={isModalPick}
+        setIsModalPick={setIsModalPick}
+        titlePick={titlePick}
+        setTitlePick={setTitlePick}
+        valuePick={valuePick}
+        setValuePick={setValuePick}
+        trees={trees}
+        unitsIncome={unitsIncome}
+        costTypes={costTypes}
+        unitsExpense={unitsExpense}
+        handleModalPickHide={handleModalPickHide}
+        hanlePickItem={hanleHideModalPick}
+      />
     </SafeAreaView>
   );
 };

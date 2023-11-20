@@ -37,3 +37,45 @@ export const stylesScrollView = StyleSheet.create({
     paddingBottom: '40%',
   },
 });
+
+export const stylesResult = StyleSheet.create({
+  unitTypo: {
+    textAlign: 'left',
+    fontFamily: 'Nunito-SemiBold',
+  },
+  itemFlexBox: {
+    justifyContent: 'space-between',
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+  },
+  title: {
+    width: 200,
+    color: COLORS.blue,
+    fontSize: 16,
+  },
+  text: {
+    fontSize: 18,
+    fontFamily: 'Nunito-Bold',
+    color: COLORS.blue,
+  },
+  kg: {
+    color: COLORS.text2,
+  },
+  unit: {
+    marginLeft: 24,
+    fontSize: 16,
+  },
+  valueParent: {
+    flexDirection: 'row',
+  },
+  item1: {
+    marginTop: 24,
+  },
+  result: {
+    flex: 1,
+    width: '95%',
+    alignItems: 'center',
+    paddingBottom: 24,
+    alignSelf: 'center',
+  },
+});
