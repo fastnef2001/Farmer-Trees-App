@@ -8,14 +8,17 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import styles from './Login.style';
+//Component
+import { ModalLoading } from '../../components/Modal/ModalLoading';
 import Input from '../../components/Input/Input.component';
-import IconSignUp from '../../assets/images/IconSignUp.svg';
-import IconGoogle from '../../assets/images/IconGoogle.svg';
 import { ButtonBack, ButtonLogin } from '../../components/Button/Button';
 import { Modal } from '../../components/Modal/Modal';
-import styles from './Login.style';
+//Icon
+import IconSignUp from '../../assets/images/IconSignUp.svg';
+import IconGoogle from '../../assets/images/IconGoogle.svg';
 import Logo55 from '../../assets/images/Logo55.svg';
-import { ModalLoading } from '../../components/Modal/ModalLoading';
+//UseLogic
 import { UseLogic } from './Registration.useLogic';
 
 const RegistrationScreen = ({ navigation }: any) => {

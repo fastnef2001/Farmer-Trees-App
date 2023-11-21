@@ -13,8 +13,6 @@ import {
 } from 'react-native';
 import LottieView from 'lottie-react-native';
 //Component
-import { Modal } from '../../components/Modal/Modal';
-import { ButtonBack, ButtonDelete } from '../../components/Button/Button';
 import RectangularTree from '../../components/RectangularElement/Tree.component';
 import WeatherComponent from '../../components/Weather/Weather.component';
 import { HeaderComponent } from '../../components/Header/Header.component';
@@ -35,7 +33,6 @@ import Iconcalculatesmallwhite from '../../assets/images/Iconcalculatesmallwhite
 //Style
 import styles from '../Setupfarm/Addtree.style';
 import { stylesTitle, stylesScrollView, stylesResult } from './YourFarm.style';
-
 import { UseLogic } from './UseLogic';
 import { HandleAdd } from '../Statistics/HandleAdd';
 import { ModalPick } from '../../components/Modal/ModalPick';
@@ -51,7 +48,6 @@ const YourFarm = ({ navigation }: any) => {
     handleInputChange,
     handleAddTree,
     isModalSuccess,
-    isModalDelete,
     handleModalDelete,
     handleDeleteTree,
     trees,
@@ -60,12 +56,10 @@ const YourFarm = ({ navigation }: any) => {
     handleModalEditTree,
     handleEditTree,
     isModalLoading,
-    setIsModalDelete,
     key,
     titleHeader,
     titleBody,
     isFooter,
-    setIsModalSuccess,
     handleModalSuccess,
     handleModalCalculate,
     isModalCalculate,
@@ -81,17 +75,12 @@ const YourFarm = ({ navigation }: any) => {
   } = UseLogic();
 
   const {
-    // handleModalPickUnitExpense,
     setIsModalPick,
-    // titlePick,
     setTitlePick,
     setValuePick,
     unitsIncome,
     costTypes,
     unitsExpense,
-    // handleModalPickHide,
-    // isModalPick,
-    // hanleHideModalPick,
   } = HandleAdd();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>

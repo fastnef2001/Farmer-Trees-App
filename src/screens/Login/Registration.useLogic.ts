@@ -1,17 +1,17 @@
-import { is } from 'date-fns/locale';
 import { useState } from 'react';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import firestore from '@react-native-firebase/firestore';
+import { Database } from '../../database/database';
 
 export function UseLogic() {
+  const { createAccount, createAccountByGoogle } = Database();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalVisibleLoading, setIsModalVisibleLoading] = useState(false);
   const [errorText, setErrorText] = useState('');
-
   const [inputs, setInputs] = useState([
     { label: 'Full name', value: '', error: '' },
     { label: 'Email', value: '', error: '' },
@@ -142,28 +142,7 @@ export function UseLogic() {
     // register
     handleModalLoading();
     try {
-      const response = await auth().createUserWithEmailAndPassword(
-        emailInput.value,
-        passwordInput.value,
-      );
-      console.log('responseText', response);
-      // lấy id của user vừa tạo
-      const user = await firestore()
-        .collection('users')
-        .doc(response.user.uid)
-        .get();
-      console.log('userText', user);
-      const idUser = response.user.uid;
-      console.log('idUser', idUser);
-
-      if (idUser) {
-        await firestore().collection('users').doc(idUser).set({
-          fullName: fullNameInput.value,
-          phoneNumber: phoneNumberInput.value,
-          email: emailInput.value,
-          isPayment: false,
-        });
-      }
+      createAccount(emailInput, passwordInput, fullNameInput, phoneNumberInput);
       handleModal();
       handleModalLoading();
     } catch (error: any) {
@@ -186,26 +165,7 @@ export function UseLogic() {
 
       if (isUserExist.length === 0) {
         handleModalLoading();
-        await auth().signInWithCredential(googleCredential);
-        const fullNameGoogle = userInfo.user.name;
-        const emailGoogle = userInfo.user.email;
-        console.log('emailGoogle', emailGoogle);
-        const user = await firestore()
-          .collection('users')
-          .doc(auth().currentUser?.uid)
-          .get();
-        if (!user.exists) {
-          await firestore()
-            .collection('users')
-            .doc(auth().currentUser?.uid)
-            .set({
-              fullName: fullNameGoogle,
-              email: emailGoogle,
-              isPayment: false,
-            });
-        }
-        await GoogleSignin.revokeAccess();
-        await GoogleSignin.signOut();
+        createAccountByGoogle(googleCredential, userInfo);
         handleModalLoading();
         handleModal();
         return;
@@ -236,14 +196,13 @@ export function UseLogic() {
   const handleModal = () => setIsModalVisible(prev => !prev);
 
   return {
-    isModalVisible,
-    isModalVisibleLoading,
-    errorText,
     inputs,
     handleInputChange,
     handleRegister,
     handleRegisterByGoogle,
-    handleModalLoading,
+    isModalVisible,
     handleModal,
+    isModalVisibleLoading,
+    errorText,
   };
 }

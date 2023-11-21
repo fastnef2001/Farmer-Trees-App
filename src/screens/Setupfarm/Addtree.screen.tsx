@@ -34,8 +34,12 @@ import styles from './Addtree.style';
 import { ButtonBack, ButtonDelete } from '../../components/Button/Button';
 import LottieView from 'lottie-react-native';
 import { ModalLoading } from '../../components/Modal/ModalLoading';
+import { Database } from '../../database/database';
+import { set } from 'date-fns';
+import { el } from 'date-fns/locale';
 
 const Addtree = ({ navigation }: any) => {
+  const { createTree, editTree, deleteTree, trees, getTrees } = Database();
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);
   const [isModalSuccess, setIsModalSuccess] = React.useState(false);
   const [isModalDelete, setIsModalDelete] = React.useState(false);
@@ -45,9 +49,13 @@ const Addtree = ({ navigation }: any) => {
     { label: 'Tree name', value: '', error: '' },
     { label: 'Quanlity', value: '', error: '' },
   ]);
-  const [trees, setTrees] = useState<Tree[]>([]);
   const [titlePopupNoti, setTitlePopupNoti] = useState('');
   const [contentPopupNoti, setContentPopupNoti] = useState('');
+
+  // Get tree
+  useEffect(() => {
+    getTrees();
+  }, [getTrees]);
 
   // Add tree
   // 1. Modal add tree
@@ -100,39 +108,12 @@ const Addtree = ({ navigation }: any) => {
       );
       return;
     }
-    try {
-      handleModalLoading();
-      const name = treeNameInput?.value;
-      const quanlity = quanlityInput?.value;
-      const image = selectImage;
-      console.log('image', image);
-      const timeAdd = new Date().getTime();
-      let imageUrl = '';
-      const userId = auth().currentUser?.uid;
-      if (image) {
-        const filename = userId + name;
-        const storageRef = storage().ref(`imageTree/${filename}`);
-        await storageRef.putFile(image);
-        imageUrl = await storageRef.getDownloadURL();
-      }
-      firestore()
-        .collection('trees')
-        .doc(userId)
-        .collection('tree')
-        .add({
-          name,
-          quanlity,
-          imageUrl,
-          timeAdd,
-        })
-        .then(() => {
-          setIsModalAddTree(() => false);
-          handleModalLoading();
-          handleModalSuccessAdd();
-        });
-    } catch (error: any) {
-      console.log('error', error);
+    handleModalLoading();
+    if (await createTree(treeNameInput, quanlityInput, selectImage)) {
+      setIsModalAddTree(() => false);
+      handleModalSuccessAdd();
     }
+    handleModalLoading();
   };
 
   const handleModalSuccessAdd = () => {
@@ -149,55 +130,17 @@ const Addtree = ({ navigation }: any) => {
     );
   };
 
-  //Get all tree
-  interface Tree {
-    key(key: any): void;
-    name: string;
-    quanlity: string;
-    imageUrl: string;
-  }
-
-  React.useEffect(() => {
-    const subscriber = firestore()
-      .collection('trees')
-      .doc(auth().currentUser?.uid)
-      .collection('tree')
-      .orderBy('timeAdd', 'desc')
-      .onSnapshot(querySnapshot => {
-        const trees: any = [];
-        querySnapshot.forEach(documentSnapshot => {
-          trees.push({
-            ...documentSnapshot.data(),
-            key: documentSnapshot.id,
-          });
-          console.log('treeProperties', trees);
-        });
-        setTrees(trees);
-        console.log('trees', trees);
-      });
-    return () => subscriber();
-  }, []);
-
   // Delete tree
   const handleModalDelete = (key: any) => {
     setKey(key);
     setIsModalDelete(() => !isModalDelete);
   };
 
-  const handleDeleteTree = (key: string) => {
+  const handleDeleteTree = async (key: string) => {
     const tree = trees.find(tree => tree.key === (key as any));
-    if (tree) {
-      const filename = auth().currentUser?.uid + tree.name;
-      const storageRef = storage().ref(`imageTree/${filename}`);
-      storageRef.delete();
+    if (await deleteTree(tree, key)) {
+      setIsModalDelete(() => false);
     }
-    firestore()
-      .collection('trees')
-      .doc(auth().currentUser?.uid)
-      .collection('tree')
-      .doc(key)
-      .delete();
-    setIsModalDelete(() => false);
   };
 
   // Edit tree
@@ -228,7 +171,6 @@ const Addtree = ({ navigation }: any) => {
   const handleEditTree = async () => {
     const treeNameInput = inputs.find(input => input.label === 'Tree name');
     const quanlityInput = inputs.find(input => input.label === 'Quanlity');
-
     if (!treeNameInput?.value || !quanlityInput?.value) {
       setInputs(
         inputs.map(input => ({
@@ -238,49 +180,15 @@ const Addtree = ({ navigation }: any) => {
       );
       return;
     }
-
-    try {
-      handleModalLoading();
-      const name = treeNameInput?.value;
-      const quanlity = quanlityInput?.value;
-      const image = selectImage;
-      let imageUrl = '';
-      const userId = auth().currentUser?.uid;
-      if (image && image.includes('http')) {
-        imageUrl = image;
-      } else if (image) {
-        const tree = trees.find(tree => tree.key === (key as any));
-        if (tree) {
-          const filename = auth().currentUser?.uid + tree.name;
-          const storageRef = storage().ref(`imageTree/${filename}`);
-          storageRef.delete();
-        }
-
-        const filename = userId + name;
-        const storageRef = storage().ref(`imageTree/${filename}`);
-        await storageRef.putFile(image);
-        imageUrl = await storageRef.getDownloadURL();
-      }
-
-      firestore()
-        .collection('trees')
-        .doc(userId)
-        .collection('tree')
-        .doc(key)
-        .update({
-          name,
-          quanlity,
-          imageUrl,
-        })
-        .then(() => {
-          setIsModalEditTree(() => false);
-          handleModalLoading();
-          handleModalSuccessEdit();
-        });
-    } catch (error: any) {
-      console.log('error', error);
-      handleModalLoading();
+    handleModalLoading();
+    const tree = trees.find(tree => tree.key === (key as any));
+    if (await editTree(treeNameInput, quanlityInput, selectImage, tree, key)) {
+      setIsModalEditTree(() => false);
+      handleModalSuccessEdit();
+    } else {
+      console.log('error');
     }
+    handleModalLoading();
   };
 
   // Modal success edit
@@ -335,6 +243,7 @@ const Addtree = ({ navigation }: any) => {
                   onPressDelete={() => handleModalDelete(tree.key)}
                   onPressEdit={() => handleModalEditTree(tree.key)}
                   caculate={false}
+                  onPressCalculate={() => {}}
                 />
               ))}
             </ScrollView>

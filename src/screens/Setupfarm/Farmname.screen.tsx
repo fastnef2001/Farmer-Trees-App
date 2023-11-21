@@ -12,28 +12,20 @@ import IconBack from '../../assets/images/IconBack.svg';
 import Input from '../../components/Input/Input.component';
 import IconContinue from '../../assets/images/IconContinue.svg';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import { Database } from '../../database/database';
 
 const Farmname = ({ navigation }: any) => {
+  const { createFarmName } = Database();
   const [farmName, setFarmName] = useState('');
   const [errorName, setErrorName] = useState('');
 
   const saveFarmName = async () => {
-    // Check if any input is empty
     if (!farmName) {
       setErrorName('Please enter your farm name');
       return;
     }
-    try {
-      await firestore()
-        .collection('users')
-        .doc(auth().currentUser?.uid)
-        .update({
-          farmName: farmName,
-        });
+    if ((await createFarmName(farmName)) === true) {
       navigation.navigate('AddTree');
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -46,9 +38,10 @@ const Farmname = ({ navigation }: any) => {
     navigation.navigate('LoginScreen');
   };
 
-  // const handleInputChange = (text: any) => {
-  //   setFarmName(text);
-  // };
+  const handleInputChange = (text: any) => {
+    setErrorName('');
+    setFarmName(text);
+  };
 
   return (
     <>
@@ -72,10 +65,7 @@ const Farmname = ({ navigation }: any) => {
             label="Farm name"
             placeholder="Enter your farm name"
             span="*"
-            onChangeText={(text: string) => {
-              setErrorName('');
-              setFarmName(text);
-            }}
+            onChangeText={(text: string) => handleInputChange(text)}
             error={errorName}
           />
         </View>
