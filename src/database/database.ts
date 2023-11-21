@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { MediaType, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 const { format } = require('date-fns');
 
@@ -101,49 +100,6 @@ export function Database() {
     await GoogleSignin.revokeAccess();
     await GoogleSignin.signOut();
   };
-  //     try {
-  //       const user = auth().currentUser;
-  //       useEffect(() => {
-  //         if (user) {
-  //           const subscriber = firestore()
-  //             .collection('users')
-  //             .doc(user?.uid)
-  //             .onSnapshot(documentSnapshot => {
-  //               if (documentSnapshot.exists) {
-  //                 // setFarmName(documentSnapshot.data()?.farmName);
-  //                 // setFullName(documentSnapshot.data()?.fullName);
-  //                 // setPhoneNumber(documentSnapshot.data()?.phoneNumber);
-  //                 // setEmail(documentSnapshot.data()?.email);
-  //                 // setAvatar(documentSnapshot.data()?.imageUrl);
-  //                 // setSelectImage(documentSnapshot.data()?.imageUrl);
-  //               } else {
-  //                 // console.log('Document does not exist');
-  //                 // setFarmName('');
-  //                 // setFullName('');
-  //                 // setPhoneNumber('');
-  //                 // setEmail('');
-  //                 // setAvatar('');
-  //               }
-  //             });
-
-  //           return () => subscriber();
-  //         }
-  //       }, [user]);
-
-  //       return true;
-  //     } catch (error) {
-  //       return false;
-  //     }
-  //   };
-
-  //   const editProfile = async () => {
-  //     try {
-
-  //       return true;
-  //     } catch (error) {
-  //       return false;
-  //     }
-  //   };
   const createFarmName = async (farmName: string) => {
     try {
       await firestore()
@@ -179,6 +135,38 @@ export function Database() {
       return false;
     }
   }, [setUserInfors]);
+  const editProfile = async (
+    farmNameInput: InputValues,
+    fullNameInput: InputValues,
+    phoneNumberInput?: InputValues,
+    selectImage?: any,
+  ) => {
+    try {
+      const farmNameValue = farmNameInput?.value;
+      const fullNameValue = fullNameInput?.value;
+      const phoneNumberValue = phoneNumberInput?.value;
+      const image = selectImage;
+      let imageUrl = '';
+      const userId = auth().currentUser?.uid;
+      if (image && image.includes('http')) {
+        imageUrl = image;
+      } else if (image) {
+        const filename = userId;
+        const storageRef = storage().ref(`imageAvatar/${filename}`);
+        await storageRef.putFile(image);
+        imageUrl = await storageRef.getDownloadURL();
+      }
+      await firestore().collection('users').doc(userId).update({
+        fullName: fullNameValue,
+        farmName: farmNameValue,
+        phoneNumber: phoneNumberValue,
+        imageUrl: imageUrl,
+      });
+      return true;
+    } catch (error: any) {
+      return false;
+    }
+  };
   //CRUD TREE
   const createTree = async (
     treeNameInput: InputValues,
@@ -394,5 +382,6 @@ export function Database() {
     totalExpense,
     getInforUser,
     userInfors,
+    editProfile,
   };
 }

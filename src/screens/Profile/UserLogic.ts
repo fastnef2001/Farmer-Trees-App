@@ -8,7 +8,7 @@ import storage from '@react-native-firebase/storage';
 import { Database } from '../../database/database';
 
 export function UseLogic() {
-  const { getInforUser, userInfors } = Database();
+  const { getInforUser, userInfors, editProfile } = Database();
   const [isModalEditProfile, setIsModalEditProfile] = useState(false);
   const [selectImage, setSelectImage] = useState('');
   const [profile, setProfile] = useState([
@@ -122,7 +122,6 @@ export function UseLogic() {
     const phoneNumberInput = profile.find(
       input => input.label === 'Phone number',
     );
-    // nếu không nhập vào thì báo lỗi
     if (!farmNameInput?.value || !fullNameInput?.value) {
       setProfile(
         profile.map(input => ({
@@ -134,55 +133,17 @@ export function UseLogic() {
     }
 
     handleModalLoading();
-    try {
-      const farmNameValue = farmNameInput?.value;
-      const fullNameValue = fullNameInput?.value;
-      const phoneNumberValue = phoneNumberInput?.value;
-      const image = selectImage;
-      let imageUrl = '';
-      const userId = auth().currentUser?.uid;
-      // if image là url với http thì không cần thay đổi ảnh
-      if (image && image.includes('http')) {
-        imageUrl = image;
-      } else if (image) {
-        // xóa ảnh cũ trong storage
-        // const tree = trees.find(tree => tree.key === (key as any));
-        // if (tree) {
-        //   const filename = auth().currentUser?.uid + tree.name;
-        //   const storageRef = storage().ref(`imageTree/${filename}`);
-        //   storageRef.delete();
-        // }
-
-        const filename = userId;
-        const storageRef = storage().ref(`imageAvatar/${filename}`);
-        await storageRef.putFile(image);
-        imageUrl = await storageRef.getDownloadURL();
-      }
-      firestore()
-        .collection('users')
-        .doc(userId)
-        .update({
-          fullName: fullNameValue,
-          farmName: farmNameValue,
-          phoneNumber: phoneNumberValue,
-          imageUrl: imageUrl,
-        })
-        .then(() => {
-          setIsModalEditProfile(() => false);
-          setIsModalLoading(() => false);
-          setIsModalSuccess(() => true);
-        });
-
-      // setSelectImage('');
-      // setInputs(
-      //   inputs.map(input => ({
-      //     ...input,
-      //     value: '',
-      //     error: '',
-      //   })),
-      // );
-    } catch (error: any) {
-      console.log('error', error);
+    if (
+      await editProfile(
+        farmNameInput,
+        fullNameInput,
+        phoneNumberInput,
+        selectImage,
+      )
+    ) {
+      setIsModalEditProfile(() => false);
+      setIsModalLoading(() => false);
+      setIsModalSuccess(() => true);
     }
   };
 
