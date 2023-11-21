@@ -145,7 +145,7 @@ function convertTotimestamp(selectDate: string) {
 }
 
 export function HandleAdd() {
-  const { createIncome, createExpense } = Database();
+  const { createIncome, createExpense, editIncome, editExpense } = Database();
   const [selectedDateIncome, setSelectedDateIncome] = useState('');
   const [selectedDateExpense, setSelectedDateExpense] = useState('');
   const [isModaAdd, setIsModalAdd] = useState(false);
@@ -412,102 +412,42 @@ export function HandleAdd() {
     setIsModalAdd(!isModaAdd);
   };
 
-  const handleEditItem = (text: string) => {
-    console.log('text', text);
-    // if (text === 'income') {
-    //   setIsModalLoading(true);
-    //   try {
-    //     const userid = auth().currentUser?.uid;
-    //     const date = selectedDateIncome;
-    //     const tree = inputs[0].value;
-    //     const quantity = Number(inputs[1].value);
-    //     const unit = inputs[2].value;
-    //     const totalPrice = Number(inputs[3].value);
-    //     const quantityInKilograms = convertToKilograms(quantity, unit);
-    //     const month = changeMonthToSrting(date.slice(5, 7));
-    //     const timestamp = convertTotimestamp(selectedDateIncome);
-    //     const day = date.slice(8, 10);
-
-    //     firestore()
-    //       .collection('incomes')
-    //       .doc(userid)
-    //       .collection('income')
-    //       .doc(key)
-    //       .update({
-    //         timestamp,
-    //         month,
-    //         day,
-    //         date,
-    //         tree,
-    //         quantity,
-    //         unit,
-    //         totalPrice,
-    //         quantityInKilograms,
-    //       })
-    //       .then(() => {
-    //         setIsModalAdd(false);
-    //         setIsModalLoading(false);
-    //         setTitleHeader('Successfully');
-    //         setTitleBody('You have successfully edited income');
-    //         setIsModalSuccess(true);
-    //         setTimeout(() => {
-    //           setIsModalSuccess(false);
-    //         }, 5000);
-    //         const newInputs = [...inputs];
-    //         newInputs.forEach((input, index) => {
-    //           newInputs[index].value = '';
-    //           newInputs[index].error = '';
-    //         });
-    //       });
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // } else {
-    //   setIsModalLoading(true);
-    //   try {
-    //     const userid = auth().currentUser?.uid;
-    //     const date = selectedDateExpense;
-    //     const costType = inputs[0].value;
-    //     const quantity = Number(inputs[1].value);
-    //     const unit = inputs[2].value.toLowerCase();
-    //     const totalPrice = Number(inputs[3].value);
-    //     const month = changeMonthToSrting(date.slice(5, 7));
-    //     const timestamp = convertTotimestamp(selectedDateExpense);
-    //     const day = date.slice(8, 10);
-    //     firestore()
-    //       .collection('expenses')
-    //       .doc(userid)
-    //       .collection('expense')
-    //       .doc(key)
-    //       .update({
-    //         month,
-    //         day,
-    //         date,
-    //         timestamp,
-    //         costType,
-    //         quantity,
-    //         unit,
-    //         totalPrice,
-    //       })
-    //       .then(() => {
-    //         setIsModalAdd(false);
-    //         setIsModalLoading(false);
-    //         setTitleHeader('Successfully');
-    //         setTitleBody('You have successfully edited expense');
-    //         setIsModalSuccess(true);
-    //         setTimeout(() => {
-    //           setIsModalSuccess(false);
-    //         }, 5000);
-    //         const newInputs = [...inputs];
-    //         newInputs.forEach((input, index) => {
-    //           newInputs[index].value = '';
-    //           newInputs[index].error = '';
-    //         });
-    //       });
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // }
+  const handleEditItem = async (text: string) => {
+    if (text === 'income') {
+      setIsModalLoading(true);
+      if (await editIncome(selectedDateIncome, inputs, key)) {
+        setIsModalAdd(false);
+        setIsModalLoading(false);
+        setTitleHeader('Successfully');
+        setTitleBody('You have successfully edited income');
+        setIsModalSuccess(true);
+        setTimeout(() => {
+          setIsModalSuccess(false);
+        }, 5000);
+        const newInputs = [...inputs];
+        newInputs.forEach((input, index) => {
+          newInputs[index].value = '';
+          newInputs[index].error = '';
+        });
+      }
+    } else {
+      setIsModalLoading(true);
+      if (await editExpense(selectedDateExpense, inputs, key)) {
+        setIsModalAdd(false);
+        setIsModalLoading(false);
+        setTitleHeader('Successfully');
+        setTitleBody('You have successfully edited expense');
+        setIsModalSuccess(true);
+        setTimeout(() => {
+          setIsModalSuccess(false);
+        }, 5000);
+        const newInputs = [...inputs];
+        newInputs.forEach((input, index) => {
+          newInputs[index].value = '';
+          newInputs[index].error = '';
+        });
+      }
+    }
   };
   return {
     isModaAdd,

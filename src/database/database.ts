@@ -473,6 +473,78 @@ export function Database() {
       return false;
     }
   };
+  const editIncome = async (
+    selectedDateIncome: string,
+    inputs: any,
+    key: any,
+  ) => {
+    try {
+      const userid = auth().currentUser?.uid;
+      const date = selectedDateIncome;
+      const tree = inputs[0].value;
+      const quantity = Number(inputs[1].value);
+      const unit = inputs[2].value;
+      const totalPrice = Number(inputs[3].value);
+      const quantityInKilograms = convertToKilograms(quantity, unit);
+      const month = changeMonthToSrting(date.slice(5, 7));
+      const timestamp = convertTotimestamp(selectedDateIncome);
+      const day = date.slice(8, 10);
+      await firestore()
+        .collection('incomes')
+        .doc(userid)
+        .collection('income')
+        .doc(key)
+        .update({
+          timestamp,
+          month,
+          day,
+          date,
+          tree,
+          quantity,
+          unit,
+          totalPrice,
+          quantityInKilograms,
+        });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+  const editExpense = async (
+    selectedDateExpense: string,
+    inputs: any,
+    key: any,
+  ) => {
+    try {
+      const userid = auth().currentUser?.uid;
+      const date = selectedDateExpense;
+      const costType = inputs[0].value;
+      const quantity = Number(inputs[1].value);
+      const unit = inputs[2].value.toLowerCase();
+      const totalPrice = Number(inputs[3].value);
+      const month = changeMonthToSrting(date.slice(5, 7));
+      const timestamp = convertTotimestamp(selectedDateExpense);
+      const day = date.slice(8, 10);
+      await firestore()
+        .collection('expenses')
+        .doc(userid)
+        .collection('expense')
+        .doc(key)
+        .update({
+          month,
+          day,
+          date,
+          timestamp,
+          costType,
+          quantity,
+          unit,
+          totalPrice,
+        });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
 
   return {
     createAccount,
@@ -493,5 +565,7 @@ export function Database() {
     editProfile,
     createIncome,
     createExpense,
+    editIncome,
+    editExpense,
   };
 }
