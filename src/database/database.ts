@@ -39,6 +39,50 @@ function convertTotimestamp(date: string, isStart?: boolean) {
   return timestamp;
 }
 
+function convertToKilograms(quantity: number, unit: string) {
+  switch (unit) {
+    case 'Gram':
+      return quantity / 1000; // 1 gram = 0.001 kilogram
+    case 'Quintal':
+      return quantity * 100; // 1 quintal = 100 kilograms
+    case 'Ton':
+      return quantity * 1000; // 1 ton = 1000 kilograms
+    default:
+      return quantity;
+  }
+}
+
+function changeMonthToSrting(month: string) {
+  switch (month) {
+    case '01':
+      return 'Jan.';
+    case '02':
+      return 'Feb.';
+    case '03':
+      return 'Mar.';
+    case '04':
+      return 'Apr.';
+    case '05':
+      return 'May.';
+    case '06':
+      return 'Jun.';
+    case '07':
+      return 'Jul.';
+    case '08':
+      return 'Aug.';
+    case '09':
+      return 'Sep.';
+    case '10':
+      return 'Oct.';
+    case '11':
+      return 'Nov.';
+    case '12':
+      return 'Dec.';
+    default:
+      return 'Jan.';
+  }
+}
+
 export function Database() {
   interface Tree {
     key(key: any): void;
@@ -365,6 +409,70 @@ export function Database() {
     },
     [setDataIncome, setTotalIncome, setDataExpense, setTotalExpense],
   );
+  const createIncome = async (selectedDateIncome: string, inputs: any) => {
+    try {
+      const userid = auth().currentUser?.uid;
+      const date = selectedDateIncome;
+      const tree = inputs[0].value;
+      const quantity = Number(inputs[1].value);
+      const unit = inputs[2].value;
+      const totalPrice = Number(inputs[3].value);
+      const quantityInKilograms = convertToKilograms(quantity, unit);
+      const month = changeMonthToSrting(date.slice(5, 7));
+      const timestamp = convertTotimestamp(selectedDateIncome);
+      const day = date.slice(8, 10);
+
+      await firestore()
+        .collection('incomes')
+        .doc(userid)
+        .collection('income')
+        .add({
+          timestamp,
+          month,
+          day,
+          date,
+          tree,
+          quantity,
+          unit,
+          totalPrice,
+          quantityInKilograms,
+        });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+  const createExpense = async (selectedDateExpense: string, inputs: any) => {
+    try {
+      const userid = auth().currentUser?.uid;
+      const date = selectedDateExpense;
+      const costType = inputs[0].value;
+      const quantity = Number(inputs[1].value);
+      const unit = inputs[2].value.toLowerCase();
+      const totalPrice = Number(inputs[3].value);
+      const month = changeMonthToSrting(date.slice(5, 7));
+      const timestamp = convertTotimestamp(selectedDateExpense);
+      const day = date.slice(8, 10);
+
+      await firestore()
+        .collection('expenses')
+        .doc(userid)
+        .collection('expense')
+        .add({
+          month,
+          day,
+          date,
+          timestamp,
+          costType,
+          quantity,
+          unit,
+          totalPrice,
+        });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
 
   return {
     createAccount,
@@ -383,5 +491,7 @@ export function Database() {
     getInforUser,
     userInfors,
     editProfile,
+    createIncome,
+    createExpense,
   };
 }
