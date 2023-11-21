@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { MediaType, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
 import { HandleAdd } from '../Statistics/HandleAdd';
+import { Database } from '../../database/database';
 
 export function UseLogic() {
+  const { getTrees, trees } = Database();
   const [isModalPick, setIsModalPick] = useState(false);
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);
   const [selectImage, setSelectImage] = useState('');
@@ -156,25 +158,9 @@ export function UseLogic() {
   }
 
   // 8. Get all tree
-  const [trees, setTrees] = useState<Tree[]>([]);
-  React.useEffect(() => {
-    const subscriber = firestore()
-      .collection('trees')
-      .doc(auth().currentUser?.uid)
-      .collection('tree')
-      .orderBy('timeAdd', 'desc')
-      .onSnapshot(querySnapshot => {
-        const trees: any = [];
-        querySnapshot.forEach(documentSnapshot => {
-          trees.push({
-            ...documentSnapshot.data(),
-            key: documentSnapshot.id,
-          });
-        });
-        setTrees(trees);
-      });
-    return () => subscriber();
-  }, []);
+  useEffect(() => {
+    getTrees();
+  }, [getTrees]);
 
   // 9. Get farm name
   const [farmName, setFarmName] = useState('');
