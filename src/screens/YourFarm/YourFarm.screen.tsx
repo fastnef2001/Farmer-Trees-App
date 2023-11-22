@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable react-native/no-inline-styles */
-//Libary
 import React from 'react';
 import {
   Image,
@@ -36,43 +33,40 @@ import Iconcalculatesmallwhite from '../../assets/images/Iconcalculatesmallwhite
 import styles from '../Setupfarm/Addtree.style';
 import { stylesTitle, stylesScrollView, stylesResult } from './YourFarm.style';
 import { UseLogic } from './UseLogic';
-import { Database } from '../../database/database';
 import { HandleAdd } from '../Statistics/HandleAdd';
 
 const YourFarm = ({ navigation }: any) => {
   const {
     isModalAddTree,
+    isModalLoading,
+    isModalEditTree,
+    isModalSuccess,
+    isModalCalculate,
+    isModalPick,
     handleModalAddTree,
     handleModalImagePicker,
+    handleModalDelete,
+    handleModalEditTree,
+    handleModalSuccess,
+    handleModalCalculate,
+    handleModalPickUnitExpense,
+    handleAddTree,
+    handleEditTree,
+    handleDeleteTree,
+    handleCalculate,
     handleDeleteImage,
     selectImage,
     inputs,
     handleInputChange,
-    handleAddTree,
-    isModalSuccess,
-    handleModalDelete,
-    handleDeleteTree,
     farmName,
-    isModalEditTree,
-    handleModalEditTree,
-    handleEditTree,
-    isModalLoading,
     key,
     titleHeader,
     titleBody,
     isFooter,
-    handleModalSuccess,
-    handleModalCalculate,
-    isModalCalculate,
-    hanleHideModalPick,
     valuePick,
-    isModalPick,
-    handleModalPickUnitExpense,
     titlePick,
     resultTotalQuantity,
-    handleCalculate,
     resultTotalPrice,
-    handleModalPickHide,
     trees,
   } = UseLogic();
 
@@ -228,15 +222,6 @@ const YourFarm = ({ navigation }: any) => {
         </View>
       </ModalInsert>
 
-      <PopUpSuccess
-        isModalSuccess={isModalSuccess}
-        titleHeader={titleHeader}
-        titleBody={titleBody}
-        handleDeleteTree={() => handleDeleteTree(key)}
-        isFooter={isFooter}
-        handleModalSuccess={handleModalSuccess}
-      />
-
       <ModalInsert isVisible={isModalEditTree} isPick={false}>
         <StatusBar backgroundColor={'#07111B'} />
         <ModalInsert.Container>
@@ -357,7 +342,7 @@ const YourFarm = ({ navigation }: any) => {
                     <Input
                       onPress={
                         input.label === 'Unit'
-                          ? handleModalPickUnitExpense
+                          ? () => handleModalPickUnitExpense()
                           : () => {}
                       }
                       label={input.label}
@@ -434,8 +419,6 @@ const YourFarm = ({ navigation }: any) => {
         </ModalInsert.Container>
       </ModalInsert>
 
-      <PopUpLoading isModalSuccess={isModalLoading} />
-
       <ModalPick
         isModalPick={isModalPick}
         setIsModalPick={setIsModalPick}
@@ -447,9 +430,19 @@ const YourFarm = ({ navigation }: any) => {
         unitsIncome={unitsIncome}
         costTypes={costTypes}
         unitsExpense={unitsExpense}
-        handleModalPickHide={handleModalPickHide}
-        hanlePickItem={hanleHideModalPick}
+        handleModalPickHide={handleModalPickUnitExpense}
       />
+
+      <PopUpSuccess
+        isModalSuccess={isModalSuccess}
+        titleHeader={titleHeader}
+        titleBody={titleBody}
+        handleDeleteTree={() => handleDeleteTree(key)}
+        isFooter={isFooter}
+        handleModalSuccess={handleModalSuccess}
+      />
+
+      <PopUpLoading isModalSuccess={isModalLoading} />
     </SafeAreaView>
   );
 };

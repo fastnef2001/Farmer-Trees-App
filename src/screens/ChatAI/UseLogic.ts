@@ -23,7 +23,7 @@ export function UseLogic() {
 
   const [textInput, setTextInput] = useState('');
   const [data, setData] = useState<MessageType[]>([]);
-  const apiKey = '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';
+  const apiKey = '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';
   const apiUrl = 'https://api.openai.com/v1/completions';
   useEffect(() => {
     setData([
@@ -53,7 +53,7 @@ export function UseLogic() {
     const response = await axios.post(
       apiUrl,
       {
-        model: 'Codex',
+        model: 'gpt-3.5-turbo-1106',
         prompt: prompt,
         max_tokens: 150,
         temperature: 0.3,

@@ -31,8 +31,7 @@ export type ModalPickProps = {
   unitsIncome: UnitInterface[];
   costTypes: UnitInterface[];
   unitsExpense: UnitInterface[];
-  handleModalPickHide: () => void;
-  hanlePickItem: (value: string, title: string) => void;
+  handleModalPickHide: (value?: string, title?: string) => void;
 };
 
 export const ModalPick = (
@@ -48,8 +47,8 @@ export const ModalPick = (
     costTypes,
     unitsExpense,
     handleModalPickHide,
-    hanlePickItem,
-  }: ModalPickProps,
+  }: // hanlePickItem,
+  ModalPickProps,
   props: any,
 ) => {
   return (
@@ -59,7 +58,7 @@ export const ModalPick = (
         <ModalInsert.Container isPick={true}>
           <ModalInsert.Header>
             <View style={styles.headSessionModal}>
-              <TouchableOpacity onPress={handleModalPickHide}>
+              <TouchableOpacity onPress={() => handleModalPickHide()}>
                 <IconBack> </IconBack>
               </TouchableOpacity>
               <View style={styles.txtContainer}>
@@ -77,7 +76,7 @@ export const ModalPick = (
           <ScrollView>
             <ModalInsert.Body isPick={true}>
               <RadioButton.Group
-                onValueChange={value => hanlePickItem(value, titlePick)}
+                onValueChange={value => handleModalPickHide(value, titlePick)}
                 value={valuePick}>
                 {titlePick === 'Pick tree' ? (
                   trees.map((tree, index) => (
