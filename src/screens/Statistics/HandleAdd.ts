@@ -145,7 +145,14 @@ function convertTotimestamp(selectDate: string) {
 }
 
 export function HandleAdd() {
-  const { createIncome, createExpense, editIncome, editExpense } = Database();
+  const {
+    createIncome,
+    createExpense,
+    editIncome,
+    editExpense,
+    deleteIncome,
+    deleteExpense,
+  } = Database();
   const [selectedDateIncome, setSelectedDateIncome] = useState('');
   const [selectedDateExpense, setSelectedDateExpense] = useState('');
   const [isModaAdd, setIsModalAdd] = useState(false);
@@ -350,29 +357,21 @@ export function HandleAdd() {
     setIsModalDetail(false);
   };
 
-  const handleDeleteIncome = () => {
-    setTitleBody('You have successfully deleted the income.');
-    setTitleHeader('Successfully');
-    firestore()
-      .collection('incomes')
-      .doc(auth().currentUser?.uid)
-      .collection('income')
-      .doc(key)
-      .delete();
+  const handleDeleteIncome = async () => {
     handleModalDetail();
+    if (await deleteIncome(key)) {
+      setTitleBody('You have successfully deleted the income.');
+      setTitleHeader('Successfully');
+    }
     handleModalSuccess();
   };
-  const handleDeleteExpense = () => {
-    setTitleBody('You have successfully deleted the expense.');
-    setTitleHeader('Successfully');
-    firestore()
-      .collection('expenses')
-      .doc(auth().currentUser?.uid)
-      .collection('expense')
-      .doc(key)
-      .delete();
+  const handleDeleteExpense = async () => {
     handleModalDetail();
-    handleModalSuccess();
+    if (await deleteExpense(key)) {
+      setTitleBody('You have successfully deleted the expense.');
+      setTitleHeader('Successfully');
+      handleModalSuccess();
+    }
   };
 
   const handleModalSuccess = () => {

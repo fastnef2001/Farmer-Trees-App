@@ -3,6 +3,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import { ca } from 'date-fns/locale';
 const { format } = require('date-fns');
 
 interface InputValues {
@@ -545,6 +546,32 @@ export function Database() {
       return false;
     }
   };
+  const deleteIncome = async (key: any) => {
+    try {
+      await firestore()
+        .collection('incomes')
+        .doc(auth().currentUser?.uid)
+        .collection('income')
+        .doc(key)
+        .delete();
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+  const deleteExpense = async (key: any) => {
+    try {
+      await firestore()
+        .collection('expenses')
+        .doc(auth().currentUser?.uid)
+        .collection('expense')
+        .doc(key)
+        .delete();
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
 
   return {
     createAccount,
@@ -567,5 +594,7 @@ export function Database() {
     createExpense,
     editIncome,
     editExpense,
+    deleteIncome,
+    deleteExpense,
   };
 }
