@@ -22,6 +22,8 @@ import {
   PopUpSuccess,
   PopUpLoading,
 } from '../../components/Modal/GeneralPopUps.component';
+import { ModalPick } from '../../components/Modal/ModalPick';
+
 // Icon
 import IconBack from '../../assets/images/IconBack.svg';
 import IconSave from '../../assets/images/IconSave.svg';
@@ -34,8 +36,8 @@ import Iconcalculatesmallwhite from '../../assets/images/Iconcalculatesmallwhite
 import styles from '../Setupfarm/Addtree.style';
 import { stylesTitle, stylesScrollView, stylesResult } from './YourFarm.style';
 import { UseLogic } from './UseLogic';
+import { Database } from '../../database/database';
 import { HandleAdd } from '../Statistics/HandleAdd';
-import { ModalPick } from '../../components/Modal/ModalPick';
 
 const YourFarm = ({ navigation }: any) => {
   const {
@@ -50,7 +52,6 @@ const YourFarm = ({ navigation }: any) => {
     isModalSuccess,
     handleModalDelete,
     handleDeleteTree,
-    trees,
     farmName,
     isModalEditTree,
     handleModalEditTree,
@@ -72,6 +73,7 @@ const YourFarm = ({ navigation }: any) => {
     handleCalculate,
     resultTotalPrice,
     handleModalPickHide,
+    trees,
   } = UseLogic();
 
   const {

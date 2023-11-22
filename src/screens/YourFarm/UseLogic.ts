@@ -4,11 +4,10 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { MediaType, launchImageLibrary } from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
-import { HandleAdd } from '../Statistics/HandleAdd';
 import { Database } from '../../database/database';
 
 export function UseLogic() {
-  const { getTrees, trees } = Database();
+  const { getTrees, trees, createTree, getInforUser, userInfors } = Database();
   const [isModalPick, setIsModalPick] = useState(false);
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);
   const [selectImage, setSelectImage] = useState('');
@@ -16,7 +15,6 @@ export function UseLogic() {
   const [isModalDelete, setIsModalDelete] = React.useState(false);
   const [key, setKey] = React.useState('');
   const [isModalCalculate, setIsModalCalculate] = React.useState(false);
-  const [isTrees, setIsTrees] = useState(false);
   const [inputs, setInputs] = useState([
     { label: 'Tree name', value: '', error: '' },
     { label: 'Quanlity', value: '', error: '' },
@@ -28,7 +26,6 @@ export function UseLogic() {
   const [titlePick, setTitlePick] = useState('');
   const [resultTotalQuantity, setResultTotalQuantity] = useState(0);
   const [resultTotalPrice, setResultTotalPrice] = useState(0);
-  // const [isModalPick, setIsModalPick] = useState(false);
 
   // 1. Modal add tree
   const handleModalAddTree = () => {
@@ -80,39 +77,14 @@ export function UseLogic() {
       return;
     }
     handleModalLoading();
-    try {
-      const name = treeNameInput?.value;
-      const quanlity = quanlityInput?.value;
-      const image = selectImage;
-      const timeAdd = new Date().getTime();
-      let imageUrl = '';
-      const userId = auth().currentUser?.uid;
-      if (image) {
-        const filename = userId + name;
-        const storageRef = storage().ref(`imageTree/${filename}`);
-        await storageRef.putFile(image);
-        imageUrl = await storageRef.getDownloadURL();
-      }
-      firestore()
-        .collection('trees')
-        .doc(userId)
-        .collection('tree')
-        .add({
-          name,
-          quanlity,
-          imageUrl,
-          timeAdd,
-        })
-        .then(() => {
-          setIsModalAddTree(() => false);
-          handleModalLoading();
-          setTitleBody('You have successfully added the tree.');
-          setTitleHeader('Successfully');
-          setIsFooter(false);
-          handleModalSuccess();
-        });
-    } catch (error: any) {
-      console.log('error', error);
+
+    if (await createTree(treeNameInput, quanlityInput, selectImage)) {
+      setIsModalAddTree(() => false);
+      handleModalLoading();
+      setTitleBody('You have successfully added the tree.');
+      setTitleHeader('Successfully');
+      setIsFooter(false);
+      handleModalSuccess();
     }
   };
   // 5. Modal success
@@ -129,7 +101,7 @@ export function UseLogic() {
   };
 
   // 6. Modal delete
-  const handleModalDelete = (key: string) => {
+  const handleModalDelete = (key: any) => {
     setKey(key);
     setTitleBody('Do you want to delete the coffee tree?');
     setTitleHeader('Delete');
@@ -150,30 +122,20 @@ export function UseLogic() {
     handleModalSuccess();
   };
 
-  interface Tree {
-    [x: string]: string;
-    name: string;
-    quanlity: string;
-    imageUrl: string;
-  }
-
   // 8. Get all tree
   useEffect(() => {
     getTrees();
   }, [getTrees]);
 
   // 9. Get farm name
-  const [farmName, setFarmName] = useState('');
-  React.useEffect(() => {
-    const subscriber = firestore()
-      .collection('users')
-      .doc(auth().currentUser?.uid)
-      .onSnapshot(documentSnapshot => {
-        const farmName = documentSnapshot.data()?.farmName;
-        setFarmName(farmName);
-      });
-    return () => subscriber();
-  }, []);
+  let farmName = '';
+
+  useEffect(() => {
+    getInforUser();
+  }, [getInforUser]);
+  userInfors.forEach((userInfor: any) => {
+    farmName = userInfor.farmName;
+  });
 
   // 10. Modal edit tree
   const [isModalEditTree, setIsModalEditTree] = React.useState(false);

@@ -20,6 +20,11 @@ export function UseLogic({ navigation }: any) {
     { label: 'Password', value: '', error: '' },
   ]);
 
+  GoogleSignin.configure({
+    webClientId:
+      '159898876320-kqda9k08g543vj86cqqq9ck78ismjiog.apps.googleusercontent.com',
+  });
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       setErrorText('');
@@ -103,10 +108,6 @@ export function UseLogic({ navigation }: any) {
   };
 
   const signByGoogle = async () => {
-    GoogleSignin.configure({
-      webClientId:
-        '159898876320-kqda9k08g543vj86cqqq9ck78ismjiog.apps.googleusercontent.com',
-    });
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
