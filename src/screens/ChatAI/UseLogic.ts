@@ -24,8 +24,15 @@ export function UseLogic() {
   const [textInput, setTextInput] = useState('');
   const [data, setData] = useState<MessageType[]>([]);
   const apiKey = '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';
-  const apiUrl = 'https://api.openai.com/v1/engines/davinci/completions';
-
+  const apiUrl = 'https://api.openai.com/v1/completions';
+  useEffect(() => {
+    setData([
+      {
+        type: 'bot',
+        text: 'Hello, I am your personal assistant. How can I help you?',
+      },
+    ]);
+  }, []);
   const sendUserMessage = async () => {
     if (textInput.trim() === '') {
       return;
@@ -46,9 +53,11 @@ export function UseLogic() {
     const response = await axios.post(
       apiUrl,
       {
+        model: 'Codex',
         prompt: prompt,
         max_tokens: 150,
-        temperature: 1,
+        temperature: 0.3,
+        top_p: 1,
       },
       {
         headers: {
