@@ -3,7 +3,6 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import { ca } from 'date-fns/locale';
 const { format } = require('date-fns');
 
 interface InputValues {
@@ -105,6 +104,7 @@ export function Database() {
   const [totalExpense, setTotalExpense] = useState(0);
   const [dataExpense, setDataExpense] = useState([]);
   const [userInfors, setUserInfors] = useState<UserInfor[]>([]);
+  // CRU ACCOUNT
   const createAccount = async (
     emailInput: InputValues,
     passwordInput: InputValues,
@@ -123,6 +123,7 @@ export function Database() {
       isPayment: false,
     });
   };
+
   const createAccountByGoogle = async (
     googleCredential: any,
     userInfo: any,
@@ -145,6 +146,7 @@ export function Database() {
     await GoogleSignin.revokeAccess();
     await GoogleSignin.signOut();
   };
+
   const createFarmName = async (farmName: string) => {
     try {
       await firestore()
@@ -158,6 +160,7 @@ export function Database() {
       return false;
     }
   };
+
   const getInforUser = useCallback(async () => {
     const user = auth().currentUser;
     try {
@@ -180,6 +183,7 @@ export function Database() {
       return false;
     }
   }, [setUserInfors]);
+
   const editProfile = async (
     farmNameInput: InputValues,
     fullNameInput: InputValues,
@@ -212,6 +216,7 @@ export function Database() {
       return false;
     }
   };
+
   //CRUD TREE
   const createTree = async (
     treeNameInput: InputValues,
@@ -243,6 +248,7 @@ export function Database() {
       return false;
     }
   };
+
   const editTree = async (
     treeNameInput: InputValues,
     quanlityInput: InputValues,
@@ -285,6 +291,7 @@ export function Database() {
       return false;
     }
   };
+
   const getTrees = useCallback(async () => {
     try {
       const subscriber = firestore()
@@ -311,6 +318,7 @@ export function Database() {
       return false;
     }
   }, [setTrees]);
+
   const deleteTree = async (tree: any, key: any) => {
     try {
       if (tree) {
@@ -329,6 +337,7 @@ export function Database() {
       return false;
     }
   };
+
   //CRUD/FILTER/CALCULATE TOTAL PRICE INCOME && EXPENSE
   const getItems = useCallback(
     async (
@@ -410,6 +419,7 @@ export function Database() {
     },
     [setDataIncome, setTotalIncome, setDataExpense, setTotalExpense],
   );
+
   const createIncome = async (selectedDateIncome: string, inputs: any) => {
     try {
       const userid = auth().currentUser?.uid;
@@ -443,6 +453,7 @@ export function Database() {
       return false;
     }
   };
+
   const createExpense = async (selectedDateExpense: string, inputs: any) => {
     try {
       const userid = auth().currentUser?.uid;
@@ -474,6 +485,7 @@ export function Database() {
       return false;
     }
   };
+
   const editIncome = async (
     selectedDateIncome: string,
     inputs: any,
@@ -511,6 +523,7 @@ export function Database() {
       return false;
     }
   };
+
   const editExpense = async (
     selectedDateExpense: string,
     inputs: any,
@@ -546,6 +559,7 @@ export function Database() {
       return false;
     }
   };
+
   const deleteIncome = async (key: any) => {
     try {
       await firestore()
@@ -559,6 +573,7 @@ export function Database() {
       return false;
     }
   };
+
   const deleteExpense = async (key: any) => {
     try {
       await firestore()
