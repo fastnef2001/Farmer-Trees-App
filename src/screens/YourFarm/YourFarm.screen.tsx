@@ -421,16 +421,13 @@ const YourFarm = ({ navigation }: any) => {
 
       <ModalPick
         isModalPick={isModalPick}
-        setIsModalPick={setIsModalPick}
         titlePick={titlePick}
-        setTitlePick={setTitlePick}
         valuePick={valuePick}
-        setValuePick={setValuePick}
         trees={trees}
         unitsIncome={unitsIncome}
         costTypes={costTypes}
         unitsExpense={unitsExpense}
-        handleModalPickHide={handleModalPickUnitExpense}
+        handlePickItem={handleModalPickUnitExpense}
       />
 
       <PopUpSuccess

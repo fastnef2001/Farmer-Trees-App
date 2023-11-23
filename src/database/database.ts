@@ -4,6 +4,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 const { format } = require('date-fns');
+import { TreeInterface, UnitInterface } from '../Interface/Interface';
 
 interface InputValues {
   value: string;
@@ -84,12 +85,6 @@ function changeMonthToSrting(month: string) {
 }
 
 export function Database() {
-  interface Tree {
-    key(key: any): void;
-    name: string;
-    quanlity: string;
-    imageUrl: string;
-  }
   interface UserInfor {
     email: string;
     farmName: string;
@@ -98,7 +93,10 @@ export function Database() {
     imageUrl?: string;
     isPayment: boolean;
   }
-  const [trees, setTrees] = useState<Tree[]>([]);
+  const [trees, setTrees] = useState<TreeInterface[]>([]);
+  const [unitsIncome, setUnitsIncome] = useState<UnitInterface[]>([]);
+  const [unitsExpense, setUnitsExpense] = useState<UnitInterface[]>([]);
+  const [costTypes, setCostTypes] = useState<UnitInterface[]>([]);
   const [totalIncome, setTotalIncome] = useState(0);
   const [dataIncome, setDataIncome] = useState([]);
   const [totalExpense, setTotalExpense] = useState(0);
@@ -587,6 +585,92 @@ export function Database() {
       return false;
     }
   };
+  //GET UNITTREE
+  // React.useEffect(() => {
+  //   const fetchData = async () => {
+  //     const res = await firestore()
+  //       .collection('unitsTree')
+  //       .orderBy('id', 'asc')
+  //       .get();
+  //     const data: any = [];
+  //     res.forEach((doc: { data: () => any; id: any }) => {
+  //       data.push({ ...doc.data(), id: doc.id });
+  //     });
+  //     setUnitsIncome(data);
+  //   };
+  //   fetchData();
+  // }, []);
+  const getUnitIncome = useCallback(async () => {
+    try {
+      const subscriber = firestore()
+        .collection('unitsTree')
+        .orderBy('id', 'asc')
+        .onSnapshot(querySnapshot => {
+          const data: any = [];
+          if (querySnapshot) {
+            querySnapshot.forEach(documentSnapshot => {
+              data.push({
+                ...documentSnapshot.data(),
+                key: documentSnapshot.id,
+              });
+            });
+            setUnitsIncome(data);
+          }
+        });
+
+      return () => subscriber();
+    } catch (error) {
+      return false;
+    }
+  }, [setUnitsIncome]);
+
+  const getUnitExpense = useCallback(async () => {
+    try {
+      const subscriber = firestore()
+        .collection('unitsExpense')
+        .orderBy('id', 'asc')
+        .onSnapshot(querySnapshot => {
+          const data: any = [];
+          if (querySnapshot) {
+            querySnapshot.forEach(documentSnapshot => {
+              data.push({
+                ...documentSnapshot.data(),
+                key: documentSnapshot.id,
+              });
+            });
+            setUnitsExpense(data);
+          }
+        });
+
+      return () => subscriber();
+    } catch (error) {
+      return false;
+    }
+  }, [setUnitsExpense]);
+
+  const getCostType = useCallback(async () => {
+    try {
+      const subscriber = firestore()
+        .collection('costTypes')
+        .orderBy('id', 'asc')
+        .onSnapshot(querySnapshot => {
+          const data: any = [];
+          if (querySnapshot) {
+            querySnapshot.forEach(documentSnapshot => {
+              data.push({
+                ...documentSnapshot.data(),
+                key: documentSnapshot.id,
+              });
+            });
+            setCostTypes(data);
+          }
+        });
+
+      return () => subscriber();
+    } catch (error) {
+      return false;
+    }
+  }, [setCostTypes]);
 
   return {
     createAccount,
@@ -611,5 +695,11 @@ export function Database() {
     editExpense,
     deleteIncome,
     deleteExpense,
+    getUnitIncome,
+    unitsIncome,
+    getUnitExpense,
+    getCostType,
+    unitsExpense,
+    costTypes,
   };
 }

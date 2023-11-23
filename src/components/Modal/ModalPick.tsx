@@ -15,40 +15,30 @@ import Input from '../../components/Input/Input.component';
 import IconSave from '../../assets/images/IconSave.svg';
 import { COLORS } from '../../theme/color';
 import { RadioButton } from 'react-native-paper';
-import {
-  TreeInterface,
-  UnitInterface,
-} from '../../screens/Statistics/Statistics.interface';
+import { TreeInterface, UnitInterface } from '../../Interface/Interface';
 
 export type ModalPickProps = {
   isModalPick: boolean;
-  setIsModalPick: React.Dispatch<React.SetStateAction<boolean>>;
   titlePick: string;
-  setTitlePick: React.Dispatch<React.SetStateAction<string>>;
   valuePick: string;
-  setValuePick: React.Dispatch<React.SetStateAction<string>>;
   trees: TreeInterface[];
   unitsIncome: UnitInterface[];
   costTypes: UnitInterface[];
   unitsExpense: UnitInterface[];
-  handleModalPickHide: (value?: string, title?: string) => void;
+  handlePickItem: (value?: string, title?: string) => void;
 };
 
 export const ModalPick = (
   {
     isModalPick,
-    setIsModalPick,
     titlePick,
-    setTitlePick,
     valuePick,
-    setValuePick,
     trees,
     unitsIncome,
     costTypes,
     unitsExpense,
-    handleModalPickHide,
-  }: // hanlePickItem,
-  ModalPickProps,
+    handlePickItem,
+  }: ModalPickProps,
   props: any,
 ) => {
   return (
@@ -58,7 +48,7 @@ export const ModalPick = (
         <ModalInsert.Container isPick={true}>
           <ModalInsert.Header>
             <View style={styles.headSessionModal}>
-              <TouchableOpacity onPress={() => handleModalPickHide()}>
+              <TouchableOpacity onPress={() => handlePickItem()}>
                 <IconBack> </IconBack>
               </TouchableOpacity>
               <View style={styles.txtContainer}>
@@ -76,7 +66,7 @@ export const ModalPick = (
           <ScrollView>
             <ModalInsert.Body isPick={true}>
               <RadioButton.Group
-                onValueChange={value => handleModalPickHide(value, titlePick)}
+                onValueChange={value => handlePickItem(value, titlePick)}
                 value={valuePick}>
                 {titlePick === 'Pick tree' ? (
                   trees.map((tree, index) => (

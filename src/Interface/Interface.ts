@@ -5,7 +5,8 @@ export interface TreeInterface {
   imageUrl: string;
 }
 export interface UnitInterface {
-  [x: string]: string;
+  key(key: any): void;
+  id: string;
   name: string;
 }
 

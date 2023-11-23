@@ -35,7 +35,6 @@ const IncomeHistory = () => {
     hanlePickItem,
     titlePickFilter,
     handleModalPickFilter,
-    handleModalPickHideFilter,
   } = UseLogic();
   const {
     isModaAdd,
@@ -49,7 +48,7 @@ const IncomeHistory = () => {
     trees,
     costTypes,
     unitsExpense,
-    handleModalPickHide,
+    // handleModalPickHide,
     handleModalPickTree,
     handleModalPickUnitIncome,
     handleModalPickCostType,
@@ -60,7 +59,7 @@ const IncomeHistory = () => {
     setTitlePick,
     valuePick,
     setValuePick,
-    hanleHideModalPick,
+    // hanleHideModalPick,
     selectedDateIncome,
     setSelectedDateIncome,
     selectedDateExpense,
@@ -77,6 +76,7 @@ const IncomeHistory = () => {
     handlePressDetail,
     itemIncome,
     handleDeleteIncome,
+    handlePickItem,
   } = HandleAdd();
   return (
     <>
@@ -103,7 +103,7 @@ const IncomeHistory = () => {
         <View style={stylesFilter.root}>
           <FilterComponent
             onPress={() => {
-              handleModalPickFilter('Pick tree');
+              handleModalPickFilter('', 'Pick tree');
             }}
             titleDate={selectedTreeOrCostType}
             isCalendar={false}
@@ -189,8 +189,7 @@ const IncomeHistory = () => {
         unitsIncome={unitsIncome}
         costTypes={costTypes}
         unitsExpense={unitsExpense}
-        handleModalPickHide={handleModalPickHideFilter}
-        hanlePickItem={hanlePickItem}
+        handleModalPickHide={handleModalPickFilter}
       />
       <ModalPick
         isModalPick={isModalPick}
@@ -203,8 +202,7 @@ const IncomeHistory = () => {
         unitsIncome={unitsIncome}
         costTypes={costTypes}
         unitsExpense={unitsExpense}
-        handleModalPickHide={handleModalPickHide}
-        hanlePickItem={hanleHideModalPick}
+        handleModalPickHide={handlePickItem}
       />
       {/* End modal pick */}
       {/* Pop up noti and loading */}

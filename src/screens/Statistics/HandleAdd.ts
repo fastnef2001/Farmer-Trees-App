@@ -9,7 +9,6 @@ import {
   TreeInterface,
   UnitInterface,
 } from './Statistics.interface';
-import { set } from 'date-fns';
 import { UseLogic } from './UseLogic';
 import {
   DataExpenseInterface,
@@ -166,6 +165,12 @@ export function HandleAdd() {
   const [titleHeader, setTitleHeader] = useState('');
   const [titleBody, setTitleBody] = useState('');
   const [isModalLoading, setIsModalLoading] = useState(false);
+  const { dataExpense, dataIncome } = UseLogic();
+  const [data, setData] = useState<DataExpenseInterface[]>([]);
+  const [dataIncome1, setDataIncome] = useState<DataIncomeInterface[]>([]);
+  const [isModalDetail, setIsModalDetail] = useState(false);
+  const [key, setKey] = useState('');
+  const [title, setTitle] = useState('');
 
   const [inputsIncome, setInputsIncome] = useState([
     { label: 'Tree', value: '', error: '' },
@@ -196,22 +201,6 @@ export function HandleAdd() {
     });
   };
 
-  useEffect(() => {
-    if (inputs.length > 0) {
-      if (
-        inputs[0].value &&
-        inputs[1].value &&
-        inputs[2].value &&
-        inputs[3].value
-      ) {
-        setIsDisabled(false);
-        console.log('inputs', inputs);
-      } else {
-        setIsDisabled(true);
-      }
-    }
-  }, [inputs]);
-
   const handleModalAddIncome = () => {
     setSelectedDateIncome(timeNow);
     setTitleModalAdd('Add income');
@@ -226,13 +215,6 @@ export function HandleAdd() {
     setIsModalAdd(!isModaAdd);
   };
 
-  const handleInputChange = (index: any, value: any) => {
-    const newInputs = [...inputs];
-    newInputs[index].value = value;
-    newInputs[index].error = '';
-    setInputs(newInputs);
-  };
-
   // Get data unit income
   const unitsIncome = getDataUnitIncome();
   // Get data tree
@@ -242,9 +224,54 @@ export function HandleAdd() {
   // Get data unit expense
   const unitsExpense = getDataUnitExpense();
 
-  // Modal pick
-  const handleModalPickHide = () => {
-    setIsModalPick(false);
+  const handlePickItem = (value?: string, titlePick?: string) => {
+    setIsModalPick(!isModalPick);
+
+    if (titlePick === 'Pick tree' && value) {
+      const newInputs = [...inputsIncome];
+      newInputs[0].value = value;
+      setTitlePick('Pick tree');
+    } else if (titlePick === 'Pick unit income' && value) {
+      const newInputs = [...inputsIncome];
+      newInputs[2].value = value;
+      setTitlePick('Pick unit income');
+    } else if (titlePick === 'Pick cost type' && value) {
+      const newInputs = [...inputsExpense];
+      newInputs[0].value = value;
+      setTitlePick('Pick cost type');
+    } else if (titlePick === 'Pick unit expense' && value) {
+      const newInputs = [...inputsExpense];
+      newInputs[2].value = value;
+      setTitlePick('Pick unit expense');
+    }
+  };
+
+  // HANDLE MODAL
+  const handleModalEditIncome = () => {
+    setIsModalDetail(false);
+    setIsDisabled(!isDisabled);
+    setSelectedDateIncome(itemIncome?.date || '');
+    setTitleModalAdd('Edit income');
+    const newInputs = [...inputsIncome];
+    newInputs[0].value = itemIncome?.tree || '';
+    newInputs[1].value = itemIncome?.quantityInKilograms.toString();
+    newInputs[2].value = itemIncome?.unit || '';
+    newInputs[3].value = itemIncome?.totalPrice.toString();
+    setInputs(newInputs);
+    setIsModalAdd(!isModaAdd);
+  };
+  const handleModalEditExpense = () => {
+    setIsModalDetail(false);
+    setIsDisabled(!isDisabled);
+    setSelectedDateExpense(item?.date || '');
+    setTitleModalAdd('Edit expense');
+    const newInputs = [...inputsExpense];
+    newInputs[0].value = item?.costType || '';
+    newInputs[1].value = item?.quantity.toString();
+    newInputs[2].value = item?.unit || '';
+    newInputs[3].value = item?.totalPrice.toString();
+    setInputs(newInputs);
+    setIsModalAdd(!isModaAdd);
   };
   const handleModalPickTree = () => {
     const newInputs = [...inputsIncome];
@@ -270,28 +297,7 @@ export function HandleAdd() {
     setTitlePick('Pick unit expense');
     setIsModalPick(!isModalPick);
   };
-  // End modal pick
-
-  // Handle value modal pick
-  const hanleHideModalPick = (value: string, titlePick: string) => {
-    setIsModalPick(false);
-    setValuePick(value);
-    if (titlePick === 'Pick tree') {
-      const newInputs = [...inputsIncome];
-      newInputs[0].value = value;
-    } else if (titlePick === 'Pick unit income') {
-      const newInputs = [...inputsIncome];
-      newInputs[2].value = value;
-    } else if (titlePick === 'Pick cost type') {
-      const newInputs = [...inputsExpense];
-      newInputs[0].value = value;
-    } else {
-      const newInputs = [...inputsExpense];
-      newInputs[2].value = value;
-    }
-  };
-
-  // Add income / expense
+  // CRUD INCOME AND EXPENSE
   const handleAdd = async (text: string) => {
     if (text === 'income') {
       setIsModalLoading(true);
@@ -333,84 +339,6 @@ export function HandleAdd() {
       handleEditItem('expense');
     }
   };
-
-  // Delete
-  const { dataExpense, dataIncome } = UseLogic();
-  const [data, setData] = useState<DataExpenseInterface[]>([]);
-  const [dataIncome1, setDataIncome] = useState<DataIncomeInterface[]>([]);
-
-  useEffect(() => {
-    setData(dataExpense);
-    setDataIncome(dataIncome);
-  }, [dataExpense, dataIncome]);
-
-  const [isModalDetail, setIsModalDetail] = useState(false);
-  const [key, setKey] = useState('');
-  const [title, setTitle] = useState('');
-
-  const handlePressDetail = (key: string, title: string) => {
-    setTitle(title);
-    setIsModalDetail(true);
-    setKey(key);
-  };
-  const handleModalDetail = () => {
-    setIsModalDetail(false);
-  };
-
-  const handleDeleteIncome = async () => {
-    handleModalDetail();
-    if (await deleteIncome(key)) {
-      setTitleBody('You have successfully deleted the income.');
-      setTitleHeader('Successfully');
-    }
-    handleModalSuccess();
-  };
-  const handleDeleteExpense = async () => {
-    handleModalDetail();
-    if (await deleteExpense(key)) {
-      setTitleBody('You have successfully deleted the expense.');
-      setTitleHeader('Successfully');
-      handleModalSuccess();
-    }
-  };
-
-  const handleModalSuccess = () => {
-    setIsModalSuccess(!isModalSuccess);
-  };
-
-  const item = data.find(item => item.key === key);
-  const itemIncome = dataIncome1.find(item => item.key === key);
-
-  // Edit
-
-  const handleModalEditIncome = () => {
-    setIsModalDetail(false);
-    setIsDisabled(!isDisabled);
-    setSelectedDateIncome(itemIncome?.date || '');
-    // setTitleModalAdd('Add income');
-    setTitleModalAdd('Edit income');
-    const newInputs = [...inputsIncome];
-    newInputs[0].value = itemIncome?.tree || '';
-    newInputs[1].value = itemIncome?.quantityInKilograms.toString();
-    newInputs[2].value = itemIncome?.unit || '';
-    newInputs[3].value = itemIncome?.totalPrice.toString();
-    setInputs(newInputs);
-    setIsModalAdd(!isModaAdd);
-  };
-  const handleModalEditExpense = () => {
-    setIsModalDetail(false);
-    setIsDisabled(!isDisabled);
-    setSelectedDateExpense(item?.date || '');
-    setTitleModalAdd('Edit expense');
-    const newInputs = [...inputsExpense];
-    newInputs[0].value = item?.costType || '';
-    newInputs[1].value = item?.quantity.toString();
-    newInputs[2].value = item?.unit || '';
-    newInputs[3].value = item?.totalPrice.toString();
-    setInputs(newInputs);
-    setIsModalAdd(!isModaAdd);
-  };
-
   const handleEditItem = async (text: string) => {
     if (text === 'income') {
       setIsModalLoading(true);
@@ -448,6 +376,48 @@ export function HandleAdd() {
       }
     }
   };
+
+  // Delete
+  useEffect(() => {
+    setData(dataExpense);
+    setDataIncome(dataIncome);
+  }, [dataExpense, dataIncome]);
+
+  const handlePressDetail = (key: string, title: string) => {
+    setTitle(title);
+    setIsModalDetail(true);
+    setKey(key);
+  };
+  const handleModalDetail = () => {
+    setIsModalDetail(false);
+  };
+
+  const handleDeleteIncome = async () => {
+    handleModalDetail();
+    if (await deleteIncome(key)) {
+      setTitleBody('You have successfully deleted the income.');
+      setTitleHeader('Successfully');
+    }
+    handleModalSuccess();
+  };
+  const handleDeleteExpense = async () => {
+    handleModalDetail();
+    if (await deleteExpense(key)) {
+      setTitleBody('You have successfully deleted the expense.');
+      setTitleHeader('Successfully');
+      handleModalSuccess();
+    }
+  };
+
+  const handleModalSuccess = () => {
+    setIsModalSuccess(!isModalSuccess);
+  };
+
+  const item = data.find(item => item.key === key);
+  const itemIncome = dataIncome1.find(item => item.key === key);
+
+  // Edit
+
   return {
     isModaAdd,
     setIsModalAdd,
@@ -456,7 +426,6 @@ export function HandleAdd() {
     inputs,
     setInputs,
     handleHideModalAdd,
-    handleInputChange,
     inputsIncome,
     setInputsIncome,
     isDisabled,
@@ -469,7 +438,6 @@ export function HandleAdd() {
     trees,
     costTypes,
     unitsExpense,
-    handleModalPickHide,
     handleModalPickTree,
     handleModalPickUnitIncome,
     handleModalPickCostType,
@@ -480,7 +448,7 @@ export function HandleAdd() {
     setTitlePick,
     valuePick,
     setValuePick,
-    hanleHideModalPick,
+    // hanleHideModalPick,
     selectedDateIncome,
     setSelectedDateIncome,
     selectedDateExpense,
@@ -509,5 +477,7 @@ export function HandleAdd() {
     handleModalEditIncome,
     handleModalEditExpense,
     handleEditItem,
+
+    handlePickItem,
   };
 }
