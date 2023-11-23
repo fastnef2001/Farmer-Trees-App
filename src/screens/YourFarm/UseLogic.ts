@@ -5,13 +5,17 @@ import { Database } from '../../database/database';
 
 export function UseLogic() {
   const {
-    getTrees,
-    trees,
     createTree,
     getInforUser,
     userInfors,
     editTree,
     deleteTree,
+    getTrees,
+    getUnitExpense,
+    unitsExpense,
+    trees,
+    unitsIncome,
+    costTypes,
   } = Database();
   const [isModalPick, setIsModalPick] = useState(false);
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);
@@ -47,8 +51,9 @@ export function UseLogic() {
   //GET FARM NAME
   let farmName = '';
   useEffect(() => {
+    getUnitExpense();
     getInforUser();
-  }, [getInforUser]);
+  }, [getInforUser, getUnitExpense]);
   userInfors.forEach((userInfor: any) => {
     farmName = userInfor.farmName;
   });
@@ -241,7 +246,6 @@ export function UseLogic() {
     isModalDelete,
     handleModalDelete,
     handleDeleteTree,
-    trees,
     farmName,
     isModalEditTree,
     handleModalEditTree,
@@ -266,5 +270,9 @@ export function UseLogic() {
     resultTotalQuantity,
     handleCalculate,
     resultTotalPrice,
+    unitsExpense,
+    trees,
+    unitsIncome,
+    costTypes,
   };
 }

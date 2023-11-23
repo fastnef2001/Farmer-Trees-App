@@ -68,16 +68,11 @@ const YourFarm = ({ navigation }: any) => {
     resultTotalQuantity,
     resultTotalPrice,
     trees,
-  } = UseLogic();
-
-  const {
-    setIsModalPick,
-    setTitlePick,
-    setValuePick,
+    unitsExpense,
     unitsIncome,
     costTypes,
-    unitsExpense,
-  } = HandleAdd();
+  } = UseLogic();
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
       <HeaderComponent onPress={() => navigation.navigate('Profile')} />

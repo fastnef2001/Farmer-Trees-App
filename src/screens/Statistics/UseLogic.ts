@@ -16,12 +16,12 @@ export function UseLogic() {
     createIncome,
     createExpense,
     getTrees,
-    trees,
     getUnitIncome,
-    unitsIncome,
     getUnitExpense,
     getCostType,
     unitsExpense,
+    trees,
+    unitsIncome,
     costTypes,
   } = Database();
   //Handlefilter
@@ -153,7 +153,7 @@ export function UseLogic() {
         setIsDisabled(true);
       }
     }
-  }, [getTrees, getUnitExpense, getUnitIncome, inputs]);
+  }, [getCostType, getTrees, getUnitExpense, getUnitIncome, inputs]);
 
   const handleAdd = async (text: string) => {
     if (text === 'income') {
