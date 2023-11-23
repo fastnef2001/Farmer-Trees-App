@@ -16,15 +16,15 @@ import { COLORS } from '../../theme/color';
 import {
   DataExpenseInterface,
   DataIncomeInterface,
-} from '../../screens/Statistics/Statistics.interface';
+} from '../../Interface/Interface';
 
 export type ModalAddProps = {
   isModaDetail: boolean;
-  handleModalDetail: () => void;
-  titleModalAdd: string;
-  item?: DataExpenseInterface | undefined;
-  itemIncome?: DataIncomeInterface | undefined;
-  deleteItem: (key: string) => void;
+  handlePressDetail: () => void;
+  titleDetail: string;
+  itemIncome?: DataIncomeInterface;
+  itemExpense?: DataExpenseInterface;
+  deleteItem: () => void;
   editItem: () => void;
   //   handlePickDate: (type: string) => () => void;
   //   selectedDateIncome: string;
@@ -45,28 +45,13 @@ export type ModalAddProps = {
 
 export const ModalDetail = ({
   isModaDetail,
-  handleModalDetail,
-  titleModalAdd,
-  item,
+  handlePressDetail,
+  titleDetail,
   itemIncome,
+  itemExpense,
   deleteItem,
   editItem,
 }: ModalAddProps) => {
-  //   handleHideModalAdd,
-  //   titleModalAdd,
-  //   handlePickDate,
-  //   selectedDateIncome,
-  //   selectedDateExpense,
-  //   handleModalPickTree,
-  //   handleModalPickUnitIncome,
-  //   handleModalPickUnitExpense,
-  //   handleModalPickCostType,
-  //   handleInputChange,
-  //   handleAdd,
-  //   inputs,
-  //   isDisabled,
-  const key = item?.key;
-
   return (
     <>
       <ModalInsert isVisible={isModaDetail} isPick={false}>
@@ -75,15 +60,11 @@ export const ModalDetail = ({
           <ModalInsert.Container>
             <ModalInsert.Header>
               <View style={styles.headSessionModal}>
-                <TouchableOpacity onPress={handleModalDetail}>
+                <TouchableOpacity onPress={handlePressDetail}>
                   <IconBack> </IconBack>
                 </TouchableOpacity>
                 <View style={styles.txtContainer}>
-                  {titleModalAdd === 'Detail income' ? (
-                    <Text style={styles.txtTitleModal1}>Detail income</Text>
-                  ) : (
-                    <Text style={styles.txtTitleModal2}>Detail expense</Text>
-                  )}
+                  <Text style={styles.txtTitleModal1}>{titleDetail}</Text>
                 </View>
                 <View
                   style={{
@@ -99,32 +80,30 @@ export const ModalDetail = ({
                   <View style={styles1.row1}>
                     <View style={styles1.date}>
                       <Text style={styles1.dateText}>
-                        {titleModalAdd === 'Detail income'
+                        {titleDetail === 'Income Detail'
                           ? itemIncome?.date
-                          : item?.date}
+                          : itemExpense?.date}
                       </Text>
                       <View style={{ width: 4 }} />
                       <IconCalendar />
                     </View>
                     <Text style={styles1.priceText}>
-                      {titleModalAdd === 'Detail income'
+                      {titleDetail === 'Income Detail'
                         ? itemIncome?.totalPrice
-                        : item?.totalPrice}
+                        : itemExpense?.totalPrice}
                       $
                     </Text>
                   </View>
                   <View style={{ height: 16 }} />
                   <View style={styles1.row2}>
                     <Text style={styles1.title}>
-                      {titleModalAdd === 'Detail income'
-                        ? 'Tree:'
-                        : 'Cost type:'}
+                      {titleDetail === 'Income Detail' ? 'Tree:' : 'Cost type:'}
                     </Text>
                     <View style={{ width: 8 }} />
                     <Text style={styles1.titleText}>
-                      {titleModalAdd === 'Detail income'
+                      {titleDetail === 'Income Detail'
                         ? itemIncome?.tree
-                        : item?.costType}
+                        : itemExpense?.costType}
                     </Text>
                   </View>
                   <View style={{ height: 16 }} />
@@ -132,13 +111,9 @@ export const ModalDetail = ({
                     <Text style={styles1.title}>{'Quantity:'}</Text>
                     <View style={{ width: 8 }} />
                     <Text style={styles1.titleText}>
-                      {titleModalAdd === 'Detail income'
-                        ? itemIncome?.quantityInKilograms
-                        : item?.quantity}
-                    </Text>
-                    <View style={{ width: 8 }} />
-                    <Text style={styles1.titleText}>
-                      {titleModalAdd === 'Detail income' ? '' : item?.unit}
+                      {titleDetail === 'Income Detail'
+                        ? `${itemIncome?.quantityInKilograms} kg`
+                        : `${itemExpense?.quantity} ${itemExpense?.unit}`}
                     </Text>
                   </View>
                   <View style={{ height: 8 }} />
@@ -155,9 +130,7 @@ export const ModalDetail = ({
                     isRight={true}
                     isDelete={true}
                     title="DELETE"
-                    // nếu là income thì truyền vào itemIncome?.key
-                    // nếu là expense thì truyền vào item?.key
-                    onPress={() => deleteItem(key || '')}
+                    onPress={deleteItem}
                   />
                   <View style={{ width: 16 }} />
                   <ButtonEdit

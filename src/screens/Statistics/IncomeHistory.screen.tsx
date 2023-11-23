@@ -14,7 +14,6 @@ import {
 import { FilterComponent } from '../../components/Statistics/Filter.component';
 import IconSwitch from '../../assets/images/IconSwitch.svg';
 import { HistoryElemment } from '../../components/Statistics/History.component';
-import { HandleDeleteAndEdit } from './HandleDeleteAndEdit';
 import { ModalDetail } from '../../components/Modal/ModalDetai';
 
 const IncomeHistory = () => {
@@ -25,41 +24,31 @@ const IncomeHistory = () => {
     setSelectedDateEnd,
     handlePickDate,
     handleReload,
-    dataIncome,
+    dataExpense,
     status,
     isModalPickDate,
     setIsModalPickDate,
     setSelectedTreeOrCostType,
     selectedTreeOrCostType,
     isModalPickFilter,
-    hanlePickItem,
     titlePickFilter,
     handleModalPickFilter,
-  } = UseLogic();
-  const {
     isModaAdd,
     titleModalAdd,
     inputs,
-    handleHideModalAdd,
     handleInputChange,
     isDisabled,
-    handleModalAddIncome,
     unitsIncome,
     trees,
     costTypes,
     unitsExpense,
-    // handleModalPickHide,
     handleModalPickTree,
     handleModalPickUnitIncome,
     handleModalPickCostType,
     handleModalPickUnitExpense,
     isModalPick,
-    setIsModalPick,
     titlePick,
-    setTitlePick,
     valuePick,
-    setValuePick,
-    // hanleHideModalPick,
     selectedDateIncome,
     setSelectedDateIncome,
     selectedDateExpense,
@@ -72,16 +61,28 @@ const IncomeHistory = () => {
     isModalLoading,
     //Delete
     isModalDetail,
-    handleModalDetail,
     handlePressDetail,
+    handleDeleteExpense,
+    dataIncome,
+    handleModalAddItem,
+    handleEditItem,
     itemIncome,
-    handleDeleteIncome,
+    handleModalEditExpense,
     handlePickItem,
-  } = HandleAdd();
+    itemExpense,
+    titleDetail,
+    handleModalEditIncome,
+    handleDeleteIncome,
+  } = UseLogic();
   return (
     <>
       <SafeAreaView style={{ flex: 1 }}>
-        <HeaderTitle title="Income history" onPress={handleModalAddIncome} />
+        <HeaderTitle
+          title="Income history"
+          onPress={() => {
+            handleModalAddItem('Add income');
+          }}
+        />
         {/* Filter */}
         <View style={{ height: 16 }} />
         <View style={stylesFilter.root}>
@@ -102,11 +103,10 @@ const IncomeHistory = () => {
         <View style={{ height: 8 }} />
         <View style={stylesFilter.root}>
           <FilterComponent
-            onPress={() => {
-              handleModalPickFilter('', 'Pick tree');
-            }}
+            onPress={handleModalPickTree}
             titleDate={selectedTreeOrCostType}
             isCalendar={false}
+            isIncome={true}
           />
           <View style={{ width: 8 }} />
           <TouchableOpacity
@@ -124,10 +124,11 @@ const IncomeHistory = () => {
             alignSelf: 'center',
           }}>
           <HistoryElemment
-            data={dataIncome}
-            title="Income"
+            dataExpense={dataExpense}
+            dataIncome={dataIncome}
+            title="Income history"
             isIncome={true}
-            handlePress={handleModalDetail}
+            handlePress={() => {}}
             handlePressDetail={handlePressDetail}
           />
           <View style={{ height: 16 }} />
@@ -152,7 +153,7 @@ const IncomeHistory = () => {
       {/* Modal add */}
       <ModalAdd
         isModaAdd={isModaAdd}
-        handleHideModalAdd={handleHideModalAdd}
+        handleModalAddItem={handleModalAddItem}
         titleModalAdd={titleModalAdd}
         handlePickDate={handlePickDate}
         selectedDateIncome={selectedDateIncome}
@@ -165,44 +166,30 @@ const IncomeHistory = () => {
         handleAdd={handleAdd}
         inputs={inputs}
         isDisabled={isDisabled}
+        handleEditItem={handleEditItem}
       />
       {/* End modal add */}
       {/* Modal detail */}
       <ModalDetail
         isModaDetail={isModalDetail}
-        handleModalDetail={handleModalDetail}
-        titleModalAdd={'Detail income'}
+        handlePressDetail={handlePressDetail}
+        titleDetail={'Income Detail'}
         itemIncome={itemIncome}
+        itemExpense={itemExpense}
         deleteItem={handleDeleteIncome}
-        editItem={() => {}}
+        editItem={handleModalEditIncome}
       />
       {/* End modal detail */}
       {/* Modal pick */}
       <ModalPick
-        isModalPick={isModalPickFilter}
-        setIsModalPick={setIsModalPick}
-        titlePick={titlePickFilter}
-        setTitlePick={setTitlePick}
-        valuePick={selectedTreeOrCostType}
-        setValuePick={setSelectedTreeOrCostType}
-        trees={trees}
-        unitsIncome={unitsIncome}
-        costTypes={costTypes}
-        unitsExpense={unitsExpense}
-        handleModalPickHide={handleModalPickFilter}
-      />
-      <ModalPick
         isModalPick={isModalPick}
-        setIsModalPick={setIsModalPick}
         titlePick={titlePick}
-        setTitlePick={setTitlePick}
         valuePick={valuePick}
-        setValuePick={setValuePick}
         trees={trees}
         unitsIncome={unitsIncome}
         costTypes={costTypes}
         unitsExpense={unitsExpense}
-        handleModalPickHide={handlePickItem}
+        handlePickItem={handlePickItem}
       />
       {/* End modal pick */}
       {/* Pop up noti and loading */}

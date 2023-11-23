@@ -71,21 +71,17 @@ const Statistics = ({ navigation }: any) => {
     unitsIncome,
     unitsExpense,
     costTypes,
-  } = UseLogic();
-  const {
-    //Delete
-    isModalDetail,
-    handleModalDetail,
     handlePressDetail,
-    item,
-    title,
+    isModalDetail,
+    titleDetail,
     itemIncome,
-    handleDeleteIncome,
+    itemExpense,
     handleDeleteExpense,
-    //Edit
+    handleDeleteIncome,
     handleModalEditExpense,
     handleModalEditIncome,
-  } = HandleAdd();
+    handleEditItem,
+  } = UseLogic();
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }}>
@@ -140,14 +136,16 @@ const Statistics = ({ navigation }: any) => {
           {/* History */}
           <HistoryComponent
             handlePress={() => navigation.navigate('IncomeHistory')}
-            data={dataIncome}
+            dataIncome={dataIncome}
+            dataExpense={dataExpense}
             title="Income history"
             isIncome={true}
             handlePressDetail={handlePressDetail}
           />
           <HistoryComponent
             handlePress={() => navigation.navigate('ExpenseHistory')}
-            data={dataExpense}
+            dataExpense={dataExpense}
+            dataIncome={dataIncome}
             title="Expense history"
             isIncome={false}
             handlePressDetail={handlePressDetail}
@@ -183,6 +181,7 @@ const Statistics = ({ navigation }: any) => {
           handleAdd={handleAdd}
           inputs={inputs}
           isDisabled={isDisabled}
+          handleEditItem={handleEditItem}
         />
 
         <ModalPick
@@ -198,21 +197,19 @@ const Statistics = ({ navigation }: any) => {
 
         <ModalDetail
           isModaDetail={isModalDetail}
-          handleModalDetail={handleModalDetail}
-          titleModalAdd={
-            title === 'Expense history' ? 'Detail expense' : 'Detail income'
-          }
+          handlePressDetail={handlePressDetail}
+          titleDetail={titleDetail}
           itemIncome={itemIncome}
-          item={item}
+          itemExpense={itemExpense}
           deleteItem={
-            title === 'Expense history'
-              ? handleDeleteExpense
-              : handleDeleteIncome
+            titleDetail === 'Income Detail'
+              ? handleDeleteIncome
+              : handleDeleteExpense
           }
           editItem={
-            title === 'Expense history'
-              ? handleModalEditExpense
-              : handleModalEditIncome
+            titleDetail === 'Income Detail'
+              ? handleModalEditIncome
+              : handleModalEditExpense
           }
         />
 

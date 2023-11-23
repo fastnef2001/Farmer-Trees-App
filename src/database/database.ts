@@ -4,7 +4,12 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 const { format } = require('date-fns');
-import { TreeInterface, UnitInterface } from '../Interface/Interface';
+import {
+  TreeInterface,
+  UnitInterface,
+  DataIncomeInterface,
+  DataExpenseInterface,
+} from '../Interface/Interface';
 
 interface InputValues {
   value: string;
@@ -98,9 +103,9 @@ export function Database() {
   const [unitsExpense, setUnitsExpense] = useState<UnitInterface[]>([]);
   const [costTypes, setCostTypes] = useState<UnitInterface[]>([]);
   const [totalIncome, setTotalIncome] = useState(0);
-  const [dataIncome, setDataIncome] = useState([]);
+  const [dataIncome, setDataIncome] = useState<DataIncomeInterface[]>([]);
   const [totalExpense, setTotalExpense] = useState(0);
-  const [dataExpense, setDataExpense] = useState([]);
+  const [dataExpense, setDataExpense] = useState<DataExpenseInterface[]>([]);
   const [userInfors, setUserInfors] = useState<UserInfor[]>([]);
   // CRU ACCOUNT
   const createAccount = async (

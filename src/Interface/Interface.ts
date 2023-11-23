@@ -17,7 +17,7 @@ export interface InputInterface {
 }
 
 export interface DataExpenseInterface {
-  key: string;
+  key(key: any): void;
   costType: string;
   date: string;
   quantity: any;
@@ -26,7 +26,7 @@ export interface DataExpenseInterface {
 }
 
 export interface DataIncomeInterface {
-  key: string;
+  key(key: any): void;
   tree: string;
   date: string;
   quantityInKilograms: any;

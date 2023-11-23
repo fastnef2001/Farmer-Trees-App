@@ -34,6 +34,7 @@ export type ModalAddProps = {
     error: string;
   }[];
   isDisabled: boolean;
+  handleEditItem: (title: string) => void;
 };
 
 export const ModalAdd = ({
@@ -51,6 +52,7 @@ export const ModalAdd = ({
   handleAdd,
   inputs,
   isDisabled,
+  handleEditItem,
 }: ModalAddProps) => {
   return (
     <>
@@ -204,7 +206,7 @@ export const ModalAdd = ({
                     onPress={
                       titleModalAdd === 'Add income'
                         ? () => handleAdd('income')
-                        : () => handleAdd('incomeEdit')
+                        : () => handleEditItem('income')
                     }>
                     <View style={styles.txtBtnSignup}>
                       <IconSave />
@@ -227,7 +229,7 @@ export const ModalAdd = ({
                     onPress={
                       titleModalAdd === 'Add expense'
                         ? () => handleAdd('expense')
-                        : () => handleAdd('expenseEdit')
+                        : () => handleEditItem('expense')
                     }>
                     <View style={styles.txtBtnSignup}>
                       <IconSave />

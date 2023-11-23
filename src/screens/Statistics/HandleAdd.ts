@@ -377,11 +377,11 @@ export function HandleAdd() {
     }
   };
 
-  // Delete
-  useEffect(() => {
-    setData(dataExpense);
-    setDataIncome(dataIncome);
-  }, [dataExpense, dataIncome]);
+  // // Delete
+  // useEffect(() => {
+  //   setData(dataExpense);
+  //   setDataIncome(dataIncome);
+  // }, [dataExpense, dataIncome]);
 
   const handlePressDetail = (key: string, title: string) => {
     setTitle(title);
@@ -392,17 +392,17 @@ export function HandleAdd() {
     setIsModalDetail(false);
   };
 
-  const handleDeleteIncome = async () => {
+  const handleDeleteIncome = async (keyValue: any) => {
     handleModalDetail();
-    if (await deleteIncome(key)) {
+    if (await deleteIncome(keyValue)) {
       setTitleBody('You have successfully deleted the income.');
       setTitleHeader('Successfully');
     }
     handleModalSuccess();
   };
-  const handleDeleteExpense = async () => {
+  const handleDeleteExpense = async (keyValue: any) => {
     handleModalDetail();
-    if (await deleteExpense(key)) {
+    if (await deleteExpense(keyValue)) {
       setTitleBody('You have successfully deleted the expense.');
       setTitleHeader('Successfully');
       handleModalSuccess();
