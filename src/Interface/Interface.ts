@@ -33,3 +33,7 @@ export interface DataIncomeInterface {
   totalPrice: any;
   unit: string;
 }
+
+export interface InputValues {
+  value: string;
+}

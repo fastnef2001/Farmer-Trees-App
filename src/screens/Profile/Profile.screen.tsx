@@ -5,7 +5,6 @@ import {
   Text,
   StatusBar,
   TouchableOpacity,
-  StyleSheet,
   Image,
   ScrollView,
 } from 'react-native';
@@ -28,18 +27,10 @@ import IconDeleteRed from '../../assets/images/IconDeleteRed.svg';
 import IconSave from '../../assets/images/IconSave.svg';
 import IconPremium40 from '../../assets/images/IconPremium40.svg';
 import Input from '../../components/Input/Input.component';
-import { COLORS } from '../../theme/color';
 import {
   PopUpSuccess,
   PopUpLoading,
 } from '../../components/Modal/GeneralPopUps.component';
-
-interface UserData {
-  fullName: string;
-  farmName: string;
-  phoneNumber: string;
-  // Add other properties as needed
-}
 
 const Profile = ({ navigation }: any) => {
   const {
@@ -50,7 +41,6 @@ const Profile = ({ navigation }: any) => {
     farmName,
     phoneNumber,
     isModalEditProfile,
-    setIsModalEditProfile,
     handleModelEditProfile,
     handleDeleteImage,
     handleModalImagePicker,
@@ -63,7 +53,7 @@ const Profile = ({ navigation }: any) => {
     isModalSuccess,
     titleHeader,
     titleBody,
-  } = UseLogic();
+  } = UseLogic(navigation);
   console.log('profile', profile);
   console.log('avatar', avatar);
 
@@ -162,9 +152,7 @@ const Profile = ({ navigation }: any) => {
             <IconDetailBold />
           </TouchableOpacity>
           <View style={{ height: 16 }} />
-          <TouchableOpacity
-            style={styleElement2.item}
-            onPress={() => handleLogOut(navigation)}>
+          <TouchableOpacity style={styleElement2.item} onPress={handleLogOut}>
             <IconLogOut40 />
             <View style={{ width: 16 }} />
             <View style={styleElement2.content}>

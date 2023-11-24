@@ -4,11 +4,11 @@ import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import firestore from '@react-native-firebase/firestore';
 import { Database } from '../../database/database';
 
 export function UseLogic() {
-  const { createAccount, createAccountByGoogle } = Database();
+  const { createAccount, createAccountByGoogle, userInfors, getInforUser } =
+    Database();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalVisibleLoading, setIsModalVisibleLoading] = useState(false);
   const [errorText, setErrorText] = useState('');
@@ -20,6 +20,8 @@ export function UseLogic() {
     { label: 'Confirm Password', value: '', error: '' },
   ]);
 
+  getInforUser();
+
   const handleInputChange = (index: any, value: any) => {
     const newInputs = [...inputs];
     newInputs[index].value = value;
@@ -29,15 +31,16 @@ export function UseLogic() {
 
   const handleRegister = async () => {
     setErrorText('');
+    const fullNameInput = inputs.find(input => input.label === 'Full name');
+    const emailInput = inputs.find(input => input.label === 'Email');
+    const phoneNumberInput = inputs.find(
+      input => input.label === 'Phone number',
+    );
     const passwordInput = inputs.find(input => input.label === 'Password');
     const confirmPasswordInput = inputs.find(
       input => input.label === 'Confirm Password',
     );
-    const emailInput = inputs.find(input => input.label === 'Email');
-    const fullNameInput = inputs.find(input => input.label === 'Full name');
-    const phoneNumberInput = inputs.find(
-      input => input.label === 'Phone number',
-    );
+
     // Check if any input is empty
     if (
       !emailInput?.value ||
@@ -91,11 +94,10 @@ export function UseLogic() {
       return;
     }
     //check phone number is already in use
-    const isPhoneNumberExist = await firestore()
-      .collection('users')
-      .where('phoneNumber', '==', phoneNumberInput?.value)
-      .get();
-    if (isPhoneNumberExist.size > 0) {
+    const isPhoneNumberExist = userInfors.find(
+      userInfor => userInfor.phoneNumber === phoneNumberInput?.value,
+    );
+    if (isPhoneNumberExist) {
       setInputs(
         inputs.map(input => ({
           ...input,
@@ -140,60 +142,52 @@ export function UseLogic() {
     }
 
     // register
-    handleModalLoading();
-    try {
-      createAccount(emailInput, passwordInput, fullNameInput, phoneNumberInput);
-      handleModal();
-      handleModalLoading();
-    } catch (error: any) {
+    setIsModalVisibleLoading(true);
+    if (
+      await createAccount(
+        emailInput,
+        passwordInput,
+        fullNameInput,
+        phoneNumberInput,
+      )
+    ) {
+      setInputs(
+        inputs.map(input => ({
+          ...input,
+          value: '',
+        })),
+      );
+      setIsModalVisible(true);
+      setIsModalVisibleLoading(false);
+    } else {
       setErrorText('Sign up failed. Please check again.');
     }
   };
 
   const handleRegisterByGoogle = async () => {
-    await GoogleSignin.signOut();
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      const googleCredential = auth.GoogleAuthProvider.credential(
-        userInfo.idToken,
-      );
-
-      const isUserExist = await auth().fetchSignInMethodsForEmail(
-        userInfo.user.email,
-      );
-
-      if (isUserExist.length === 0) {
-        handleModalLoading();
-        createAccountByGoogle(googleCredential, userInfo);
-        handleModalLoading();
-        handleModal();
-        return;
-      }
-      // If exist, then set error
-      else {
-        setErrorText('Gmail is already registered.');
-        await GoogleSignin.revokeAccess();
-        await GoogleSignin.signOut();
-      }
-    } catch (error: any) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log('user cancelled the login flow');
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        console.log('operation (e.g. sign in) is in progress already');
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        console.log('play services not available or outdated');
-      } else {
-        console.log('some other error happened');
-      }
+    await GoogleSignin.hasPlayServices();
+    const userInfo = await GoogleSignin.signIn();
+    const googleCredential = auth.GoogleAuthProvider.credential(
+      userInfo.idToken,
+    );
+    const isUserExist = await auth().fetchSignInMethodsForEmail(
+      userInfo.user.email,
+    );
+    if (isUserExist.length > 0) {
+      setErrorText('Gmail is already registered.');
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+      return;
+    }
+    setIsModalVisibleLoading(true);
+    if (await createAccountByGoogle(googleCredential, userInfo)) {
+      setIsModalVisibleLoading(false);
+      setIsModalVisible(true);
+      return;
+    } else {
+      setErrorText('Sign up failed. Please check again.');
     }
   };
-
-  const handleModalLoading = () => {
-    setIsModalVisibleLoading(prev => !prev);
-  };
-
-  const handleModal = () => setIsModalVisible(prev => !prev);
 
   return {
     inputs,
@@ -201,7 +195,7 @@ export function UseLogic() {
     handleRegister,
     handleRegisterByGoogle,
     isModalVisible,
-    handleModal,
+    setIsModalVisible,
     isModalVisibleLoading,
     errorText,
   };

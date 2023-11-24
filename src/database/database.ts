@@ -9,11 +9,8 @@ import {
   UnitInterface,
   DataIncomeInterface,
   DataExpenseInterface,
+  InputValues,
 } from '../Interface/Interface';
-
-interface InputValues {
-  value: string;
-}
 
 function convertTotimestamp(date: string, isStart?: boolean) {
   let timeNow = format(new Date(), 'hh:mm:ss a');
@@ -107,6 +104,17 @@ export function Database() {
   const [totalExpense, setTotalExpense] = useState(0);
   const [dataExpense, setDataExpense] = useState<DataExpenseInterface[]>([]);
   const [userInfors, setUserInfors] = useState<UserInfor[]>([]);
+  //LOGOUT
+  const signOut = async () => {
+    await GoogleSignin.revokeAccess();
+    try {
+      await auth().signOut();
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
   // CRU ACCOUNT
   const createAccount = async (
     emailInput: InputValues,
@@ -114,40 +122,49 @@ export function Database() {
     fullNameInput: InputValues,
     phoneNumberInput: InputValues,
   ) => {
-    const response = await auth().createUserWithEmailAndPassword(
-      emailInput.value,
-      passwordInput.value,
-    );
-    const idUser = response.user.uid;
-    await firestore().collection('users').doc(idUser).set({
-      fullName: fullNameInput.value,
-      phoneNumber: phoneNumberInput.value,
-      email: emailInput.value,
-      isPayment: false,
-    });
+    try {
+      const response = await auth().createUserWithEmailAndPassword(
+        emailInput.value,
+        passwordInput.value,
+      );
+      const idUser = response.user.uid;
+      await firestore().collection('users').doc(idUser).set({
+        fullName: fullNameInput.value,
+        phoneNumber: phoneNumberInput.value,
+        email: emailInput.value,
+        isPayment: false,
+      });
+    } catch (error) {
+      return false;
+    }
   };
 
   const createAccountByGoogle = async (
     googleCredential: any,
     userInfo: any,
   ) => {
-    await auth().signInWithCredential(googleCredential);
-    const fullNameGoogle = userInfo.user.name;
-    const emailGoogle = userInfo.user.email;
-    console.log('emailGoogle', emailGoogle);
-    const user = await firestore()
-      .collection('users')
-      .doc(auth().currentUser?.uid)
-      .get();
-    if (!user.exists) {
-      await firestore().collection('users').doc(auth().currentUser?.uid).set({
-        fullName: fullNameGoogle,
-        email: emailGoogle,
-        isPayment: false,
-      });
+    try {
+      await auth().signInWithCredential(googleCredential);
+      const fullNameGoogle = userInfo.user.name;
+      const emailGoogle = userInfo.user.email;
+      console.log('emailGoogle', emailGoogle);
+      const user = await firestore()
+        .collection('users')
+        .doc(auth().currentUser?.uid)
+        .get();
+      if (!user.exists) {
+        await firestore().collection('users').doc(auth().currentUser?.uid).set({
+          fullName: fullNameGoogle,
+          email: emailGoogle,
+          isPayment: false,
+        });
+      }
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+      return true;
+    } catch (error) {
+      return false;
     }
-    await GoogleSignin.revokeAccess();
-    await GoogleSignin.signOut();
   };
 
   const createFarmName = async (farmName: string) => {
@@ -590,21 +607,6 @@ export function Database() {
       return false;
     }
   };
-  //GET UNITTREE
-  // React.useEffect(() => {
-  //   const fetchData = async () => {
-  //     const res = await firestore()
-  //       .collection('unitsTree')
-  //       .orderBy('id', 'asc')
-  //       .get();
-  //     const data: any = [];
-  //     res.forEach((doc: { data: () => any; id: any }) => {
-  //       data.push({ ...doc.data(), id: doc.id });
-  //     });
-  //     setUnitsIncome(data);
-  //   };
-  //   fetchData();
-  // }, []);
   const getUnitIncome = useCallback(async () => {
     try {
       const subscriber = firestore()
@@ -706,5 +708,6 @@ export function Database() {
     getCostType,
     unitsExpense,
     costTypes,
+    signOut,
   };
 }

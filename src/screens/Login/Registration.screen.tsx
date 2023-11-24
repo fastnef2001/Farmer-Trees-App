@@ -28,7 +28,7 @@ const RegistrationScreen = ({ navigation }: any) => {
     handleRegister,
     handleRegisterByGoogle,
     isModalVisible,
-    handleModal,
+    setIsModalVisible,
     isModalVisibleLoading,
     errorText,
   } = UseLogic();
@@ -122,7 +122,9 @@ const RegistrationScreen = ({ navigation }: any) => {
                     isRight={false}
                     isDelete={false}
                     title="CANCEL"
-                    onPress={handleModal}
+                    onPress={() => {
+                      setIsModalVisible(false);
+                    }}
                   />
                   <View style={{ width: 16 }} />
                   <ButtonLogin

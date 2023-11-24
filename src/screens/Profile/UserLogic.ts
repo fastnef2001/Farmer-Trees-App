@@ -1,14 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useEffect } from 'react';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import { MediaType, launchImageLibrary } from 'react-native-image-picker';
-import storage from '@react-native-firebase/storage';
 import { Database } from '../../database/database';
 
-export function UseLogic() {
-  const { getInforUser, userInfors, editProfile } = Database();
+export function UseLogic(navigation: any) {
+  const { getInforUser, userInfors, editProfile, signOut } = Database();
   const [isModalEditProfile, setIsModalEditProfile] = useState(false);
   const [selectImage, setSelectImage] = useState('');
   const [profile, setProfile] = useState([
@@ -40,15 +36,9 @@ export function UseLogic() {
     phoneNumber = userInfor.phoneNumber;
   });
 
-  const handleLogOut = async (navigation: {
-    navigate: (arg0: string) => void;
-  }) => {
-    navigation.navigate('LoginScreen');
-    await GoogleSignin.revokeAccess();
-    try {
-      await auth().signOut();
-    } catch (error) {
-      console.log(error);
+  const handleLogOut = async () => {
+    if (await signOut()) {
+      navigation.navigate('LoginScreen');
     }
   };
 
@@ -61,36 +51,6 @@ export function UseLogic() {
       { label: 'Phone number', value: phoneNumber, error: '' },
     ]);
   };
-
-  // const getInformationUser = async () => {
-  //   const user = auth().currentUser;
-  //   useEffect(() => {
-  //     if (user) {
-  //       const subscriber = firestore()
-  //         .collection('users')
-  //         .doc(user?.uid)
-  //         .onSnapshot(documentSnapshot => {
-  //           if (documentSnapshot.exists) {
-  //             setFarmName(documentSnapshot.data()?.farmName);
-  //             setFullName(documentSnapshot.data()?.fullName);
-  //             setPhoneNumber(documentSnapshot.data()?.phoneNumber);
-  //             setEmail(documentSnapshot.data()?.email);
-  //             setAvatar(documentSnapshot.data()?.imageUrl);
-  //             setSelectImage(documentSnapshot.data()?.imageUrl);
-  //           } else {
-  //             console.log('Document does not exist');
-  //             setFarmName('');
-  //             setFullName('');
-  //             setPhoneNumber('');
-  //             setEmail('');
-  //             setAvatar('');
-  //           }
-  //         });
-
-  //       return () => subscriber();
-  //     }
-  //   }, [user]);
-  // };
 
   const handleModalImagePicker = () => {
     const option = {
