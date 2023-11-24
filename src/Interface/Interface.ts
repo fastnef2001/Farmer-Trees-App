@@ -5,7 +5,8 @@ export interface TreeInterface {
   imageUrl: string;
 }
 export interface UnitInterface {
-  [x: string]: string;
+  key(key: any): void;
+  id: string;
   name: string;
 }
 
@@ -16,7 +17,7 @@ export interface InputInterface {
 }
 
 export interface DataExpenseInterface {
-  key: string;
+  key(key: any): void;
   costType: string;
   date: string;
   quantity: any;
@@ -25,7 +26,7 @@ export interface DataExpenseInterface {
 }
 
 export interface DataIncomeInterface {
-  key: string;
+  key(key: any): void;
   tree: string;
   date: string;
   quantityInKilograms: any;

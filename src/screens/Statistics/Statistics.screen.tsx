@@ -15,7 +15,6 @@ import { HeaderComponent } from '../../components/Header/Header.component';
 import { FilterComponent } from '../../components/Statistics/Filter.component';
 import ButtonAddComponent from '../../components/Statistics/ButtonAdd.component';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { COLORS } from '../../theme/color';
 import IconSwitch from '../../assets/images/IconSwitch.svg';
 import {
   PopUpSuccess,
@@ -23,7 +22,6 @@ import {
 } from '../../components/Modal/GeneralPopUps.component';
 import { UseLogic } from './UseLogic';
 import { HandleAdd } from './HandleAdd';
-import { HandleDeleteAndEdit } from './HandleDeleteAndEdit';
 import { ModalAdd } from '../../components/Modal/ModalAdd';
 import { ModalPickDate } from '../../components/Modal/ModalPickDate';
 import { ModalPick } from '../../components/Modal/ModalPick';
@@ -45,73 +43,45 @@ const Statistics = ({ navigation }: any) => {
     status,
     isModalPickDate,
     setIsModalPickDate,
-  } = UseLogic();
-  const {
+    handleModalAddItem,
     isModaAdd,
     titleModalAdd,
     inputs,
-    handleHideModalAdd,
-    handleInputChange,
-    isDisabled,
-    handleModalAddIncome,
-    handleModalAddExpense,
-    unitsIncome,
-    trees,
-    costTypes,
-    unitsExpense,
-    handleModalPickHide,
-    handleModalPickTree,
-    handleModalPickUnitIncome,
-    handleModalPickCostType,
-    handleModalPickUnitExpense,
-    isModalPick,
-    setIsModalPick,
-    titlePick,
-    setTitlePick,
-    valuePick,
-    setValuePick,
-    hanleHideModalPick,
+    selectedDateExpense,
     selectedDateIncome,
     setSelectedDateIncome,
-    selectedDateExpense,
     setSelectedDateExpense,
+    handleModalPickTree,
+    handleModalPickCostType,
+    handleModalPickUnitExpense,
+    handleModalPickUnitIncome,
+    titlePick,
+    isModalPick,
+    valuePick,
+    handlePickItem,
+    handleInputChange,
+    isDisabled,
     handleAdd,
     isModalSuccess,
-    setIsModalSuccess,
-    titleHeader,
     titleBody,
+    titleHeader,
     isModalLoading,
-    //Delete
-    isModalDetail,
-    handleModalDetail,
+    setIsModalSuccess,
+    trees,
+    unitsIncome,
+    unitsExpense,
+    costTypes,
     handlePressDetail,
-    item,
-    title,
+    isModalDetail,
+    titleDetail,
     itemIncome,
-    handleDeleteIncome,
+    itemExpense,
     handleDeleteExpense,
-    //Edit
+    handleDeleteIncome,
     handleModalEditExpense,
     handleModalEditIncome,
     handleEditItem,
-  } = HandleAdd();
-  // const {
-  //   isModalDetail,
-  //   handleModalDetail,
-  //   handlePressDetail,
-  //   item,
-  //   title,
-  //   itemIncome,
-  //   handleDeleteIncome,
-  //   handleDeleteExpense,
-  //   isModalSuccess1,
-  //   setIsModalSuccess1,
-  //   titleBody1,
-  //   titleHeader1,
-  //   isModalLoading1,
-  //   handleModalEditItem,
-  //   isModalEditItem,
-  // } = HandleDeleteAndEdit();
+  } = UseLogic();
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground style={{ flex: 1, width: '100%', height: '100%' }}>
@@ -139,48 +109,49 @@ const Statistics = ({ navigation }: any) => {
               <IconSwitch />
             </TouchableOpacity>
           </View>
-          {/* End filter */}
           {/* GeneralStatistics */}
           <GeneralStatistics
             totalIncome={totalIncome}
             totalExpense={totalExpense}
             totalProfit={totalProfit}
           />
-          {/* End GeneralStatistics */}
-          {/* Button Add */}
+          {/* Button add */}
           <View style={stylesFilter.root}>
             <ButtonAddComponent
-              onPress={handleModalAddIncome}
+              onPress={() => {
+                handleModalAddItem('Add income');
+              }}
               title="Income"
               isRight={false}
             />
             <View style={{ width: 8 }} />
             <ButtonAddComponent
-              onPress={handleModalAddExpense}
+              onPress={() => {
+                handleModalAddItem('Add expense');
+              }}
               title="Expense"
               isRight={true}
             />
           </View>
-          {/* End button add */}
           {/* History */}
           <HistoryComponent
             handlePress={() => navigation.navigate('IncomeHistory')}
-            data={dataIncome}
+            dataIncome={dataIncome}
+            dataExpense={dataExpense}
             title="Income history"
             isIncome={true}
             handlePressDetail={handlePressDetail}
           />
           <HistoryComponent
             handlePress={() => navigation.navigate('ExpenseHistory')}
-            data={dataExpense}
+            dataExpense={dataExpense}
+            dataIncome={dataIncome}
             title="Expense history"
             isIncome={false}
             handlePressDetail={handlePressDetail}
           />
-          {/* End history */}
         </ScrollView>
 
-        {/* Modal pick date */}
         <ModalPickDate
           isModalPickDate={isModalPickDate}
           setIsModalPickDate={setIsModalPickDate}
@@ -194,12 +165,10 @@ const Statistics = ({ navigation }: any) => {
           selectedDateIncome={selectedDateIncome}
           selectedDateExpense={selectedDateExpense}
         />
-        {/* End modal pick date */}
 
-        {/* Modal add */}
         <ModalAdd
           isModaAdd={isModaAdd}
-          handleHideModalAdd={handleHideModalAdd}
+          handleModalAddItem={handleModalAddItem}
           titleModalAdd={titleModalAdd}
           handlePickDate={handlePickDate}
           selectedDateIncome={selectedDateIncome}
@@ -212,56 +181,48 @@ const Statistics = ({ navigation }: any) => {
           handleAdd={handleAdd}
           inputs={inputs}
           isDisabled={isDisabled}
+          handleEditItem={handleEditItem}
         />
-        {/* End modal add */}
 
-        {/* Modal pick */}
         <ModalPick
           isModalPick={isModalPick}
-          setIsModalPick={setIsModalPick}
           titlePick={titlePick}
-          setTitlePick={setTitlePick}
           valuePick={valuePick}
-          setValuePick={setValuePick}
           trees={trees}
           unitsIncome={unitsIncome}
           costTypes={costTypes}
           unitsExpense={unitsExpense}
-          handleModalPickHide={handleModalPickHide}
-          hanlePickItem={hanleHideModalPick}
+          handlePickItem={handlePickItem}
         />
-        {/* End modal pick */}
+
         <ModalDetail
           isModaDetail={isModalDetail}
-          handleModalDetail={handleModalDetail}
-          titleModalAdd={
-            title === 'Expense history' ? 'Detail expense' : 'Detail income'
-          }
+          handlePressDetail={handlePressDetail}
+          titleDetail={titleDetail}
           itemIncome={itemIncome}
-          item={item}
+          itemExpense={itemExpense}
           deleteItem={
-            title === 'Expense history'
-              ? handleDeleteExpense
-              : handleDeleteIncome
+            titleDetail === 'Income Detail'
+              ? handleDeleteIncome
+              : handleDeleteExpense
           }
           editItem={
-            title === 'Expense history'
-              ? handleModalEditExpense
-              : handleModalEditIncome
+            titleDetail === 'Income Detail'
+              ? handleModalEditIncome
+              : handleModalEditExpense
           }
         />
 
-        {/* Pop up noti and loading */}
         <PopUpSuccess
           isModalSuccess={isModalSuccess}
           titleHeader={titleHeader}
           titleBody={titleBody}
-          handleModalSuccess={() => setIsModalSuccess(!isModalSuccess)}
+          handleModalSuccess={() => setIsModalSuccess(false)}
           isFooter={false}
           handleDeleteTree={() => {}}
         />
+
         <PopUpLoading isModalSuccess={isModalLoading} />
-        {/* End up noti and loading */}
       </ImageBackground>
     </SafeAreaView>
   );
@@ -286,20 +247,6 @@ const stylesButtonReload = StyleSheet.create({
     backgroundColor: '#ffffff',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-});
-
-const stylesPickDate = StyleSheet.create({
-  root: {
-    width: '100%',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    flexDirection: 'row',
-  },
-  textDay: {
-    color: COLORS.text1,
-    fontFamily: 'Nunito-SemiBold',
-    fontSize: 16,
   },
 });
 

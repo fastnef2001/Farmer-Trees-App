@@ -13,11 +13,17 @@ import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
 export function UseLogic({ navigation }: any) {
+  const [isModalVisibleLoading, setIsModalVisibleLoading] = useState(false);
   const [errorText, setErrorText] = useState('');
   const [inputs, setInputs] = useState([
     { label: 'Email', value: '', error: '' },
     { label: 'Password', value: '', error: '' },
   ]);
+
+  GoogleSignin.configure({
+    webClientId:
+      '159898876320-kqda9k08g543vj86cqqq9ck78ismjiog.apps.googleusercontent.com',
+  });
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -38,11 +44,6 @@ export function UseLogic({ navigation }: any) {
     newInputs[index].error = '';
     setInputs(newInputs);
   };
-
-  GoogleSignin.configure({
-    webClientId:
-      '159898876320-kqda9k08g543vj86cqqq9ck78ismjiog.apps.googleusercontent.com',
-  });
 
   const signIn = async () => {
     setErrorText('');
@@ -160,7 +161,6 @@ export function UseLogic({ navigation }: any) {
     }, 2000);
   };
 
-  const [isModalVisibleLoading, setIsModalVisibleLoading] = useState(false);
   const handleModalLoading = () => {
     setIsModalVisibleLoading(prev => !prev);
   };

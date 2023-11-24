@@ -17,7 +17,7 @@ import { COLORS } from '../../theme/color';
 
 export type ModalAddProps = {
   isModaAdd: boolean;
-  handleHideModalAdd: () => void;
+  handleModalAddItem: (title?: string) => void;
   titleModalAdd: string;
   handlePickDate: (type: string) => () => void;
   selectedDateIncome: string;
@@ -34,11 +34,12 @@ export type ModalAddProps = {
     error: string;
   }[];
   isDisabled: boolean;
+  handleEditItem: (title: string) => void;
 };
 
 export const ModalAdd = ({
   isModaAdd,
-  handleHideModalAdd,
+  handleModalAddItem,
   titleModalAdd,
   handlePickDate,
   selectedDateIncome,
@@ -51,6 +52,7 @@ export const ModalAdd = ({
   handleAdd,
   inputs,
   isDisabled,
+  handleEditItem,
 }: ModalAddProps) => {
   return (
     <>
@@ -60,23 +62,13 @@ export const ModalAdd = ({
           <ModalInsert.Container>
             <ModalInsert.Header>
               <View style={styles.headSessionModal}>
-                <TouchableOpacity onPress={handleHideModalAdd}>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleModalAddItem();
+                  }}>
                   <IconBack> </IconBack>
                 </TouchableOpacity>
                 <View style={styles.txtContainer}>
-                  {/* {titleModalAdd === 'Add income' ? (
-                    <Text style={styles.txtTitleModal1}>Add income</Text>
-                  ) : (
-                    <Text style={styles.txtTitleModal2}>Add expense</Text>
-                  )} */}
-                  {/* {titleModalAdd === 'Add income' ? (
-                    <Text style={styles.txtTitleModal1}>Add income</Text>
-                  ) : {titleModalAdd === 'Add expense' ? (
-                    <Text style={styles.txtTitleModal2}>Add expense</Text>
-                  ) : (
-                    <Text style={styles.txtTitleModal3}>Add income</Text>
-                  )}} */}
-
                   {titleModalAdd === 'Add income' ? (
                     <Text style={styles.txtTitleModal1}>Add income</Text>
                   ) : titleModalAdd === 'Add expense' ? (
@@ -214,7 +206,7 @@ export const ModalAdd = ({
                     onPress={
                       titleModalAdd === 'Add income'
                         ? () => handleAdd('income')
-                        : () => handleAdd('incomeEdit')
+                        : () => handleEditItem('income')
                     }>
                     <View style={styles.txtBtnSignup}>
                       <IconSave />
@@ -237,7 +229,7 @@ export const ModalAdd = ({
                     onPress={
                       titleModalAdd === 'Add expense'
                         ? () => handleAdd('expense')
-                        : () => handleAdd('expenseEdit')
+                        : () => handleEditItem('expense')
                     }>
                     <View style={styles.txtBtnSignup}>
                       <IconSave />

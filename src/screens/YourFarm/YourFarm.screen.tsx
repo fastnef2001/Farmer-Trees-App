@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable react-native/no-inline-styles */
-//Libary
 import React from 'react';
 import {
   Image,
@@ -22,6 +19,8 @@ import {
   PopUpSuccess,
   PopUpLoading,
 } from '../../components/Modal/GeneralPopUps.component';
+import { ModalPick } from '../../components/Modal/ModalPick';
+
 // Icon
 import IconBack from '../../assets/images/IconBack.svg';
 import IconSave from '../../assets/images/IconSave.svg';
@@ -35,53 +34,45 @@ import styles from '../Setupfarm/Addtree.style';
 import { stylesTitle, stylesScrollView, stylesResult } from './YourFarm.style';
 import { UseLogic } from './UseLogic';
 import { HandleAdd } from '../Statistics/HandleAdd';
-import { ModalPick } from '../../components/Modal/ModalPick';
 
 const YourFarm = ({ navigation }: any) => {
   const {
     isModalAddTree,
+    isModalLoading,
+    isModalEditTree,
+    isModalSuccess,
+    isModalCalculate,
+    isModalPick,
     handleModalAddTree,
     handleModalImagePicker,
+    handleModalDelete,
+    handleModalEditTree,
+    handleModalSuccess,
+    handleModalCalculate,
+    handleModalPickUnitExpense,
+    handleAddTree,
+    handleEditTree,
+    handleDeleteTree,
+    handleCalculate,
     handleDeleteImage,
     selectImage,
     inputs,
     handleInputChange,
-    handleAddTree,
-    isModalSuccess,
-    handleModalDelete,
-    handleDeleteTree,
-    trees,
     farmName,
-    isModalEditTree,
-    handleModalEditTree,
-    handleEditTree,
-    isModalLoading,
     key,
     titleHeader,
     titleBody,
     isFooter,
-    handleModalSuccess,
-    handleModalCalculate,
-    isModalCalculate,
-    hanleHideModalPick,
     valuePick,
-    isModalPick,
-    handleModalPickUnitExpense,
     titlePick,
     resultTotalQuantity,
-    handleCalculate,
     resultTotalPrice,
-    handleModalPickHide,
-  } = UseLogic();
-
-  const {
-    setIsModalPick,
-    setTitlePick,
-    setValuePick,
+    trees,
+    unitsExpense,
     unitsIncome,
     costTypes,
-    unitsExpense,
-  } = HandleAdd();
+  } = UseLogic();
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
       <HeaderComponent onPress={() => navigation.navigate('Profile')} />
@@ -226,15 +217,6 @@ const YourFarm = ({ navigation }: any) => {
         </View>
       </ModalInsert>
 
-      <PopUpSuccess
-        isModalSuccess={isModalSuccess}
-        titleHeader={titleHeader}
-        titleBody={titleBody}
-        handleDeleteTree={() => handleDeleteTree(key)}
-        isFooter={isFooter}
-        handleModalSuccess={handleModalSuccess}
-      />
-
       <ModalInsert isVisible={isModalEditTree} isPick={false}>
         <StatusBar backgroundColor={'#07111B'} />
         <ModalInsert.Container>
@@ -355,7 +337,7 @@ const YourFarm = ({ navigation }: any) => {
                     <Input
                       onPress={
                         input.label === 'Unit'
-                          ? handleModalPickUnitExpense
+                          ? () => handleModalPickUnitExpense()
                           : () => {}
                       }
                       label={input.label}
@@ -432,22 +414,27 @@ const YourFarm = ({ navigation }: any) => {
         </ModalInsert.Container>
       </ModalInsert>
 
-      <PopUpLoading isModalSuccess={isModalLoading} />
-
       <ModalPick
         isModalPick={isModalPick}
-        setIsModalPick={setIsModalPick}
         titlePick={titlePick}
-        setTitlePick={setTitlePick}
         valuePick={valuePick}
-        setValuePick={setValuePick}
         trees={trees}
         unitsIncome={unitsIncome}
         costTypes={costTypes}
         unitsExpense={unitsExpense}
-        handleModalPickHide={handleModalPickHide}
-        hanlePickItem={hanleHideModalPick}
+        handlePickItem={handleModalPickUnitExpense}
       />
+
+      <PopUpSuccess
+        isModalSuccess={isModalSuccess}
+        titleHeader={titleHeader}
+        titleBody={titleBody}
+        handleDeleteTree={() => handleDeleteTree(key)}
+        isFooter={isFooter}
+        handleModalSuccess={handleModalSuccess}
+      />
+
+      <PopUpLoading isModalSuccess={isModalLoading} />
     </SafeAreaView>
   );
 };

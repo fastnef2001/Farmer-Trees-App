@@ -5,22 +5,31 @@ import IconCalendar from '../../assets/images/IconCalendar.svg';
 import { COLORS } from '../../theme/color';
 import IconDetailBold from '../../assets/images/IconDetailBold.svg';
 import Detail from '../../assets/images/Detail.svg';
+import {
+  DataExpenseInterface,
+  DataIncomeInterface,
+} from '../../Interface/Interface';
+import { is } from 'date-fns/locale';
 
 export type HistoryProps = {
-  data: never[];
+  dataIncome: DataIncomeInterface[];
+  dataExpense: DataExpenseInterface[];
   title: string;
   isIncome: boolean;
   handlePress: () => void;
-  handlePressDetail: (key: string, title: string) => void;
+  handlePressDetail: (key?: string, title?: string) => void;
 };
 
 export const HistoryComponent = ({
-  data,
+  dataExpense,
+  dataIncome,
   title,
   isIncome,
   handlePress,
   handlePressDetail,
 }: HistoryProps) => {
+  let data = isIncome ? dataIncome : dataExpense;
+  // chỉ lấy 5 phần tử đầu tiên
   data = data.slice(0, 5);
 
   return (
@@ -83,10 +92,14 @@ export const HistoryComponent = ({
 
 export const HistoryElemment = ({
   title,
-  data,
+  dataExpense,
+  dataIncome,
   isIncome,
   handlePressDetail,
 }: HistoryProps) => {
+  // nếu là income thì lấy dataIncome, ngược lại lấy dataExpense
+  const data = isIncome ? dataIncome : dataExpense;
+
   return (
     <>
       {data.map((item: any) => (

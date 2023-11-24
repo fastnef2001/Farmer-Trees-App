@@ -9,6 +9,7 @@ export type ButtonProps = {
   titleDate?: string;
   isCalendar?: boolean;
   title?: string;
+  isIncome?: boolean;
 };
 
 export const FilterComponent = ({
@@ -16,6 +17,7 @@ export const FilterComponent = ({
   titleDate,
   isCalendar,
   title,
+  isIncome,
 }: ButtonProps) => {
   return (
     <TouchableOpacity style={stylesFilter.frame} onPress={onPress}>
@@ -28,7 +30,9 @@ export const FilterComponent = ({
           ) : title === 'endDate' ? (
             <Text style={stylesFilter.dateText1}>End date</Text>
           ) : (
-            <Text style={stylesFilter.dateText1}>All tree</Text>
+            <Text style={stylesFilter.dateText1}>
+              {isIncome ? 'All tree' : 'All cost type'}
+            </Text>
           )}
         </View>
         {isCalendar ? <IconCalendar /> : <IconDrop />}

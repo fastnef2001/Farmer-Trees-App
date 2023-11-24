@@ -1,26 +1,32 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import React, { useEffect, useState } from 'react';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import { MediaType, launchImageLibrary } from 'react-native-image-picker';
-import storage from '@react-native-firebase/storage';
-import { HandleAdd } from '../Statistics/HandleAdd';
 import { Database } from '../../database/database';
 
 export function UseLogic() {
-  const { getTrees, trees } = Database();
+  const {
+    createTree,
+    getInforUser,
+    userInfors,
+    editTree,
+    deleteTree,
+    getTrees,
+    getUnitExpense,
+    unitsExpense,
+    trees,
+    unitsIncome,
+    costTypes,
+  } = Database();
   const [isModalPick, setIsModalPick] = useState(false);
   const [isModalAddTree, setIsModalAddTree] = React.useState(false);
-  const [selectImage, setSelectImage] = useState('');
   const [isModalSuccess, setIsModalSuccess] = React.useState(false);
-  const [isModalDelete, setIsModalDelete] = React.useState(false);
-  const [key, setKey] = React.useState('');
+  const [isModalEditTree, setIsModalEditTree] = React.useState(false);
   const [isModalCalculate, setIsModalCalculate] = React.useState(false);
-  const [isTrees, setIsTrees] = useState(false);
-  const [inputs, setInputs] = useState([
-    { label: 'Tree name', value: '', error: '' },
-    { label: 'Quanlity', value: '', error: '' },
-  ]);
+  const [isModalLoading, setIsModalLoading] = React.useState(false);
+  const [isModalDelete, setIsModalDelete] = React.useState(false);
+
+  const [selectImage, setSelectImage] = useState('');
+  const [key, setKey] = React.useState('');
   const [titleBody, setTitleBody] = useState('');
   const [titleHeader, setTitleHeader] = useState('');
   const [isFooter, setIsFooter] = useState(false);
@@ -28,9 +34,31 @@ export function UseLogic() {
   const [titlePick, setTitlePick] = useState('');
   const [resultTotalQuantity, setResultTotalQuantity] = useState(0);
   const [resultTotalPrice, setResultTotalPrice] = useState(0);
-  // const [isModalPick, setIsModalPick] = useState(false);
+  const [inputs, setInputs] = useState([
+    { label: 'Tree name', value: '', error: '' },
+    { label: 'Quanlity', value: '', error: '' },
+  ]);
 
-  // 1. Modal add tree
+  //OTHER FUNCTION
+  const handleDeleteImage = () => setSelectImage('');
+  const handleInputChange = (index: any, value: any) => {
+    const newInputs = [...inputs];
+    newInputs[index].value = value;
+    newInputs[index].error = '';
+    setInputs(newInputs);
+  };
+
+  //GET FARM NAME
+  let farmName = '';
+  useEffect(() => {
+    getUnitExpense();
+    getInforUser();
+  }, [getInforUser, getUnitExpense]);
+  userInfors.forEach((userInfor: any) => {
+    farmName = userInfor.farmName;
+  });
+
+  //HANDLE MODAL
   const handleModalAddTree = () => {
     setIsModalAddTree(() => !isModalAddTree);
     setInputs(
@@ -41,7 +69,44 @@ export function UseLogic() {
       })),
     );
   };
-  // 2. Modal pick image and delete image
+  const handleModalSuccess = () => {
+    setIsModalSuccess(() => !isModalSuccess);
+    setSelectImage('');
+    setInputs(
+      inputs.map(input => ({
+        ...input,
+        value: '',
+        error: '',
+      })),
+    );
+  };
+  const handleModalEditTree = (key: any) => {
+    setSelectImage('');
+    setInputs(
+      inputs.map(input => ({
+        ...input,
+        value: '',
+        error: '',
+      })),
+    );
+    const tree = trees.find(tree => tree.key === (key as any));
+    if (tree) {
+      setSelectImage(tree.imageUrl);
+      setInputs([
+        { label: 'Tree name', value: tree.name, error: '' },
+        { label: 'Quanlity', value: tree.quanlity, error: '' },
+      ]);
+      setKey(key);
+    }
+    setIsModalEditTree(() => !isModalEditTree);
+  };
+  const handleModalDelete = (key: any) => {
+    setKey(key);
+    setTitleBody('Do you want to delete the coffee tree?');
+    setTitleHeader('Delete');
+    setIsFooter(true);
+    handleModalSuccess();
+  };
   const handleModalImagePicker = () => {
     const option = {
       mediaType: 'photo' as MediaType,
@@ -58,15 +123,40 @@ export function UseLogic() {
       }
     });
   };
-  const handleDeleteImage = () => setSelectImage('');
-  // 3. Handle validate input
-  const handleInputChange = (index: any, value: any) => {
-    const newInputs = [...inputs];
-    newInputs[index].value = value;
-    newInputs[index].error = '';
-    setInputs(newInputs);
+  const handleModalLoading = () => {
+    setIsModalLoading(() => !isModalLoading);
   };
-  // 4. Handle add tree
+  const handleModalPickUnitExpense = (value?: string, title?: string) => {
+    setTitlePick('Pick unit expense');
+    setIsModalPick(!isModalPick);
+    if (value) {
+      setValuePick(value);
+      const newInputs = [...inputs];
+      newInputs[2].value = value;
+    }
+  };
+  const handleModalCalculate = (key: any) => {
+    const tree = trees.find(tree => tree.key === (key as any));
+    if (tree) {
+      setInputs([
+        { label: 'Quantity tree', value: tree.quanlity, error: '' },
+        { label: 'Quantity to buy for each tree', value: '', error: '' },
+        { label: 'Unit', value: '', error: '' },
+        { label: 'Purchase price per unit', value: '', error: '' },
+      ]);
+    } else {
+      setInputs([
+        { label: 'Tree name', value: '', error: '' },
+        { label: 'Quanlity', value: '', error: '' },
+      ]);
+    }
+    setIsModalCalculate(() => !isModalCalculate);
+  };
+
+  //CRUD TREE
+  useEffect(() => {
+    getTrees();
+  }, [getTrees]);
   const handleAddTree = async () => {
     const treeNameInput = inputs.find(input => input.label === 'Tree name');
     const quanlityInput = inputs.find(input => input.label === 'Quanlity');
@@ -79,127 +169,16 @@ export function UseLogic() {
       );
       return;
     }
-    handleModalLoading();
-    try {
-      const name = treeNameInput?.value;
-      const quanlity = quanlityInput?.value;
-      const image = selectImage;
-      const timeAdd = new Date().getTime();
-      let imageUrl = '';
-      const userId = auth().currentUser?.uid;
-      if (image) {
-        const filename = userId + name;
-        const storageRef = storage().ref(`imageTree/${filename}`);
-        await storageRef.putFile(image);
-        imageUrl = await storageRef.getDownloadURL();
-      }
-      firestore()
-        .collection('trees')
-        .doc(userId)
-        .collection('tree')
-        .add({
-          name,
-          quanlity,
-          imageUrl,
-          timeAdd,
-        })
-        .then(() => {
-          setIsModalAddTree(() => false);
-          handleModalLoading();
-          setTitleBody('You have successfully added the tree.');
-          setTitleHeader('Successfully');
-          setIsFooter(false);
-          handleModalSuccess();
-        });
-    } catch (error: any) {
-      console.log('error', error);
+    setIsModalLoading(() => true);
+    if (await createTree(treeNameInput, quanlityInput, selectImage)) {
+      setIsModalLoading(() => false);
+      setIsModalAddTree(() => false);
+      setTitleBody('You have successfully added the tree.');
+      setTitleHeader('Successfully');
+      setIsFooter(false);
+      handleModalSuccess();
     }
   };
-  // 5. Modal success
-  const handleModalSuccess = () => {
-    setIsModalSuccess(() => !isModalSuccess);
-    setSelectImage('');
-    setInputs(
-      inputs.map(input => ({
-        ...input,
-        value: '',
-        error: '',
-      })),
-    );
-  };
-
-  // 6. Modal delete
-  const handleModalDelete = (key: string) => {
-    setKey(key);
-    setTitleBody('Do you want to delete the coffee tree?');
-    setTitleHeader('Delete');
-    setIsFooter(true);
-    handleModalSuccess();
-  };
-
-  // 7. Handle delete tree
-  const handleDeleteTree = (key: string) => {
-    firestore()
-      .collection('trees')
-      .doc(auth().currentUser?.uid)
-      .collection('tree')
-      .doc(key)
-      .delete();
-    setTitleBody('You have successfully deleted the tree.');
-    setTitleHeader('Successfully');
-    handleModalSuccess();
-  };
-
-  interface Tree {
-    [x: string]: string;
-    name: string;
-    quanlity: string;
-    imageUrl: string;
-  }
-
-  // 8. Get all tree
-  useEffect(() => {
-    getTrees();
-  }, [getTrees]);
-
-  // 9. Get farm name
-  const [farmName, setFarmName] = useState('');
-  React.useEffect(() => {
-    const subscriber = firestore()
-      .collection('users')
-      .doc(auth().currentUser?.uid)
-      .onSnapshot(documentSnapshot => {
-        const farmName = documentSnapshot.data()?.farmName;
-        setFarmName(farmName);
-      });
-    return () => subscriber();
-  }, []);
-
-  // 10. Modal edit tree
-  const [isModalEditTree, setIsModalEditTree] = React.useState(false);
-  const handleModalEditTree = (key: any) => {
-    setSelectImage('');
-    setInputs(
-      inputs.map(input => ({
-        ...input,
-        value: '',
-        error: '',
-      })),
-    );
-
-    const tree = trees.find(tree => tree.key === (key as any));
-    if (tree) {
-      setSelectImage(tree.imageUrl);
-      setInputs([
-        { label: 'Tree name', value: tree.name, error: '' },
-        { label: 'Quanlity', value: tree.quanlity, error: '' },
-      ]);
-      setKey(key);
-    }
-    setIsModalEditTree(() => !isModalEditTree);
-  };
-
-  // 11. Handle edit tree
   const handleEditTree = async () => {
     const treeNameInput = inputs.find(input => input.label === 'Tree name');
     const quanlityInput = inputs.find(input => input.label === 'Quanlity');
@@ -213,49 +192,15 @@ export function UseLogic() {
       );
       return;
     }
-    handleModalLoading();
-    try {
-      const name = treeNameInput?.value;
-      const quanlity = quanlityInput?.value;
-      const image = selectImage;
-      let imageUrl = '';
-      const userId = auth().currentUser?.uid;
-      // if image là url với http thì không cần thay đổi ảnh
-      if (image && image.includes('http')) {
-        imageUrl = image;
-      } else if (image) {
-        // xóa ảnh cũ trong storage
-        const tree = trees.find(tree => tree.key === (key as any));
-        if (tree) {
-          const filename = auth().currentUser?.uid + tree.name;
-          const storageRef = storage().ref(`imageTree/${filename}`);
-          storageRef.delete();
-        }
-
-        const filename = userId + name;
-        const storageRef = storage().ref(`imageTree/${filename}`);
-        await storageRef.putFile(image);
-        imageUrl = await storageRef.getDownloadURL();
-      }
-      firestore()
-        .collection('trees')
-        .doc(userId)
-        .collection('tree')
-        .doc(key)
-        .update({
-          name,
-          quanlity,
-          imageUrl,
-        })
-        .then(() => {
-          setIsModalEditTree(() => false);
-          handleModalLoading();
-          setTitleBody('You have successfully edited the tree.');
-          setTitleHeader('Successfully');
-          setIsFooter(false);
-          setIsModalSuccess(true);
-        });
-
+    setIsModalLoading(() => true);
+    const tree = trees.find(tree => tree.key === (key as any));
+    if (await editTree(treeNameInput, quanlityInput, selectImage, tree, key)) {
+      setIsModalEditTree(() => false);
+      setTitleBody('You have successfully edited the tree.');
+      setTitleHeader('Successfully');
+      setIsFooter(false);
+      setIsModalLoading(() => false);
+      handleModalSuccess();
       setSelectImage('');
       setInputs(
         inputs.map(input => ({
@@ -264,59 +209,17 @@ export function UseLogic() {
           error: '',
         })),
       );
-    } catch (error: any) {
-      console.log('error', error);
     }
   };
-
-  // 12. Modal loading
-  const [isModalLoading, setIsModalLoading] = React.useState(false);
-  const handleModalLoading = () => {
-    setIsModalLoading(prev => !prev);
-  };
-
-  // 14. Calculate
-  const handleModalCalculate = (key: any) => {
-    setSelectImage('');
-    setInputs(
-      inputs.map(input => ({
-        ...input,
-        value: '',
-        error: '',
-      })),
-    );
-
-    const tree = trees.find(tree => tree.key === (key as any));
-    if (tree) {
-      setSelectImage(tree.imageUrl);
-      setInputs([
-        { label: 'Quantity tree', value: tree.quanlity, error: '' },
-        { label: 'Quantity to buy for each tree', value: '', error: '' },
-        { label: 'Unit', value: '', error: '' },
-        { label: 'Purchase price per unit', value: '', error: '' },
-      ]);
-      setKey(key);
+  const handleDeleteTree = async (key: string) => {
+    if (await deleteTree(trees, key)) {
+      setTitleBody('You have successfully deleted the tree.');
+      setTitleHeader('Successfully');
+      handleModalSuccess();
     }
-    setIsModalCalculate(() => !isModalCalculate);
   };
-  const handleModalPickUnitExpense = () => {
-    // const newInputs = [...inputs];
-    // setValuePick(newInputs[2].value);
-    setTitlePick('Pick unit expense');
-    setIsModalPick(!isModalPick);
-  };
-  const handleModalPickHide = () => {
-    setIsModalPick(false);
-  };
-  const hanleHideModalPick = (value: string, titlePick: string) => {
-    setIsModalPick(false);
-    setValuePick(value);
-    const newInputs = [...inputs];
-    newInputs[2].value = value;
-  };
-
+  //CALCULATE
   const handleCalculate = () => {
-    // convert to number
     const convertToNumber = (value: string) => {
       const number = Number(value);
       return number;
@@ -343,7 +246,6 @@ export function UseLogic() {
     isModalDelete,
     handleModalDelete,
     handleDeleteTree,
-    trees,
     farmName,
     isModalEditTree,
     handleModalEditTree,
@@ -358,7 +260,6 @@ export function UseLogic() {
     isFooter,
     handleModalCalculate,
     isModalCalculate,
-    hanleHideModalPick,
     isModalPick,
     valuePick,
     titlePick,
@@ -369,6 +270,9 @@ export function UseLogic() {
     resultTotalQuantity,
     handleCalculate,
     resultTotalPrice,
-    handleModalPickHide,
+    unitsExpense,
+    trees,
+    unitsIncome,
+    costTypes,
   };
 }
