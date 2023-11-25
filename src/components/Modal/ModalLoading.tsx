@@ -9,16 +9,16 @@ type ModalProps = {
   [x: string]: any;
 };
 
-export const ModalLoading = ({
-  isVisible = false,
-  children,
-  ...props
-}: ModalProps) => {
+export const ModalLoading = ({ isVisible, children, ...props }: ModalProps) => {
   return (
     <RNModal
       isVisible={isVisible}
-      animationInTiming={500}
-      animationOutTiming={500}
+      animationInTiming={300}
+      animationOutTiming={300}
+      backdropTransitionInTiming={300}
+      backdropTransitionOutTiming={300}
+      animationIn={'fadeIn'}
+      animationOut={'fadeOut'}
       {...props}>
       {children}
     </RNModal>
@@ -28,30 +28,12 @@ export const ModalLoading = ({
 const ModalLoadingContainer = () => (
   <View>
     <LottieView
-      style={{ width: 500, height: 500, alignSelf: 'center' }}
+      style={{ width: 100, height: 100, alignSelf: 'center' }}
       source={require('../../assets/animations/AnimationLoading.json')}
       autoPlay
       loop
     />
   </View>
 );
-
-const styles = StyleSheet.create({
-  header: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    paddingTop: 10,
-    textAlign: 'center',
-    fontSize: 24,
-    color: '#163859',
-    fontWeight: 'bold',
-  },
-  body: {
-    width: '90%',
-    alignSelf: 'center',
-  },
-});
 
 ModalLoading.Container = ModalLoadingContainer;

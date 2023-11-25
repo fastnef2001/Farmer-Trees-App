@@ -18,7 +18,7 @@ import {
 } from './ChatAI.style';
 import { UseLogic } from './UseLogic';
 import { is } from 'date-fns/locale';
-import stylesButton from '../Login/Login.style';
+import stylesButton from '../Login/Style';
 import IconDola from '../../assets/images/IconDola.svg';
 import IconUpgrade from '../../assets/images/IconUpgrade.svg';
 import LottieView from 'lottie-react-native';

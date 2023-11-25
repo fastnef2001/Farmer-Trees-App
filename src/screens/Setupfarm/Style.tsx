@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { COLORS } from '../../theme/color';
 
-export default StyleSheet.create({
+export const styleAddtree = StyleSheet.create({
   container: {
     flex: 1,
     height: '100%',
@@ -155,6 +155,55 @@ export default StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     flex: 1,
+  },
+  txtBtn: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+});
+
+export const stylesFarmname = StyleSheet.create({
+  container: {
+    flex: 1,
+    height: '100%',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  headSession: {
+    flexDirection: 'row',
+    width: '90%',
+    height: 40,
+    alignItems: 'center',
+  },
+  txtTitle: {
+    fontSize: 20,
+    color: '#163859',
+    lineHeight: 28,
+    textAlign: 'center',
+    fontFamily: 'Nunito-Bold',
+  },
+  inputSession: {
+    width: '90%',
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: 'white',
+    shadowColor: 'black',
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  btnSession: {
+    height: 48,
+    backgroundColor: '#163859',
+    borderRadius: 10,
+    borderWidth: 1,
+    width: '90%',
   },
   txtBtn: {
     justifyContent: 'center',

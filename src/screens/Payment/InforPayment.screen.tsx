@@ -16,7 +16,7 @@ import IconDetailBold from '../../assets/images/IconDetailBold.svg';
 import IconBell40 from '../../assets/images/IconBell40.svg';
 import IconHeart40 from '../../assets/images/IconHeart40.svg';
 import IconLogOut40 from '../../assets/images/IconLogOut40.svg';
-import stylesButton from '../Login/Login.style';
+import stylesButton from '../Login/Style';
 import IconEditBlue40 from '../../assets/images/IconEditBlue40.svg';
 import IconDola from '../../assets/images/IconDola.svg';
 import IconVerify from '../../assets/images/IconVerify.svg';
@@ -36,7 +36,7 @@ import {
 } from '../../components/Modal/GeneralPopUps.component';
 import LottieView from 'lottie-react-native';
 import { UseLogic } from './UseLogic';
-import styles from '../Setupfarm/Addtree.style';
+import styles from '../Setupfarm/Style';
 import { WebView } from 'react-native-webview';
 import { is } from 'date-fns/locale';
 

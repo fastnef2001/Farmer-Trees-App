@@ -30,10 +30,9 @@ import IconAdd36 from '../../assets/images/IconAdd36.svg';
 import Iconcalculatesmallwhite from '../../assets/images/Iconcalculatesmallwhite.svg';
 
 //Style
-import styles from '../Setupfarm/Addtree.style';
+import { styleAddtree } from '../Setupfarm/Style';
 import { stylesTitle, stylesScrollView, stylesResult } from './YourFarm.style';
 import { UseLogic } from './UseLogic';
-import { HandleAdd } from '../Statistics/HandleAdd';
 
 const YourFarm = ({ navigation }: any) => {
   const {
@@ -117,7 +116,7 @@ const YourFarm = ({ navigation }: any) => {
               autoPlay
               loop
             />
-            <Text style={styles.txtTitleModal}>No trees</Text>
+            <Text style={styleAddtree.txtTitleModal}>No trees</Text>
           </View>
         )}
       </View>
@@ -127,12 +126,12 @@ const YourFarm = ({ navigation }: any) => {
         <View style={{ flex: 1 }}>
           <ModalInsert.Container>
             <ModalInsert.Header>
-              <View style={styles.headSessionModal}>
+              <View style={styleAddtree.headSessionModal}>
                 <TouchableOpacity onPress={handleModalAddTree}>
                   <IconBack> </IconBack>
                 </TouchableOpacity>
-                <View style={styles.txtContainer}>
-                  <Text style={styles.txtTitleModal}>Add tree</Text>
+                <View style={styleAddtree.txtContainer}>
+                  <Text style={styleAddtree.txtTitleModal}>Add tree</Text>
                 </View>
                 <View
                   style={{
@@ -144,7 +143,7 @@ const YourFarm = ({ navigation }: any) => {
             </ModalInsert.Header>
             <ScrollView>
               <ModalInsert.Body>
-                <View style={styles.root}>
+                <View style={styleAddtree.root}>
                   {selectImage ? (
                     <Image
                       style={{ height: 80, width: 80, borderRadius: 12 }}
@@ -160,13 +159,13 @@ const YourFarm = ({ navigation }: any) => {
                   )}
                   <View style={{ width: 8 }} />
                   <TouchableOpacity
-                    style={styles.hoverButtonFull}
+                    style={styleAddtree.hoverButtonFull}
                     onPress={handleModalImagePicker}>
-                    <View style={styles.frame625074}>
-                      <View style={styles.frame625079}>
+                    <View style={styleAddtree.frame625074}>
+                      <View style={styleAddtree.frame625079}>
                         <IconUpload />
                         <View style={{ width: 16 }} />
-                        <Text style={styles.photo}>Photo</Text>
+                        <Text style={styleAddtree.photo}>Photo</Text>
                       </View>
                     </View>
                   </TouchableOpacity>
@@ -175,7 +174,7 @@ const YourFarm = ({ navigation }: any) => {
                     <IconDeleteRed />
                   </TouchableOpacity>
                 </View>
-                <View style={styles.inputSession}>
+                <View style={styleAddtree.inputSession}>
                   {inputs.map((input, index) => (
                     <View key={index}>
                       <Input
@@ -195,9 +194,9 @@ const YourFarm = ({ navigation }: any) => {
                   ))}
                 </View>
                 <TouchableOpacity
-                  style={styles.btnSendSession}
+                  style={styleAddtree.btnSendSession}
                   onPress={handleAddTree}>
-                  <View style={styles.txtBtnSignup}>
+                  <View style={styleAddtree.txtBtnSignup}>
                     <IconSave />
                     <View style={{ width: 16 }} />
                     <Text
@@ -221,12 +220,12 @@ const YourFarm = ({ navigation }: any) => {
         <StatusBar backgroundColor={'#07111B'} />
         <ModalInsert.Container>
           <ModalInsert.Header>
-            <View style={styles.headSessionModal}>
+            <View style={styleAddtree.headSessionModal}>
               <TouchableOpacity onPress={handleModalEditTree}>
                 <IconBack />
               </TouchableOpacity>
-              <View style={styles.txtContainer}>
-                <Text style={styles.txtTitleModal}>Edit tree</Text>
+              <View style={styleAddtree.txtContainer}>
+                <Text style={styleAddtree.txtTitleModal}>Edit tree</Text>
               </View>
               <View
                 style={{
@@ -238,7 +237,7 @@ const YourFarm = ({ navigation }: any) => {
           </ModalInsert.Header>
           <ScrollView>
             <ModalInsert.Body>
-              <View style={styles.root}>
+              <View style={styleAddtree.root}>
                 {selectImage ? (
                   <Image
                     style={{ height: 80, width: 80, borderRadius: 12 }}
@@ -254,13 +253,13 @@ const YourFarm = ({ navigation }: any) => {
                 )}
                 <View style={{ width: 8 }} />
                 <TouchableOpacity
-                  style={styles.hoverButtonFull}
+                  style={styleAddtree.hoverButtonFull}
                   onPress={handleModalImagePicker}>
-                  <View style={styles.frame625074}>
-                    <View style={styles.frame625079}>
+                  <View style={styleAddtree.frame625074}>
+                    <View style={styleAddtree.frame625079}>
                       <IconUpload />
                       <View style={{ width: 16 }} />
-                      <Text style={styles.photo}>Photo</Text>
+                      <Text style={styleAddtree.photo}>Photo</Text>
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -269,7 +268,7 @@ const YourFarm = ({ navigation }: any) => {
                   <IconDeleteRed />
                 </TouchableOpacity>
               </View>
-              <View style={styles.inputSession}>
+              <View style={styleAddtree.inputSession}>
                 {inputs.map((input, index) => (
                   <View key={index}>
                     <Input
@@ -289,9 +288,9 @@ const YourFarm = ({ navigation }: any) => {
                 ))}
               </View>
               <TouchableOpacity
-                style={styles.btnSendSession}
+                style={styleAddtree.btnSendSession}
                 onPress={handleEditTree}>
-                <View style={styles.txtBtnSignup}>
+                <View style={styleAddtree.txtBtnSignup}>
                   <IconSave />
                   <View style={{ width: 16 }} />
                   <Text
@@ -314,12 +313,12 @@ const YourFarm = ({ navigation }: any) => {
         <StatusBar backgroundColor={'#07111B'} />
         <ModalInsert.Container>
           <ModalInsert.Header>
-            <View style={styles.headSessionModal}>
+            <View style={styleAddtree.headSessionModal}>
               <TouchableOpacity onPress={handleModalCalculate}>
                 <IconBack />
               </TouchableOpacity>
-              <View style={styles.txtContainer}>
-                <Text style={styles.txtTitleModal}>Calculate</Text>
+              <View style={styleAddtree.txtContainer}>
+                <Text style={styleAddtree.txtTitleModal}>Calculate</Text>
               </View>
               <View
                 style={{
@@ -331,7 +330,7 @@ const YourFarm = ({ navigation }: any) => {
           </ModalInsert.Header>
           <ScrollView>
             <ModalInsert.Body>
-              <View style={styles.inputSession}>
+              <View style={styleAddtree.inputSession}>
                 {inputs.map((input, index) => (
                   <View key={index}>
                     <Input
@@ -363,9 +362,9 @@ const YourFarm = ({ navigation }: any) => {
                 ))}
               </View>
               <TouchableOpacity
-                style={styles.btnSendSession}
+                style={styleAddtree.btnSendSession}
                 onPress={handleCalculate}>
-                <View style={styles.txtBtnSignup}>
+                <View style={styleAddtree.txtBtnSignup}>
                   <Iconcalculatesmallwhite />
                   <View style={{ width: 16 }} />
                   <Text
@@ -429,12 +428,12 @@ const YourFarm = ({ navigation }: any) => {
         isModalSuccess={isModalSuccess}
         titleHeader={titleHeader}
         titleBody={titleBody}
-        handleDeleteTree={() => handleDeleteTree(key)}
+        handleFunction={() => handleDeleteTree(key)}
         isFooter={isFooter}
         handleModalSuccess={handleModalSuccess}
       />
 
-      <PopUpLoading isModalSuccess={isModalLoading} />
+      <PopUpLoading isModalVisible={isModalLoading} />
     </SafeAreaView>
   );
 };

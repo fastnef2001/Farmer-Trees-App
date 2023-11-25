@@ -1,20 +1,5 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable no-const-assign */
-/* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useState } from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  Alert,
-  AppRegistry,
-} from 'react-native';
-import { launchImageLibrary, MediaType } from 'react-native-image-picker';
+import React from 'react';
+import { View, Text, StatusBar, TouchableOpacity, Image } from 'react-native';
 import { HeaderComponent } from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconAdd from '../../assets/images/IconAdd.svg';
@@ -27,203 +12,53 @@ import { ScrollView } from 'react-native-gesture-handler';
 import IconUpload from '../../assets/images/IconUpload.svg';
 import RectangularTree from '../../components/RectangularElement/Tree.component';
 import IconComplete from '../../assets/images/IconComplete.svg';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
-import styles from './Addtree.style';
+import { styleAddtree } from './Style';
 import { ButtonBack, ButtonDelete } from '../../components/Button/Button';
 import LottieView from 'lottie-react-native';
-import { ModalLoading } from '../../components/Modal/ModalLoading';
-import { Database } from '../../database/database';
-import { set } from 'date-fns';
-import { el } from 'date-fns/locale';
+import {
+  PopUpSuccess,
+  PopUpLoading,
+} from '../../components/Modal/GeneralPopUps.component';
+import { UseLogic } from './UseLogic';
 
 const Addtree = ({ navigation }: any) => {
-  const { createTree, editTree, deleteTree, trees, getTrees } = Database();
-  const [isModalAddTree, setIsModalAddTree] = React.useState(false);
-  const [isModalSuccess, setIsModalSuccess] = React.useState(false);
-  const [isModalDelete, setIsModalDelete] = React.useState(false);
-  const [selectImage, setSelectImage] = useState('');
-  const [key, setKey] = React.useState('');
-  const [inputs, setInputs] = useState([
-    { label: 'Tree name', value: '', error: '' },
-    { label: 'Quanlity', value: '', error: '' },
-  ]);
-  const [titlePopupNoti, setTitlePopupNoti] = useState('');
-  const [contentPopupNoti, setContentPopupNoti] = useState('');
-
-  // Get tree
-  useEffect(() => {
-    getTrees();
-  }, [getTrees]);
-
-  // Add tree
-  // 1. Modal add tree
-  const handleModalAddTree = () => {
-    setIsModalAddTree(() => !isModalAddTree);
-    setInputs(
-      inputs.map(input => ({
-        ...input,
-        value: '',
-        error: '',
-      })),
-    );
-  };
-
-  // 2. Modal pick image and delete image
-  const handleModalImagePicker = () => {
-    const option = {
-      mediaType: 'photo' as MediaType,
-      storageOptions: {
-        path: 'image',
-      },
-    };
-    launchImageLibrary(option, response => {
-      if (response.assets && response.assets.length > 0) {
-        const selectedImage = response.assets[0].uri;
-        if (selectedImage) {
-          setSelectImage(selectedImage);
-        }
-      }
-    });
-  };
-  const handleDeleteImage = () => setSelectImage('');
-  // 3. Add tree
-  const handleInputChange = (index: any, value: any) => {
-    const newInputs = [...inputs];
-    newInputs[index].value = value;
-    newInputs[index].error = '';
-    setInputs(newInputs);
-  };
-
-  const handleAddTree = async () => {
-    const treeNameInput = inputs.find(input => input.label === 'Tree name');
-    const quanlityInput = inputs.find(input => input.label === 'Quanlity');
-    if (!treeNameInput?.value || !quanlityInput?.value) {
-      setInputs(
-        inputs.map(input => ({
-          ...input,
-          error: !input.value ? `Please enter ${input.label}` : '',
-        })),
-      );
-      return;
-    }
-    handleModalLoading();
-    if (await createTree(treeNameInput, quanlityInput, selectImage)) {
-      setIsModalAddTree(() => false);
-      handleModalSuccessAdd();
-    }
-    handleModalLoading();
-  };
-
-  const handleModalSuccessAdd = () => {
-    setIsModalSuccess(() => !isModalSuccess);
-    setContentPopupNoti('You have successfully added the tree.');
-    setTitlePopupNoti('Successfully');
-    setSelectImage('');
-    setInputs(
-      inputs.map(input => ({
-        ...input,
-        value: '',
-        error: '',
-      })),
-    );
-  };
-
-  // Delete tree
-  const handleModalDelete = (key: any) => {
-    setKey(key);
-    setIsModalDelete(() => !isModalDelete);
-  };
-
-  const handleDeleteTree = async (key: string) => {
-    const tree = trees.find(tree => tree.key === (key as any));
-    if (await deleteTree(tree, key)) {
-      setIsModalDelete(() => false);
-    }
-  };
-
-  // Edit tree
-  // 1. Modal edit tree
-  const [isModalEditTree, setIsModalEditTree] = React.useState(false);
-  const handleModalEditTree = (key: any) => {
-    setSelectImage('');
-    setInputs(
-      inputs.map(input => ({
-        ...input,
-        value: '',
-        error: '',
-      })),
-    );
-
-    const tree = trees.find(tree => tree.key === (key as any));
-    if (tree) {
-      setSelectImage(tree.imageUrl);
-      setInputs([
-        { label: 'Tree name', value: tree.name, error: '' },
-        { label: 'Quanlity', value: tree.quanlity, error: '' },
-      ]);
-      setKey(key);
-    }
-    setIsModalEditTree(() => !isModalEditTree);
-  };
-
-  const handleEditTree = async () => {
-    const treeNameInput = inputs.find(input => input.label === 'Tree name');
-    const quanlityInput = inputs.find(input => input.label === 'Quanlity');
-    if (!treeNameInput?.value || !quanlityInput?.value) {
-      setInputs(
-        inputs.map(input => ({
-          ...input,
-          error: !input.value ? `Please enter ${input.label}` : '',
-        })),
-      );
-      return;
-    }
-    handleModalLoading();
-    const tree = trees.find(tree => tree.key === (key as any));
-    if (await editTree(treeNameInput, quanlityInput, selectImage, tree, key)) {
-      setIsModalEditTree(() => false);
-      handleModalSuccessEdit();
-    } else {
-      console.log('error');
-    }
-    handleModalLoading();
-  };
-
-  // Modal success edit
-  const handleModalSuccessEdit = () => {
-    setIsModalSuccess(() => !isModalSuccess);
-    setContentPopupNoti('You have successfully edited the tree.');
-    setTitlePopupNoti('Successfully');
-    setSelectImage('');
-    setInputs(
-      inputs.map(input => ({
-        ...input,
-        value: '',
-        error: '',
-      })),
-    );
-  };
-
-  // Modal loading
-  const [isModalLoading, setIsModalLoading] = React.useState(false);
-  const handleModalLoading = () => {
-    setIsModalLoading(prev => !prev);
-  };
+  const {
+    handleModalAddTree,
+    handleModalEditTree,
+    handleModalImagePicker,
+    handleDeleteImage,
+    handleInputChange,
+    handleAddTree,
+    handleEditTree,
+    handleDeleteTree,
+    handleModalDelete,
+    trees,
+    isModalAddTree,
+    isModalEditTree,
+    isModalDelete,
+    isModalSuccess,
+    isModalLoading,
+    selectImage,
+    inputs,
+    titlePopupNoti,
+    contentPopupNoti,
+    key,
+    setIsModalSuccess,
+    setIsModalDelete,
+  } = UseLogic();
 
   return (
     <>
       <HeaderComponent />
-      <View style={styles.container}>
+      <View style={styleAddtree.container}>
         {/* Title */}
-        <View style={styles.headSession}>
+        <View style={styleAddtree.headSession}>
           <TouchableOpacity onPress={() => navigation.navigate('Farmname')}>
             <IconBack />
           </TouchableOpacity>
           <View style={{ width: 8 }} />
           <View>
-            <Text style={styles.txtTitle}>Add trees for Farm</Text>
+            <Text style={styleAddtree.txtTitle}>Add trees for Farm</Text>
           </View>
         </View>
         {trees.length > 0 ? (
@@ -258,9 +93,9 @@ const Addtree = ({ navigation }: any) => {
                 justifyContent: 'space-between',
               }}>
               <TouchableOpacity
-                style={styles.btnSession}
+                style={styleAddtree.btnSession}
                 onPress={() => navigation.navigate('Tabs')}>
-                <View style={styles.txtBtn}>
+                <View style={styleAddtree.txtBtn}>
                   <IconComplete />
                   <View style={{ width: 16 }} />
                   <Text
@@ -281,7 +116,9 @@ const Addtree = ({ navigation }: any) => {
             </View>
           </>
         ) : (
-          <TouchableOpacity onPress={handleModalAddTree} style={styles.txtBtn}>
+          <TouchableOpacity
+            onPress={handleModalAddTree}
+            style={styleAddtree.txtBtn}>
             <LottieView
               style={{ width: 68, height: 68 }}
               source={require('../../assets/animations/ButtonAddGif.json')}
@@ -296,12 +133,12 @@ const Addtree = ({ navigation }: any) => {
         <StatusBar backgroundColor={'#07111B'} />
         <ModalInsert.Container>
           <ModalInsert.Header>
-            <View style={styles.headSessionModal}>
+            <View style={styleAddtree.headSessionModal}>
               <TouchableOpacity onPress={handleModalAddTree}>
                 <IconBack />
               </TouchableOpacity>
-              <View style={styles.txtContainer}>
-                <Text style={styles.txtTitleModal}>Add tree</Text>
+              <View style={styleAddtree.txtContainer}>
+                <Text style={styleAddtree.txtTitleModal}>Add tree</Text>
               </View>
               <View
                 style={{
@@ -313,7 +150,7 @@ const Addtree = ({ navigation }: any) => {
           </ModalInsert.Header>
           <ScrollView>
             <ModalInsert.Body>
-              <View style={styles.root}>
+              <View style={styleAddtree.root}>
                 {selectImage ? (
                   <Image
                     style={{ height: 80, width: 80, borderRadius: 12 }}
@@ -329,13 +166,13 @@ const Addtree = ({ navigation }: any) => {
                 )}
                 <View style={{ width: 8 }} />
                 <TouchableOpacity
-                  style={styles.hoverButtonFull}
+                  style={styleAddtree.hoverButtonFull}
                   onPress={handleModalImagePicker}>
-                  <View style={styles.frame625074}>
-                    <View style={styles.frame625079}>
+                  <View style={styleAddtree.frame625074}>
+                    <View style={styleAddtree.frame625079}>
                       <IconUpload />
                       <View style={{ width: 16 }} />
-                      <Text style={styles.photo}>Photo</Text>
+                      <Text style={styleAddtree.photo}>Photo</Text>
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -344,7 +181,7 @@ const Addtree = ({ navigation }: any) => {
                   <IconDeleteRed />
                 </TouchableOpacity>
               </View>
-              <View style={styles.inputSession}>
+              <View style={styleAddtree.inputSession}>
                 {inputs.map((input, index) => (
                   <View key={index}>
                     <Input
@@ -364,9 +201,9 @@ const Addtree = ({ navigation }: any) => {
                 ))}
               </View>
               <TouchableOpacity
-                style={styles.btnSendSession}
+                style={styleAddtree.btnSendSession}
                 onPress={handleAddTree}>
-                <View style={styles.txtBtnSignup}>
+                <View style={styleAddtree.txtBtnSignup}>
                   <IconSave />
                   <View style={{ width: 16 }} />
                   <Text
@@ -389,12 +226,12 @@ const Addtree = ({ navigation }: any) => {
         <StatusBar backgroundColor={'#07111B'} />
         <ModalInsert.Container>
           <ModalInsert.Header>
-            <View style={styles.headSessionModal}>
+            <View style={styleAddtree.headSessionModal}>
               <TouchableOpacity onPress={handleModalEditTree}>
                 <IconBack />
               </TouchableOpacity>
-              <View style={styles.txtContainer}>
-                <Text style={styles.txtTitleModal}>Edit tree</Text>
+              <View style={styleAddtree.txtContainer}>
+                <Text style={styleAddtree.txtTitleModal}>Edit tree</Text>
               </View>
               <View
                 style={{
@@ -406,7 +243,7 @@ const Addtree = ({ navigation }: any) => {
           </ModalInsert.Header>
           <ScrollView>
             <ModalInsert.Body>
-              <View style={styles.root}>
+              <View style={styleAddtree.root}>
                 {selectImage ? (
                   <Image
                     style={{ height: 80, width: 80, borderRadius: 12 }}
@@ -422,13 +259,13 @@ const Addtree = ({ navigation }: any) => {
                 )}
                 <View style={{ width: 8 }} />
                 <TouchableOpacity
-                  style={styles.hoverButtonFull}
+                  style={styleAddtree.hoverButtonFull}
                   onPress={handleModalImagePicker}>
-                  <View style={styles.frame625074}>
-                    <View style={styles.frame625079}>
+                  <View style={styleAddtree.frame625074}>
+                    <View style={styleAddtree.frame625079}>
                       <IconUpload />
                       <View style={{ width: 16 }} />
-                      <Text style={styles.photo}>Photo</Text>
+                      <Text style={styleAddtree.photo}>Photo</Text>
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -437,7 +274,7 @@ const Addtree = ({ navigation }: any) => {
                   <IconDeleteRed />
                 </TouchableOpacity>
               </View>
-              <View style={styles.inputSession}>
+              <View style={styleAddtree.inputSession}>
                 {inputs.map((input, index) => (
                   <View key={index}>
                     <Input
@@ -457,9 +294,9 @@ const Addtree = ({ navigation }: any) => {
                 ))}
               </View>
               <TouchableOpacity
-                style={styles.btnSendSession}
+                style={styleAddtree.btnSendSession}
                 onPress={handleEditTree}>
-                <View style={styles.txtBtnSignup}>
+                <View style={styleAddtree.txtBtnSignup}>
                   <IconSave />
                   <View style={{ width: 16 }} />
                   <Text
@@ -518,12 +355,7 @@ const Addtree = ({ navigation }: any) => {
         </Modal.Container>
       </Modal>
 
-      <ModalLoading isVisible={isModalLoading}>
-        <StatusBar backgroundColor={'#010508'} />
-        <SafeAreaView>
-          <ModalLoading.Container />
-        </SafeAreaView>
-      </ModalLoading>
+      <PopUpLoading isModalVisible={isModalLoading} />
     </>
   );
 };

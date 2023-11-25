@@ -4,6 +4,7 @@ import { COLORS } from '../../theme/color';
 export default StyleSheet.create({
   container: {
     alignItems: 'center',
+    paddingTop: 32,
   },
   textTitleContainer: {
     fontSize: 26,

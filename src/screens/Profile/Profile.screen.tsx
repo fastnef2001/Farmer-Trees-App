@@ -15,12 +15,12 @@ import IconDetailBold from '../../assets/images/IconDetailBold.svg';
 import IconBell40 from '../../assets/images/IconBell40.svg';
 import IconHeart40 from '../../assets/images/IconHeart40.svg';
 import IconLogOut40 from '../../assets/images/IconLogOut40.svg';
-import stylesButton from '../Login/Login.style';
+import stylesButton from '../Login/Style';
 import IconEditBlue40 from '../../assets/images/IconEditBlue40.svg';
 import { styleElement1, styleElement2 } from '../Profile/Profile.style';
 import { UseLogic } from './UserLogic';
 import { ModalInsert } from '../../components/Modal/ModalInsert';
-import styles from '../Setupfarm/Addtree.style';
+import { styleAddtree } from '../Setupfarm/Style';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconUpload from '../../assets/images/IconUpload.svg';
 import IconDeleteRed from '../../assets/images/IconDeleteRed.svg';
@@ -180,12 +180,12 @@ const Profile = ({ navigation }: any) => {
         <View style={{ flex: 1 }}>
           <ModalInsert.Container>
             <ModalInsert.Header>
-              <View style={styles.headSessionModal}>
+              <View style={styleAddtree.headSessionModal}>
                 <TouchableOpacity onPress={handleModelEditProfile}>
                   <IconBack> </IconBack>
                 </TouchableOpacity>
-                <View style={styles.txtContainer}>
-                  <Text style={styles.txtTitleModal}>Add tree</Text>
+                <View style={styleAddtree.txtContainer}>
+                  <Text style={styleAddtree.txtTitleModal}>Add tree</Text>
                 </View>
                 <View
                   style={{
@@ -197,7 +197,7 @@ const Profile = ({ navigation }: any) => {
             </ModalInsert.Header>
             <ScrollView>
               <ModalInsert.Body>
-                <View style={styles.root}>
+                <View style={styleAddtree.root}>
                   {selectImage ? (
                     <Image
                       style={{ height: 80, width: 80, borderRadius: 100 }}
@@ -216,13 +216,13 @@ const Profile = ({ navigation }: any) => {
                   )}
                   <View style={{ width: 8 }} />
                   <TouchableOpacity
-                    style={styles.hoverButtonFull}
+                    style={styleAddtree.hoverButtonFull}
                     onPress={handleModalImagePicker}>
-                    <View style={styles.frame625074}>
-                      <View style={styles.frame625079}>
+                    <View style={styleAddtree.frame625074}>
+                      <View style={styleAddtree.frame625079}>
                         <IconUpload />
                         <View style={{ width: 16 }} />
-                        <Text style={styles.photo}>Photo</Text>
+                        <Text style={styleAddtree.photo}>Photo</Text>
                       </View>
                     </View>
                   </TouchableOpacity>
@@ -231,7 +231,7 @@ const Profile = ({ navigation }: any) => {
                     <IconDeleteRed />
                   </TouchableOpacity>
                 </View>
-                <View style={styles.inputSession}>
+                <View style={styleAddtree.inputSession}>
                   {profile.map((input, index) => (
                     <View key={index}>
                       <Input
@@ -251,9 +251,9 @@ const Profile = ({ navigation }: any) => {
                   ))}
                 </View>
                 <TouchableOpacity
-                  style={styles.btnSendSession}
+                  style={styleAddtree.btnSendSession}
                   onPress={handleEditProfile}>
-                  <View style={styles.txtBtnSignup}>
+                  <View style={styleAddtree.txtBtnSignup}>
                     <IconSave />
                     <View style={{ width: 16 }} />
                     <Text
@@ -280,9 +280,9 @@ const Profile = ({ navigation }: any) => {
         titleBody={titleBody}
         handleModalSuccess={() => setIsModalSuccess(!isModalSuccess)}
         isFooter={false}
-        handleDeleteTree={() => {}}
+        handleFunction={() => {}}
       />
-      <PopUpLoading isModalSuccess={isModalLoading} />
+      <PopUpLoading isModalVisible={isModalLoading} />
       {/* End up noti and loading */}
     </>
   );

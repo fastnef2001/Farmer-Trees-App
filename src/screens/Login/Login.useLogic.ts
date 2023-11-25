@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import auth from '@react-native-firebase/auth';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StatusBar,
-} from 'react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import firestore from '@react-native-firebase/firestore';
-import { useNavigation } from '@react-navigation/native';
+import { Database } from '../../database/database';
+import { set } from 'date-fns';
 
 export function UseLogic({ navigation }: any) {
+  const { checkEmailExist, checkFarmNameExist, signOut } = Database();
   const [isModalVisibleLoading, setIsModalVisibleLoading] = useState(false);
   const [errorText, setErrorText] = useState('');
   const [inputs, setInputs] = useState([
@@ -25,24 +18,20 @@ export function UseLogic({ navigation }: any) {
       '159898876320-kqda9k08g543vj86cqqq9ck78ismjiog.apps.googleusercontent.com',
   });
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      setErrorText('');
-      setInputs(
-        inputs.map(input => ({
-          ...input,
-          error: '',
-        })),
-      );
-    });
-    return unsubscribe;
-  }, [inputs, navigation]);
-
   const handleInputChange = (index: any, value: any) => {
     const newInputs = [...inputs];
     newInputs[index].value = value;
     newInputs[index].error = '';
     setInputs(newInputs);
+  };
+
+  const checkFarmName = async () => {
+    const isCheckFarmNameExist = await checkFarmNameExist();
+    {
+      isCheckFarmNameExist
+        ? navigation.navigate('Tabs')
+        : navigation.navigate('Farmname');
+    }
   };
 
   const signIn = async () => {
@@ -71,10 +60,7 @@ export function UseLogic({ navigation }: any) {
       return;
     }
     // check mail not exist
-    const isUserExist = await auth().fetchSignInMethodsForEmail(
-      emailInput?.value,
-    );
-    if (isUserExist.length === 0) {
+    if (!(await checkEmailExist(emailInput?.value))) {
       setInputs(
         inputs.map(input => ({
           ...input,
@@ -83,15 +69,14 @@ export function UseLogic({ navigation }: any) {
       );
       return;
     }
-
+    setIsModalVisibleLoading(true);
     try {
-      handleModalLoading();
       await auth().signInWithEmailAndPassword(
         emailInput?.value,
         passwordInput?.value,
       );
-      checkFarmName();
-      handleModalLoading();
+      setIsModalVisibleLoading(false);
+      // checkFarmName();
     } catch (error: any) {
       if (error.code === 'auth/wrong-password') {
         setInputs(
@@ -101,68 +86,29 @@ export function UseLogic({ navigation }: any) {
           })),
         );
       } else {
+        setIsModalVisibleLoading(false);
         setErrorText('Sign in failed. Please check again.');
       }
-      handleModalLoading();
     }
   };
 
   const signByGoogle = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      if (!userInfo) {
-        setErrorText('Gmail is not registered.');
-        return;
-      }
-      const googleCredential = auth.GoogleAuthProvider.credential(
-        userInfo.idToken,
-      );
-
-      // Check if user already exists in Firebase
-      const isUserExist = await auth().fetchSignInMethodsForEmail(
-        userInfo.user.email,
-      );
-      if (isUserExist.length === 0) {
-        setErrorText('Gmail is not registered.');
-        await GoogleSignin.revokeAccess();
-        await GoogleSignin.signOut();
-        return;
-      }
-      handleModalLoading();
-      await auth().signInWithCredential(googleCredential);
-      checkFarmName();
-      handleModalLoading();
-    } catch {
-      console.log('error');
+    await GoogleSignin.hasPlayServices();
+    const userInfo = await GoogleSignin.signIn();
+    if (!userInfo) {
+      console.log('User cancelled the login flow');
+      return;
     }
-  };
-
-  const checkFarmName = async () => {
-    const user = auth().currentUser;
-    const documentSnapshot = await firestore()
-      .collection('users')
-      .doc(user?.uid)
-      .get();
-    const dataFarmName = documentSnapshot.data()?.farmName;
-
-    if (dataFarmName) {
-      navigation.navigate('Tabs');
-    } else {
-      navigation.navigate('Farmname');
+    setIsModalVisibleLoading(true);
+    const email = userInfo.user.email;
+    const isCheckEmailExist = await checkEmailExist(email);
+    setIsModalVisibleLoading(false);
+    if (!isCheckEmailExist) {
+      setErrorText('Gmail is not registered.');
+      signOut();
+      return;
     }
-    setTimeout(() => {
-      setInputs(
-        inputs.map(input => ({
-          ...input,
-          value: '',
-        })),
-      );
-    }, 2000);
-  };
-
-  const handleModalLoading = () => {
-    setIsModalVisibleLoading(prev => !prev);
+    checkFarmName();
   };
 
   return {
@@ -172,6 +118,6 @@ export function UseLogic({ navigation }: any) {
     signIn,
     signByGoogle,
     isModalVisibleLoading,
-    handleModalLoading,
+    setIsModalVisibleLoading,
   };
 }

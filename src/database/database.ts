@@ -10,7 +10,9 @@ import {
   DataIncomeInterface,
   DataExpenseInterface,
   InputValues,
+  UserInfor,
 } from '../Interface/Interface';
+import { set } from 'date-fns';
 
 function convertTotimestamp(date: string, isStart?: boolean) {
   let timeNow = format(new Date(), 'hh:mm:ss a');
@@ -87,14 +89,6 @@ function changeMonthToSrting(month: string) {
 }
 
 export function Database() {
-  interface UserInfor {
-    email: string;
-    farmName: string;
-    fullName: string;
-    phoneNumber: string;
-    imageUrl?: string;
-    isPayment: boolean;
-  }
   const [trees, setTrees] = useState<TreeInterface[]>([]);
   const [unitsIncome, setUnitsIncome] = useState<UnitInterface[]>([]);
   const [unitsExpense, setUnitsExpense] = useState<UnitInterface[]>([]);
@@ -104,14 +98,67 @@ export function Database() {
   const [totalExpense, setTotalExpense] = useState(0);
   const [dataExpense, setDataExpense] = useState<DataExpenseInterface[]>([]);
   const [userInfors, setUserInfors] = useState<UserInfor[]>([]);
+  const [titleError, setTitleError] = useState('');
+  //CHECK CHECK PHONE NUMBER EXIST
+  const checkFarmNameExist = async () => {
+    try {
+      // check xem usser dang dang nhap co farmName hay chua
+      const user = await firestore()
+        .collection('users')
+        .doc(auth().currentUser?.uid)
+        .get();
+      if (user.exists) {
+        if (user.data()?.farmName) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
+  };
+
+  //CHECK EMAIL EXIST
+  const checkEmailExist = async (email: string) => {
+    try {
+      const user = await auth().fetchSignInMethodsForEmail(email);
+      if (user.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
+  };
+
+  //CHECK PHONE NUMBER EXIST
+  const checkPhoneNumberExist = async (phoneNumber: string) => {
+    try {
+      const user = await firestore()
+        .collection('users')
+        .where('phoneNumber', '==', phoneNumber)
+        .get();
+      if (user.empty) {
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error) {
+      return false;
+    }
+  };
   //LOGOUT
   const signOut = async () => {
     await GoogleSignin.revokeAccess();
+    await GoogleSignin.signOut();
     try {
       await auth().signOut();
       return true;
     } catch (error) {
-      console.log(error);
       return false;
     }
   };
@@ -120,8 +167,11 @@ export function Database() {
     emailInput: InputValues,
     passwordInput: InputValues,
     fullNameInput: InputValues,
-    phoneNumberInput: InputValues,
   ) => {
+    if (await checkEmailExist(emailInput.value)) {
+      setTitleError('Email already exists.');
+      return;
+    }
     try {
       const response = await auth().createUserWithEmailAndPassword(
         emailInput.value,
@@ -130,12 +180,13 @@ export function Database() {
       const idUser = response.user.uid;
       await firestore().collection('users').doc(idUser).set({
         fullName: fullNameInput.value,
-        phoneNumber: phoneNumberInput.value,
         email: emailInput.value,
         isPayment: false,
       });
+      signOut();
+      return true;
     } catch (error) {
-      return false;
+      setTitleError('Sign up failed. Please check again.');
     }
   };
 
@@ -159,8 +210,7 @@ export function Database() {
           isPayment: false,
         });
       }
-      await GoogleSignin.revokeAccess();
-      await GoogleSignin.signOut();
+      signOut();
       return true;
     } catch (error) {
       return false;
@@ -709,5 +759,9 @@ export function Database() {
     unitsExpense,
     costTypes,
     signOut,
+    checkEmailExist,
+    checkPhoneNumberExist,
+    titleError,
+    checkFarmNameExist,
   };
 }

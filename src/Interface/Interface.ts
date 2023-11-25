@@ -37,3 +37,12 @@ export interface DataIncomeInterface {
 export interface InputValues {
   value: string;
 }
+
+export interface UserInfor {
+  email: string;
+  farmName: string;
+  fullName: string;
+  phoneNumber: string;
+  imageUrl?: string;
+  isPayment: boolean;
+}

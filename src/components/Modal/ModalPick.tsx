@@ -1,18 +1,9 @@
 import React from 'react';
 import { ModalInsert } from './ModalInsert';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import styles from '../../screens/Setupfarm/Addtree.style';
+import { ScrollView, StatusBar, TouchableOpacity, View } from 'react-native';
+import { styleAddtree } from '../../screens/Setupfarm/Style';
 import { Text } from 'react-native';
 import IconBack from '../../assets/images/IconBack.svg';
-import IconCalendar from '../../assets/images/IconCalendar.svg';
-import Input from '../../components/Input/Input.component';
-import IconSave from '../../assets/images/IconSave.svg';
 import { COLORS } from '../../theme/color';
 import { RadioButton } from 'react-native-paper';
 import { TreeInterface, UnitInterface } from '../../Interface/Interface';
@@ -47,12 +38,12 @@ export const ModalPick = (
         <StatusBar backgroundColor={'#010508'} />
         <ModalInsert.Container isPick={true}>
           <ModalInsert.Header>
-            <View style={styles.headSessionModal}>
+            <View style={styleAddtree.headSessionModal}>
               <TouchableOpacity onPress={() => handlePickItem()}>
                 <IconBack> </IconBack>
               </TouchableOpacity>
-              <View style={styles.txtContainer}>
-                <Text style={styles.txtTitleModal}>{titlePick}</Text>
+              <View style={styleAddtree.txtContainer}>
+                <Text style={styleAddtree.txtTitleModal}>{titlePick}</Text>
               </View>
               <View
                 style={{

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import styles from '../../screens/Setupfarm/Addtree.style';
+import styles from '../../screens/Setupfarm/Style';
 import { Text } from 'react-native';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconCalendar from '../../assets/images/IconCalendar.svg';

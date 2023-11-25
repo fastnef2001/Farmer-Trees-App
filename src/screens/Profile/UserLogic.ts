@@ -37,9 +37,8 @@ export function UseLogic(navigation: any) {
   });
 
   const handleLogOut = async () => {
-    if (await signOut()) {
-      navigation.navigate('LoginScreen');
-    }
+    signOut();
+    navigation.navigate('LoginScreen');
   };
 
   const handleModelEditProfile = () => {

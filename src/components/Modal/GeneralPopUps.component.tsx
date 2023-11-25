@@ -3,46 +3,88 @@ import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { Modal } from './Modal';
 import { StatusBar } from 'react-native';
 import { ModalLoading } from './ModalLoading';
-import { ButtonBack, ButtonDelete } from '../../components/Button/Button';
+import {
+  ButtonBack,
+  ButtonDelete,
+  ButtonLogin,
+} from '../../components/Button/Button';
 
 export type PopUpSuccessProps = {
   isModalSuccess: boolean;
-  titleHeader: string;
-  titleBody: string;
+  titleHeader?: string;
+  titleBody?: string;
   isFooter?: boolean;
-  handleDeleteTree: () => void;
+  handleFunction: () => void;
   handleModalSuccess: () => void;
+  isLogin?: boolean;
 };
 
 export type PopUpLoadingProps = {
-  isModalSuccess: boolean;
+  isModalVisible: boolean;
+};
+
+export const PopUpSuccessLogin = ({
+  isModalSuccess,
+  handleFunction,
+  handleModalSuccess,
+}: PopUpSuccessProps) => {
+  return (
+    <>
+      <Modal isVisible={isModalSuccess}>
+        <StatusBar backgroundColor={'#07111B'} />
+        <Modal.Container>
+          <Modal.Header title={'Successfully'} />
+          <Modal.Body
+            title={'You have successfully registered, please login.'}
+          />
+          <Modal.Footer>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingHorizontal: 8,
+              }}>
+              <ButtonBack
+                isRight={false}
+                isDelete={false}
+                title="CANCEL"
+                onPress={handleModalSuccess}
+              />
+              <View style={{ width: 16 }} />
+              <ButtonLogin
+                isRight={true}
+                isDelete={true}
+                title="LOGIN"
+                onPress={handleFunction}
+              />
+            </View>
+          </Modal.Footer>
+        </Modal.Container>
+      </Modal>
+    </>
+  );
 };
 
 export const PopUpSuccess = ({
   isModalSuccess,
   titleHeader,
   titleBody,
-  handleDeleteTree,
-  isFooter = false,
+  handleFunction,
+  isFooter,
   handleModalSuccess,
+  isLogin,
 }: PopUpSuccessProps) => {
-  const [isModalVisible, setModalVisible] = useState(false);
-  useEffect(() => {
-    setModalVisible(isModalSuccess);
-  }, [isModalSuccess]);
-
   return (
     <>
       <Modal
-        animationType="fade"
-        transparent={true}
-        isVisible={isModalVisible}
+        // transparent={true}
+        isVisible={isModalSuccess}
         onRequestClose={handleModalSuccess}
         onBackdropPress={handleModalSuccess}>
         <StatusBar backgroundColor={'#07111B'} />
         <Modal.Container>
-          <Modal.Header title={titleHeader} />
-          <Modal.Body title={titleBody} />
+          <Modal.Header title={''} />
+          <Modal.Body title={''} />
           {isFooter ? (
             <Modal.Footer>
               <View
@@ -58,37 +100,24 @@ export const PopUpSuccess = ({
                   onPress={handleModalSuccess}
                 />
                 <View style={{ width: 16 }} />
-                <ButtonDelete
-                  isRight={true}
-                  isDelete={true}
-                  title="DELETE"
-                  onPress={handleDeleteTree}
-                />
+                {isLogin ? (
+                  <ButtonLogin
+                    isRight={true}
+                    isDelete={true}
+                    title="LOGIN"
+                    onPress={handleFunction}
+                  />
+                ) : (
+                  <ButtonDelete
+                    isRight={true}
+                    isDelete={true}
+                    title="DELETE"
+                    onPress={handleFunction}
+                  />
+                )}
               </View>
             </Modal.Footer>
           ) : null}
-          {/* <Modal.Footer>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingHorizontal: 8,
-              }}>
-              <ButtonBack
-                isRight={false}
-                isDelete={false}
-                title="CANCEL"
-                onPress={() => setModalVisible(false)}
-              />
-              <View style={{ width: 16 }} />
-              <ButtonDelete
-                isRight={true}
-                isDelete={true}
-                title="LOGIN"
-                onPress={() => handleDeleteTree(key)}
-              />
-            </View>
-          </Modal.Footer> */}
         </Modal.Container>
       </Modal>
     </>
@@ -99,7 +128,7 @@ export const PopUpSuccessPayment = ({
   isModalSuccess,
   titleHeader,
   titleBody,
-  handleDeleteTree,
+  handleFunction,
   isFooter = false,
   handleModalSuccess,
 }: PopUpSuccessProps) => {
@@ -118,8 +147,8 @@ export const PopUpSuccessPayment = ({
         onBackdropPress={handleModalSuccess}>
         <StatusBar backgroundColor={'#07111B'} />
         <Modal.Container>
-          <Modal.Header title={titleHeader} />
-          <Modal.Body title={titleBody} />
+          <Modal.Header title={''} />
+          <Modal.Body title={''} />
           {isFooter ? (
             <Modal.Footer>
               <View
@@ -132,49 +161,22 @@ export const PopUpSuccessPayment = ({
                   isRight={false}
                   isDelete={false}
                   title="Chat With AI"
-                  onPress={handleDeleteTree}
+                  onPress={handleFunction}
                 />
               </View>
             </Modal.Footer>
           ) : null}
-          {/* <Modal.Footer>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingHorizontal: 8,
-              }}>
-              <ButtonBack
-                isRight={false}
-                isDelete={false}
-                title="CANCEL"
-                onPress={() => setModalVisible(false)}
-              />
-              <View style={{ width: 16 }} />
-              <ButtonDelete
-                isRight={true}
-                isDelete={true}
-                title="LOGIN"
-                onPress={() => handleDeleteTree(key)}
-              />
-            </View>
-          </Modal.Footer> */}
         </Modal.Container>
       </Modal>
     </>
   );
 };
 
-export const PopUpLoading = ({ isModalSuccess }: PopUpLoadingProps) => {
-  const [isModalVisible, setModalVisible] = useState(false);
-  useEffect(() => {
-    setModalVisible(isModalSuccess);
-  }, [isModalSuccess]);
-
+export const PopUpLoading = ({ isModalVisible }: PopUpLoadingProps) => {
   return (
     <>
       <ModalLoading isVisible={isModalVisible}>
-        <StatusBar backgroundColor={'#010508'} />
+        <StatusBar backgroundColor={'#07111B'} />
         <SafeAreaView>
           <ModalLoading.Container />
         </SafeAreaView>
