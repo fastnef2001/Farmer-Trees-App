@@ -46,22 +46,16 @@ const YourFarm = ({ navigation }: any) => {
     handleModalImagePicker,
     handleModalDelete,
     handleModalEditTree,
-    handleModalSuccess,
     handleModalCalculate,
     handleModalPickUnitExpense,
     handleAddTree,
     handleEditTree,
-    handleDeleteTree,
     handleCalculate,
-    handleDeleteImage,
+    setSelectImage,
     selectImage,
     inputs,
     handleInputChange,
     farmName,
-    key,
-    titleHeader,
-    titleBody,
-    isFooter,
     valuePick,
     titlePick,
     resultTotalQuantity,
@@ -70,6 +64,11 @@ const YourFarm = ({ navigation }: any) => {
     unitsExpense,
     unitsIncome,
     costTypes,
+    handleFunction,
+    titlePopupNoti,
+    contentPopupNoti,
+    titleModalSuccess,
+    setIsModalSuccess,
   } = UseLogic();
 
   return (
@@ -170,7 +169,10 @@ const YourFarm = ({ navigation }: any) => {
                     </View>
                   </TouchableOpacity>
                   <View style={{ width: 8 }} />
-                  <TouchableOpacity onPress={handleDeleteImage}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectImage('');
+                    }}>
                     <IconDeleteRed />
                   </TouchableOpacity>
                 </View>
@@ -264,7 +266,10 @@ const YourFarm = ({ navigation }: any) => {
                   </View>
                 </TouchableOpacity>
                 <View style={{ width: 8 }} />
-                <TouchableOpacity onPress={handleDeleteImage}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectImage('');
+                  }}>
                   <IconDeleteRed />
                 </TouchableOpacity>
               </View>
@@ -426,11 +431,11 @@ const YourFarm = ({ navigation }: any) => {
 
       <PopUpSuccess
         isModalSuccess={isModalSuccess}
-        titleHeader={titleHeader}
-        titleBody={titleBody}
-        handleFunction={() => handleDeleteTree(key)}
-        isFooter={isFooter}
-        handleModalSuccess={handleModalSuccess}
+        titleHeader={titlePopupNoti}
+        titleBody={contentPopupNoti}
+        handleModalSuccess={() => setIsModalSuccess(!isModalSuccess)}
+        handleFunction={handleFunction}
+        title={titleModalSuccess}
       />
 
       <PopUpLoading isModalVisible={isModalLoading} />

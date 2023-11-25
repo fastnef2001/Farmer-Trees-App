@@ -197,6 +197,7 @@ export const UseLogicAddtree = () => {
     keyValue,
     handleFunction,
     titleModalSuccess,
+    setInputs,
   };
 };
 
