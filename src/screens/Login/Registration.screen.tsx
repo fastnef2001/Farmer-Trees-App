@@ -5,7 +5,7 @@ import styles from './Style';
 import Input from '../../components/Input/Input.component';
 import {
   PopUpLoading,
-  PopUpSuccessLogin,
+  PopUpSuccess,
 } from '../../components/Modal/GeneralPopUps.component';
 //Icon
 import IconSignUp from '../../assets/images/IconSignUp.svg';
@@ -84,7 +84,7 @@ const RegistrationScreen = ({ navigation }: any) => {
         </TouchableOpacity>
       </View>
       <PopUpLoading isModalVisible={isModalVisibleLoading} />
-      <PopUpSuccessLogin
+      <PopUpSuccess
         isModalSuccess={isModalVisible}
         titleHeader={'Successfully'}
         titleBody={'You have successfully registered, please login.'}
@@ -92,6 +92,7 @@ const RegistrationScreen = ({ navigation }: any) => {
         handleFunction={() => {
           navigation.navigate('LoginScreen');
         }}
+        title={'login'}
       />
     </>
   );

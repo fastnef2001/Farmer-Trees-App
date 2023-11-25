@@ -1,4 +1,5 @@
 export interface TreeInterface {
+  [x: string]: any;
   key(key: any): void;
   name: string;
   quanlity: string;

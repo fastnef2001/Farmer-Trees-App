@@ -4,30 +4,13 @@ import { HeaderComponent } from '../../components/Header/Header.component';
 import IconBack from '../../assets/images/IconBack.svg';
 import Input from '../../components/Input/Input.component';
 import IconContinue from '../../assets/images/IconContinue.svg';
-import { Database } from '../../database/database';
 import { stylesFarmname } from './Style';
+import { UselogicFarmname } from './UseLogic';
 
 const Farmname = ({ navigation }: any) => {
-  const { createFarmName, signOut } = Database();
-  const [farmName, setFarmName] = useState('');
-  const [errorName, setErrorName] = useState('');
-
-  const saveFarmName = async () => {
-    if (!farmName) {
-      setErrorName('Please enter your farm name');
-      return;
-    }
-    if ((await createFarmName(farmName)) === true) {
-      navigation.navigate('AddTree');
-    }
-  };
-
-  const handleInputChange = (text: any) => {
-    setErrorName('');
-    console.log(text);
-    setFarmName(text);
-  };
-
+  const { signOut, handleInputChangeFarmName, saveFarmName } = UselogicFarmname(
+    { navigation },
+  );
   return (
     <>
       <HeaderComponent />
@@ -50,8 +33,7 @@ const Farmname = ({ navigation }: any) => {
             label="Farm name"
             placeholder="Enter your farm name"
             span="*"
-            onChangeText={(text: string) => handleInputChange(text)}
-            error={errorName}
+            onChangeText={(text: string) => handleInputChangeFarmName(text)}
           />
         </View>
 

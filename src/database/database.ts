@@ -182,6 +182,9 @@ export function Database() {
         fullName: fullNameInput.value,
         email: emailInput.value,
         isPayment: false,
+        farmName: '',
+        phoneNumber: '',
+        imageUrl: '',
       });
       signOut();
       return true;
@@ -208,6 +211,9 @@ export function Database() {
           fullName: fullNameGoogle,
           email: emailGoogle,
           isPayment: false,
+          farmName: '',
+          phoneNumber: '',
+          imageUrl: '',
         });
       }
       signOut();

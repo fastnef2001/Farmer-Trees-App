@@ -107,6 +107,11 @@ export function UseLogic({ navigation }: any) {
       setErrorText('Gmail is not registered.');
       signOut();
       return;
+    } else {
+      const googleCredential = auth.GoogleAuthProvider.credential(
+        userInfo.idToken,
+      );
+      await auth().signInWithCredential(googleCredential);
     }
     checkFarmName();
   };
