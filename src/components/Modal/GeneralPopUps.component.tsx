@@ -7,6 +7,7 @@ import {
   ButtonBack,
   ButtonDelete,
   ButtonLogin,
+  ButtonChatAI,
 } from '../../components/Button/Button';
 
 export type PopUpSuccessProps = {
@@ -76,10 +77,7 @@ export const PopUpSuccess = ({
 }: PopUpSuccessProps) => {
   return (
     <>
-      <Modal
-        isVisible={isModalSuccess}
-        onRequestClose={handleModalSuccess}
-        onBackdropPress={handleModalSuccess}>
+      <Modal isVisible={isModalSuccess} onBackdropPress={handleModalSuccess}>
         <StatusBar backgroundColor={'#07111B'} />
         <Modal.Container>
           <Modal.Header title={titleHeader} />
@@ -92,35 +90,15 @@ export const PopUpSuccess = ({
                   justifyContent: 'space-between',
                   paddingHorizontal: 8,
                 }}>
-                <ButtonBack
-                  isRight={false}
-                  isDelete={false}
-                  title="CANCEL"
-                  onPress={handleModalSuccess}
-                />
+                <ButtonBack title="CANCEL" onPress={handleModalSuccess} />
                 <View style={{ width: 16 }} />
                 {title === 'login' ? (
-                  <ButtonLogin
-                    isRight={true}
-                    isDelete={true}
-                    title="LOGIN"
-                    onPress={handleFunction}
-                  />
+                  <ButtonLogin title="LOGIN" onPress={handleFunction} />
                 ) : title === 'delete' ? (
-                  <ButtonDelete
-                    isRight={true}
-                    isDelete={true}
-                    title="DELETE"
-                    onPress={handleFunction}
-                  />
-                ) : (
-                  <ButtonBack
-                    isRight={true}
-                    isDelete={true}
-                    title="CHAT AI"
-                    onPress={handleModalSuccess}
-                  />
-                )}
+                  <ButtonDelete title="DELETE" onPress={handleFunction} />
+                ) : title === 'payment' ? (
+                  <ButtonChatAI title="CHAT AI" onPress={handleFunction} />
+                ) : null}
               </View>
             </Modal.Footer>
           ) : null}
@@ -129,54 +107,6 @@ export const PopUpSuccess = ({
     </>
   );
 };
-
-// export const PopUpSuccessPayment = ({
-//   isModalSuccess,
-//   titleHeader,
-//   titleBody,
-//   handleFunction,
-//   isFooter = false,
-//   handleModalSuccess,
-// }: PopUpSuccessProps) => {
-//   const [isModalVisible, setModalVisible] = useState(false);
-//   useEffect(() => {
-//     setModalVisible(isModalSuccess);
-//   }, [isModalSuccess]);
-
-//   return (
-//     <>
-//       <Modal
-//         animationType="fade"
-//         transparent={true}
-//         isVisible={isModalVisible}
-//         onRequestClose={handleModalSuccess}
-//         onBackdropPress={handleModalSuccess}>
-//         <StatusBar backgroundColor={'#07111B'} />
-//         <Modal.Container>
-//           <Modal.Header title={''} />
-//           <Modal.Body title={''} />
-//           {isFooter ? (
-//             <Modal.Footer>
-//               <View
-//                 style={{
-//                   flexDirection: 'row',
-//                   justifyContent: 'space-between',
-//                   paddingHorizontal: 8,
-//                 }}>
-//                 <ButtonBack
-//                   isRight={false}
-//                   isDelete={false}
-//                   title="Chat With AI"
-//                   onPress={handleFunction}
-//                 />
-//               </View>
-//             </Modal.Footer>
-//           ) : null}
-//         </Modal.Container>
-//       </Modal>
-//     </>
-//   );
-// };
 
 export const PopUpLoading = ({ isModalVisible }: PopUpLoadingProps) => {
   return (

@@ -12,22 +12,22 @@ let orderDetail = {
     {
       items: [
         {
-          name: 'T-Shirt',
-          description: 'Green XL',
+          name: 'Chat with AI',
+          description: 'Open chat with AI',
           quantity: '1',
           unit_amount: {
             currency_code: 'USD',
-            value: '1.00',
+            value: '100.00',
           },
         },
       ],
       amount: {
         currency_code: 'USD',
-        value: '1.00',
+        value: '100.00',
         breakdown: {
           item_total: {
             currency_code: 'USD',
-            value: '1.00',
+            value: '100.00',
           },
         },
       },

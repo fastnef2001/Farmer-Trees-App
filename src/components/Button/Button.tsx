@@ -4,60 +4,50 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import IconSignUp from '../../assets/images/IconSignUp.svg';
 import IconBackSmall from '../../assets/images/IconBackSmall.svg';
-import IconDelete36 from '../../assets/images/IconDelete36.svg';
+import IconChat24 from '../../assets/images/IconChat24.svg';
 import IconDelete24 from '../../assets/images/IconDelete24.svg';
 import IconEdit20 from '../../assets/images/IconEdit20.svg';
 
 export type ButtonProps = {
   title: string;
-  isRight: boolean;
-  isDelete: boolean;
   onPress: () => void;
 };
 
-export const ButtonBack = ({ isRight, title, onPress }: ButtonProps) => {
+export const ButtonBack = ({ title, onPress }: ButtonProps) => {
   return (
-    <TouchableOpacity
-      style={isRight ? styles.button : styles.buttonLeft}
-      onPress={onPress}>
+    <TouchableOpacity style={styles.buttonLeft} onPress={onPress}>
       <View
         style={{
           flexDirection: 'row',
-          // tôi muốn hai cái icon và text nằm trên cùng một hàng và cách nhau 4px
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
         <IconBackSmall />
         <View style={{ width: 4 }} />
-        <Text style={isRight ? styles.text : styles.textLeft}>{title}</Text>
+        <Text style={styles.textLeft}>{title}</Text>
       </View>
     </TouchableOpacity>
   );
 };
-export const ButtonLogin = ({ isRight, title, onPress }: ButtonProps) => {
+export const ButtonLogin = ({ title, onPress }: ButtonProps) => {
   return (
-    <TouchableOpacity
-      style={isRight ? styles.button : styles.buttonLeft}
-      onPress={onPress}>
+    <TouchableOpacity style={styles.button} onPress={onPress}>
       <View
         style={{
           flexDirection: 'row',
-          // tôi muốn hai cái icon và text nằm trên cùng một hàng và cách nhau 4px
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
         <IconSignUp />
         <View style={{ width: 4 }} />
-        <Text style={isRight ? styles.text : styles.textLeft}>{title}</Text>
+        <Text style={styles.text}>{title}</Text>
       </View>
     </TouchableOpacity>
   );
 };
-export const ButtonDelete = ({ isDelete, title, onPress }: ButtonProps) => {
+export const ButtonDelete = ({ title, onPress }: ButtonProps) => {
   return (
-    <TouchableOpacity
-      style={isDelete ? styles.buttonRed : styles.buttonLeft}
-      onPress={onPress}>
+    <TouchableOpacity style={styles.buttonRed} onPress={onPress}>
       <View
         style={{
           flexDirection: 'row',
@@ -66,27 +56,24 @@ export const ButtonDelete = ({ isDelete, title, onPress }: ButtonProps) => {
         }}>
         <IconDelete24 />
         <View style={{ width: 4 }} />
-        <Text style={isDelete ? styles.text : styles.textLeft}>{title}</Text>
+        <Text style={styles.text}>{title}</Text>
       </View>
     </TouchableOpacity>
   );
 };
 
-export const ButtonEdit = ({ isRight, title, onPress }: ButtonProps) => {
+export const ButtonChatAI = ({ title, onPress }: ButtonProps) => {
   return (
-    <TouchableOpacity
-      style={isRight ? styles.button : styles.buttonLeft}
-      onPress={onPress}>
+    <TouchableOpacity style={styles.button} onPress={onPress}>
       <View
         style={{
           flexDirection: 'row',
-          // tôi muốn hai cái icon và text nằm trên cùng một hàng và cách nhau 4px
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
-        <IconEdit20 />
+        <IconSignUp />
         <View style={{ width: 4 }} />
-        <Text style={isRight ? styles.text : styles.textLeft}>{title}</Text>
+        <Text style={styles.text}>{title}</Text>
       </View>
     </TouchableOpacity>
   );

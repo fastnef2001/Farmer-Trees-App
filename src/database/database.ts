@@ -293,6 +293,15 @@ export function Database() {
     }
   };
 
+  const updateIsPayment = () => {
+    const user = auth().currentUser;
+    if (user) {
+      firestore().collection('users').doc(user?.uid).update({
+        isPayment: true,
+      });
+    }
+  };
+
   //CRUD TREE
   const createTree = async (
     treeNameInput: InputValues,
@@ -769,5 +778,6 @@ export function Database() {
     checkPhoneNumberExist,
     titleError,
     checkFarmNameExist,
+    updateIsPayment,
   };
 }
