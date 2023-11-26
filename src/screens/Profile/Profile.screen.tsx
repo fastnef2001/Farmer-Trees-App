@@ -8,7 +8,7 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import { HeaderTitle } from '../../components/Header/Header.component';
+//ICON
 import IconUser40 from '../../assets/images/IconUser40.svg';
 import IconPhone40 from '../../assets/images/IconPhone40.svg';
 import IconDetailBold from '../../assets/images/IconDetailBold.svg';
@@ -17,20 +17,24 @@ import IconHeart40 from '../../assets/images/IconHeart40.svg';
 import IconLogOut40 from '../../assets/images/IconLogOut40.svg';
 import stylesButton from '../Login/Style';
 import IconEditBlue40 from '../../assets/images/IconEditBlue40.svg';
-import { styleElement1, styleElement2 } from '../Profile/Profile.style';
-import { UseLogic } from './UserLogic';
-import { ModalInsert } from '../../components/Modal/ModalInsert';
-import { styleAddtree } from '../Setupfarm/Style';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconUpload from '../../assets/images/IconUpload.svg';
 import IconDeleteRed from '../../assets/images/IconDeleteRed.svg';
 import IconSave from '../../assets/images/IconSave.svg';
 import IconPremium40 from '../../assets/images/IconPremium40.svg';
+//COMPONENT
+import { HeaderTitle } from '../../components/Header/Header.component';
+import { ModalInsert } from '../../components/Modal/ModalInsert';
 import Input from '../../components/Input/Input.component';
 import {
   PopUpSuccess,
   PopUpLoading,
 } from '../../components/Modal/GeneralPopUps.component';
+//STYLE
+import { styleElement1, styleElement2 } from '../Profile/Profile.style';
+import { styleAddtree } from '../Setupfarm/Style';
+//USE LOGIC
+import { UseLogic } from './UserLogic';
 
 const Profile = ({ navigation }: any) => {
   const {
@@ -42,7 +46,6 @@ const Profile = ({ navigation }: any) => {
     phoneNumber,
     isModalEditProfile,
     handleModelEditProfile,
-    handleDeleteImage,
     handleModalImagePicker,
     selectImage,
     profile,
@@ -51,8 +54,11 @@ const Profile = ({ navigation }: any) => {
     setIsModalSuccess,
     isModalLoading,
     isModalSuccess,
-    titleHeader,
-    titleBody,
+    titlePopupNoti,
+    contentPopupNoti,
+    titleModalSuccess,
+    handleFunction,
+    setSelectImage,
   } = UseLogic(navigation);
   console.log('profile', profile);
   console.log('avatar', avatar);
@@ -62,7 +68,6 @@ const Profile = ({ navigation }: any) => {
       <SafeAreaView style={{ flex: 1 }}>
         <HeaderTitle title="Profile" />
         <View style={{ height: 24 }} />
-        {/* element 1 */}
         <View style={styleElement1.root}>
           {avatar ? (
             <Image
@@ -101,12 +106,6 @@ const Profile = ({ navigation }: any) => {
             <View style={{ width: 16 }} />
             <View style={styleElement2.content}>
               <Text style={styleElement2.title}>Phone number</Text>
-              {/* {{ phoneNumber } ? (
-                <Text style={styleElement2.farmName}>{phoneNumber}</Text>
-              ) : (
-                <Text style={styleElement2.farmName}>Not set</Text>
-              )} */}
-              {/* nếu phoneNumber không tồn tại thì  */}
               {phoneNumber ? (
                 <Text style={styleElement2.farmName}>{phoneNumber}</Text>
               ) : (
@@ -185,7 +184,7 @@ const Profile = ({ navigation }: any) => {
                   <IconBack> </IconBack>
                 </TouchableOpacity>
                 <View style={styleAddtree.txtContainer}>
-                  <Text style={styleAddtree.txtTitleModal}>Add tree</Text>
+                  <Text style={styleAddtree.txtTitleModal}>Edit profile</Text>
                 </View>
                 <View
                   style={{
@@ -227,7 +226,10 @@ const Profile = ({ navigation }: any) => {
                     </View>
                   </TouchableOpacity>
                   <View style={{ width: 8 }} />
-                  <TouchableOpacity onPress={handleDeleteImage}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectImage('');
+                    }}>
                     <IconDeleteRed />
                   </TouchableOpacity>
                 </View>
@@ -273,17 +275,16 @@ const Profile = ({ navigation }: any) => {
         </View>
       </ModalInsert>
 
-      {/* Pop up noti and loading */}
       <PopUpSuccess
         isModalSuccess={isModalSuccess}
-        titleHeader={titleHeader}
-        titleBody={titleBody}
+        titleHeader={titlePopupNoti}
+        titleBody={contentPopupNoti}
         handleModalSuccess={() => setIsModalSuccess(!isModalSuccess)}
-        isFooter={false}
-        handleFunction={() => {}}
+        handleFunction={handleFunction}
+        title={titleModalSuccess}
       />
+
       <PopUpLoading isModalVisible={isModalLoading} />
-      {/* End up noti and loading */}
     </>
   );
 };

@@ -1,7 +1,7 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useEffect } from 'react';
 import { MediaType, launchImageLibrary } from 'react-native-image-picker';
 import { Database } from '../../database/database';
+import { set } from 'date-fns';
 
 export function UseLogic(navigation: any) {
   const { getInforUser, userInfors, editProfile, signOut } = Database();
@@ -14,16 +14,17 @@ export function UseLogic(navigation: any) {
   ]);
   const [isModalSuccess, setIsModalSuccess] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
-  const [titleHeader, setTitleHeader] = useState('Successfully');
-  const [titleBody, setTitleBody] = useState(
-    'Your profile has been updated successfully',
-  );
+  const [titlePopupNoti, setTitlePopupNoti] = useState('');
+  const [contentPopupNoti, setContentPopupNoti] = useState('');
+  const [titleModalSuccess, setTitleModalSuccess] = useState('Successfully');
+  let handleFunction = () => {};
   let fullName = '';
   let email = '';
   let avatar = '';
   let farmName = '';
   let phoneNumber = '';
 
+  //ABOUT PROFILE
   useEffect(() => {
     getInforUser();
   }, [getInforUser]);
@@ -35,45 +36,6 @@ export function UseLogic(navigation: any) {
     farmName = userInfor.farmName;
     phoneNumber = userInfor.phoneNumber;
   });
-
-  const handleLogOut = async () => {
-    signOut();
-    navigation.navigate('LoginScreen');
-  };
-
-  const handleModelEditProfile = () => {
-    setIsModalEditProfile(!isModalEditProfile);
-
-    setProfile([
-      { label: 'Farm name', value: farmName, error: '' },
-      { label: 'Full name', value: fullName, error: '' },
-      { label: 'Phone number', value: phoneNumber, error: '' },
-    ]);
-  };
-
-  const handleModalImagePicker = () => {
-    const option = {
-      mediaType: 'photo' as MediaType,
-      storageOptions: {
-        path: 'image',
-      },
-    };
-    launchImageLibrary(option, response => {
-      if (response.assets && response.assets.length > 0) {
-        const selectedImage = response.assets[0].uri;
-        if (selectedImage) {
-          setSelectImage(selectedImage);
-        }
-      }
-    });
-  };
-  const handleDeleteImage = () => setSelectImage('');
-  const handleInputChange = (index: any, value: any) => {
-    const newInputs = [...profile];
-    newInputs[index].value = value;
-    newInputs[index].error = '';
-    setProfile(newInputs);
-  };
 
   const handleEditProfile = async () => {
     const farmNameInput = profile.find(input => input.label === 'Farm name');
@@ -90,23 +52,65 @@ export function UseLogic(navigation: any) {
       );
       return;
     }
-
-    handleModalLoading();
-    if (
-      await editProfile(
-        farmNameInput,
-        fullNameInput,
-        phoneNumberInput,
-        selectImage,
-      )
-    ) {
+    setIsModalLoading(() => true);
+    const isEditProfile = await editProfile(
+      farmNameInput,
+      fullNameInput,
+      phoneNumberInput,
+      selectImage,
+    );
+    setIsModalLoading(() => false);
+    if (isEditProfile) {
       setIsModalEditProfile(() => false);
-      setIsModalLoading(() => false);
-      setIsModalSuccess(() => true);
+      handleModalSuccessEditProfile();
     }
   };
 
-  const handleModalLoading = () => setIsModalLoading(() => !isModalLoading);
+  // HANDLE LOGOUT
+  const handleLogOut = async () => {
+    signOut();
+    navigation.navigate('LoginScreen');
+  };
+
+  // HANDLE MODAL
+  const handleModalSuccessEditProfile = () => {
+    setIsModalSuccess(() => true);
+    setTitlePopupNoti('Successfully');
+    setContentPopupNoti('Edit profile successfully');
+    handleFunction = () => {};
+    setTitleModalSuccess('');
+  };
+  const handleModelEditProfile = () => {
+    setIsModalEditProfile(!isModalEditProfile);
+    setProfile([
+      { label: 'Farm name', value: farmName, error: '' },
+      { label: 'Full name', value: fullName, error: '' },
+      { label: 'Phone number', value: phoneNumber, error: '' },
+    ]);
+  };
+  const handleModalImagePicker = () => {
+    const option = {
+      mediaType: 'photo' as MediaType,
+      storageOptions: {
+        path: 'image',
+      },
+    };
+    launchImageLibrary(option, response => {
+      if (response.assets && response.assets.length > 0) {
+        const selectedImage = response.assets[0].uri;
+        if (selectedImage) {
+          setSelectImage(selectedImage);
+        }
+      }
+    });
+  };
+  const handleInputChange = (index: any, value: any) => {
+    const newInputs = [...profile];
+    newInputs[index].value = value;
+    newInputs[index].error = '';
+    setProfile(newInputs);
+  };
+
   return {
     handleLogOut,
     fullName,
@@ -118,9 +122,8 @@ export function UseLogic(navigation: any) {
     setIsModalEditProfile,
     handleModelEditProfile,
     handleModalImagePicker,
-    handleDeleteImage,
-    selectImage,
     setSelectImage,
+    selectImage,
     profile,
     handleInputChange,
     handleEditProfile,
@@ -128,7 +131,9 @@ export function UseLogic(navigation: any) {
     setIsModalSuccess,
     isModalLoading,
     setIsModalLoading,
-    titleHeader,
-    titleBody,
+    titlePopupNoti,
+    contentPopupNoti,
+    titleModalSuccess,
+    handleFunction,
   };
 }

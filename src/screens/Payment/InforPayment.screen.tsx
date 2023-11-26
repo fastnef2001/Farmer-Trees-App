@@ -64,40 +64,6 @@ const InforPayment = ({ navigation }: any) => {
   } = UseLogic();
   return (
     <>
-      {/* <SafeAreaView style={{ flex: 1 }}> */}
-      {/* <HeaderTitle title="Upgarde premium" /> */}
-      {/* <View style={styless.root}>
-          <Text style={styless.textBody}>
-            Upgrade your account to Premium and take your user experience to the
-            next level! With our Premium subscription, you gain exclusive access
-            to the chat feature with AI, opening up a world of possibilities and
-            enhancing your interaction with our platform.
-          </Text>
-          <LottieView
-            style={{ width: 400, height: 250 }}
-            source={require('../../assets/animations/RobotReview.json')}
-            autoPlay
-            loop
-          />
-          <Text style={styless.textBody}>
-            For only $100, you can unlock all these premium features and elevate
-            your account to a new level of sophistication. We believe in
-            providing exceptional value for your investment, making your journey
-            with us not just satisfying but truly extraordinary.
-          </Text>
-        </View>
-
-        <View style={{ height: 40 }} />
-        <TouchableOpacity
-          style={stylesButton.signupGoogleBtn}
-          onPress={onPressPaypal}>
-          <View style={stylesButton.txtBtnSignup}>
-            <IconDola />
-            <View style={{ width: 0 }} />
-            <Text style={stylesButton.btnTextBlue}>Pay immediately</Text>
-          </View>
-        </TouchableOpacity> */}
-
       {paypalUrl ? (
         <WebView
           source={{
@@ -162,87 +128,7 @@ const InforPayment = ({ navigation }: any) => {
         isFooter={true}
         handleDeleteTree={() => navigation.navigate('Chat AI')}
       />
-      <PopUpLoading isModalSuccess={isLoading} />
-      {/* </SafeAreaView> */}
-
-      {/* <ModalInsert isVisible={isModalPayment} isPick={false}>
-        <StatusBar backgroundColor={'#07111B'} />
-        <View style={{ flex: 1 }}>
-          <ModalInsert.Container>
-            <ModalInsert.Header>
-              <View style={styles.headSessionModal}>
-                <TouchableOpacity onPress={handleModalPayment}>
-                  <IconBack> </IconBack>
-                </TouchableOpacity>
-                <View style={styles.txtContainer}>
-                  <Text style={styles.txtTitleModal}>Payment</Text>
-                </View>
-                <View
-                  style={{
-                    width: 40,
-                    height: 40,
-                  }}
-                />
-              </View>
-            </ModalInsert.Header>
-            <ScrollView>
-              <ModalInsert.Body>
-                <LottieView
-                  style={{ width: 200, height: 150, alignSelf: 'center' }}
-                  source={require('../../assets/animations/Payment.json')}
-                  autoPlay
-                  loop
-                />
-                <View style={styles.inputSession}>
-                  {inputsPayment.map((input, index) => (
-                    <View key={index}>
-                      <Input
-                        label={input.label}
-                        textPlaceholder={`Enter your ${input.label.toLowerCase()}`}
-                        value={input.value}
-                        onChangeText={(text: string) =>
-                          handleInputChange(index, text)
-                        }
-                        textError={input.error}
-                        keyboardType={'numeric'}
-                        span="*"
-                      />
-                    </View>
-                  ))}
-                </View>
-                <TouchableOpacity
-                  style={styles.btnSendSession}
-                  // onPress={handleEditProfile}
-                >
-                  <View style={styles.txtBtnSignup}>
-                    <IconVerify />
-                    <View style={{ width: 16 }} />
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        textAlign: 'center',
-                        color: COLORS.white,
-                        fontFamily: 'Nunito-Bold',
-                      }}>
-                      Confirm
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </ModalInsert.Body>
-            </ScrollView>
-          </ModalInsert.Container>
-        </View>
-      </ModalInsert> */}
-      {/* Pop up noti and loading */}
-      {/* <PopUpSuccess
-        isModalSuccess={isModalSuccess}
-        titleHeader={titleHeader}
-        titleBody={titleBody}
-        handleModalSuccess={() => setIsModalSuccess(!isModalSuccess)}
-        isFooter={false}
-        handleDeleteTree={() => {}}
-      /> */}
-      {/* <PopUpLoading isModalSuccess={isModalLoading} /> */}
+      <PopUpLoading isModalVisible={isLoading} />
     </>
   );
 };
