@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
 import { HeaderTitle } from '../../components/Header/Header.component';
 import stylesButton from '../Login/Style';
 import IconDola from '../../assets/images/IconDola.svg';

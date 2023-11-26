@@ -1,11 +1,7 @@
 import { set } from 'date-fns';
 import { useState, useEffect } from 'react';
 import { Database } from '../../database/database';
-import {
-  InputInterface,
-  TreeInterface,
-  UnitInterface,
-} from './Statistics.interface';
+import { InputInterface } from '../../Interface/Interface';
 
 export function UseLogic() {
   const {
@@ -69,22 +65,8 @@ export function UseLogic() {
   const [itemIncome, setItemIncome] = useState<any>({});
   //CRUD INCOME AND EXPENSE
   useEffect(() => {
-    getItems(
-      'incomes',
-      'income',
-      selectedDateStart,
-      selectedDateEnd,
-      selectedTreeOrCostType,
-      'tree',
-    );
-    getItems(
-      'expenses',
-      'expense',
-      selectedDateStart,
-      selectedDateEnd,
-      selectedTreeOrCostType,
-      'costType',
-    );
+    getItems('incomes', 'income', selectedDateStart, selectedDateEnd);
+    getItems('expenses', 'expense', selectedDateStart, selectedDateEnd);
     getCostType();
     getUnitExpense();
     getUnitIncome();
@@ -97,7 +79,6 @@ export function UseLogic() {
         inputs[3].value
       ) {
         setIsDisabled(false);
-        console.log('inputs', inputs);
       } else {
         setIsDisabled(true);
       }
@@ -193,16 +174,17 @@ export function UseLogic() {
 
   const handleModalAddItem = (title?: string) => {
     if (title === 'Add income') {
+      setTitleModalAdd(title);
       setSelectedDateIncome(timeNow);
       setInputs([...inputsIncome]);
     } else if (title === 'Add expense') {
+      setTitleModalAdd(title);
       setSelectedDateExpense(timeNow);
       setInputs([...inputsExpense]);
     }
-    if (title) {
-      setTitleModalAdd(title);
-    }
-    setIsModalAdd(!isModaAdd);
+    setTimeout(() => {
+      setIsModalAdd(!isModaAdd);
+    }, 200);
   };
 
   const handlePickItem = (value?: string) => {
@@ -406,5 +388,6 @@ export function UseLogic() {
     handleModalEditExpense,
     handleModalEditIncome,
     handleEditItem,
+    setIsModalAdd,
   };
 }

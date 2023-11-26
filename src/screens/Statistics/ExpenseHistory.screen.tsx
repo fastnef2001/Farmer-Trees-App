@@ -31,11 +31,7 @@ const ExpenseHistory = () => {
     status,
     isModalPickDate,
     setIsModalPickDate,
-    setSelectedTreeOrCostType,
     selectedTreeOrCostType,
-    isModalPickFilter,
-    titlePickFilter,
-    handleModalPickFilter,
     isModaAdd,
     titleModalAdd,
     inputs,
@@ -73,7 +69,7 @@ const ExpenseHistory = () => {
     handleModalEditExpense,
     handlePickItem,
     itemExpense,
-    titleDetail,
+    setIsModalAdd,
   } = UseLogic();
 
   return (
@@ -136,7 +132,6 @@ const ExpenseHistory = () => {
           <View style={{ height: 16 }} />
         </ScrollView>
       </SafeAreaView>
-      {/* Modal pick date */}
       <ModalPickDate
         isModalPickDate={isModalPickDate}
         setIsModalPickDate={setIsModalPickDate}
@@ -150,11 +145,9 @@ const ExpenseHistory = () => {
         selectedDateIncome={selectedDateIncome}
         selectedDateExpense={selectedDateExpense}
       />
-      {/* End modal pick date */}
-      {/* Modal add */}
       <ModalAdd
-        isModaAdd={isModaAdd}
-        handleModalAddItem={handleModalAddItem}
+        isModalAdd={isModaAdd}
+        handleBack={() => setIsModalAdd(false)}
         titleModalAdd={titleModalAdd}
         handlePickDate={handlePickDate}
         selectedDateIncome={selectedDateIncome}
@@ -169,8 +162,6 @@ const ExpenseHistory = () => {
         isDisabled={isDisabled}
         handleEditItem={handleEditItem}
       />
-      {/* End modal add */}
-      {/* Modal pick */}
       <ModalPick
         isModalPick={isModalPick}
         titlePick={titlePick}
@@ -181,9 +172,6 @@ const ExpenseHistory = () => {
         unitsExpense={unitsExpense}
         handlePickItem={handlePickItem}
       />
-
-      {/* End modal pick */}
-      {/* Modal detail */}
       <ModalDetail
         isModaDetail={isModalDetail}
         handlePressDetail={handlePressDetail}
@@ -194,7 +182,6 @@ const ExpenseHistory = () => {
         editItem={handleModalEditExpense}
       />
 
-      {/* Pop up noti and loading */}
       <PopUpSuccess
         isModalSuccess={isModalSuccess}
         titleHeader={titleHeader}
@@ -204,7 +191,6 @@ const ExpenseHistory = () => {
         handleModalSuccess={() => setIsModalSuccess(!isModalSuccess)}
       />
       <PopUpLoading isModalVisible={isModalLoading} />
-      {/* End up noti and loading */}
     </>
   );
 };

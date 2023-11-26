@@ -1,42 +1,29 @@
-/* eslint-disable no-alert */
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useEffect } from 'react';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import paypalApi from './paypalAPI';
 import queryString from 'query-string';
+import { Database } from '../../database/database';
 
 export function UseLogic() {
+  const { chekIsPayment, isPayment, updateIsPayment } = Database();
   const [isModalPayment, setIsModalPayment] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [paypalUrl, setPaypalUrl] = useState(null);
   const [accessToken, setAccessToken] = useState<any>(null || '');
   const [isModalSuccess, setIsModalSuccess] = useState(false);
 
-  const handleModalPayment = () => {
-    setIsModalPayment(!isModalPayment);
-  };
-
-  const [inputsPayment, setInputsPayment] = useState([
-    { label: 'Card name', value: '', error: '' },
-    { label: 'End date', value: '', error: '' },
-    { label: 'CVC', value: '', error: '' },
-  ]);
-
-  const handleInputChange = (index: any, value: any) => {
-    const newInputs = [...inputsPayment];
-    newInputs[index].value = value;
-    newInputs[index].error = '';
-    setInputsPayment(newInputs);
-  };
+  useEffect(() => {
+    chekIsPayment();
+  }, [chekIsPayment]);
 
   const onPressPaypal = async () => {
     setLoading(true);
     try {
+      console.log('1');
       const token = await paypalApi.generateToken();
       const res: any = await paypalApi.createOrder(token);
       setAccessToken(token);
-      console.log('default order', res);
       setLoading(false);
       if (res?.links) {
         const findUrl = res.links.find(
@@ -51,17 +38,15 @@ export function UseLogic() {
   };
 
   const onUrlChange = (webviewState: any) => {
-    console.log('webviewStatewebviewState', webviewState);
     if (webviewState.url.includes('https://example.com/cancel')) {
       clearPaypalState();
       return;
     }
     if (webviewState.url.includes('https://example.com/return')) {
       const urlValues = queryString.parseUrl(webviewState.url);
-      console.log('my urls value', urlValues);
       setIsModalSuccess(true);
       const { token } = urlValues.query;
-      if (!!token) {
+      if (token) {
         paymentSucess(token);
       }
     }
@@ -70,7 +55,7 @@ export function UseLogic() {
   const paymentSucess = async (id: any) => {
     try {
       const res = paypalApi.capturePayment(id, accessToken);
-      console.log('capturePayment res++++', res);
+      updateIsPayment();
       clearPaypalState();
     } catch (error) {
       console.log('error raised in payment capture', error);
@@ -78,36 +63,13 @@ export function UseLogic() {
   };
 
   const clearPaypalState = () => {
-    const user = auth().currentUser;
-    if (user) {
-      firestore().collection('users').doc(user?.uid).update({
-        isPayment: true,
-      });
-    }
     setPaypalUrl(null);
     setAccessToken(null);
   };
 
-  const user = auth().currentUser;
-  const [isPayment, setIsPayment] = useState(false);
-
-  useEffect(() => {
-    const subscriber = firestore()
-      .collection('users')
-      .doc(user?.uid)
-      .onSnapshot(documentSnapshot => {
-        setIsPayment(documentSnapshot.data()?.isPayment);
-      });
-    return () => subscriber();
-  }, [user]);
-
   return {
-    handleModalPayment,
     isModalPayment,
     setIsModalPayment,
-    inputsPayment,
-    setInputsPayment,
-    handleInputChange,
     onPressPaypal,
     paypalUrl,
     isLoading,

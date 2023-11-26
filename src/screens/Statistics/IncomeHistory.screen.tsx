@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { HeaderTitle } from '../../components/Header/Header.component';
 import { ModalAdd } from '../../components/Modal/ModalAdd';
 import { UseLogic } from './UseLogic';
-import { HandleAdd } from './HandleAdd';
 import { ModalPickDate } from '../../components/Modal/ModalPickDate';
 import { ModalPick } from '../../components/Modal/ModalPick';
 import {
@@ -28,11 +27,7 @@ const IncomeHistory = () => {
     status,
     isModalPickDate,
     setIsModalPickDate,
-    setSelectedTreeOrCostType,
     selectedTreeOrCostType,
-    isModalPickFilter,
-    titlePickFilter,
-    handleModalPickFilter,
     isModaAdd,
     titleModalAdd,
     inputs,
@@ -62,17 +57,15 @@ const IncomeHistory = () => {
     //Delete
     isModalDetail,
     handlePressDetail,
-    handleDeleteExpense,
     dataIncome,
     handleModalAddItem,
     handleEditItem,
     itemIncome,
-    handleModalEditExpense,
     handlePickItem,
     itemExpense,
-    titleDetail,
     handleModalEditIncome,
     handleDeleteIncome,
+    setIsModalAdd,
   } = UseLogic();
   return (
     <>
@@ -152,8 +145,8 @@ const IncomeHistory = () => {
 
       {/* Modal add */}
       <ModalAdd
-        isModaAdd={isModaAdd}
-        handleModalAddItem={handleModalAddItem}
+        isModalAdd={isModaAdd}
+        handleBack={() => setIsModalAdd(false)}
         titleModalAdd={titleModalAdd}
         handlePickDate={handlePickDate}
         selectedDateIncome={selectedDateIncome}

@@ -17,16 +17,13 @@ import {
   stylesPayment,
 } from './ChatAI.style';
 import { UseLogic } from './UseLogic';
-import { is } from 'date-fns/locale';
 import stylesButton from '../Login/Style';
-import IconDola from '../../assets/images/IconDola.svg';
 import IconUpgrade from '../../assets/images/IconUpgrade.svg';
 import LottieView from 'lottie-react-native';
 
 const ChatAIScreen = ({ navigation }: any) => {
   const { textInput, setTextInput, data, sendUserMessage, isPayment } =
     UseLogic();
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
       <HeaderComponent onPress={() => navigation.navigate('Profile')} />

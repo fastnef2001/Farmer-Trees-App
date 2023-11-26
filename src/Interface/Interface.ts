@@ -47,3 +47,8 @@ export interface UserInfor {
   imageUrl?: string;
   isPayment: boolean;
 }
+
+export interface MessageType {
+  type: 'user' | 'bot';
+  text: string;
+}

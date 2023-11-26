@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import styles from '../../screens/Setupfarm/Style';
+import { styleAddtree } from '../../screens/Setupfarm/Style';
 import { Text } from 'react-native';
 import IconBack from '../../assets/images/IconBack.svg';
 import IconCalendar from '../../assets/images/IconCalendar.svg';
@@ -59,12 +59,12 @@ export const ModalDetail = ({
         <View style={{ flex: 1 }}>
           <ModalInsert.Container>
             <ModalInsert.Header>
-              <View style={styles.headSessionModal}>
+              <View style={styleAddtree.headSessionModal}>
                 <TouchableOpacity onPress={handlePressDetail}>
                   <IconBack> </IconBack>
                 </TouchableOpacity>
-                <View style={styles.txtContainer}>
-                  <Text style={styles.txtTitleModal1}>{titleDetail}</Text>
+                <View style={styleAddtree.txtContainer}>
+                  <Text style={styleAddtree.txtTitleModal1}>{titleDetail}</Text>
                 </View>
                 <View
                   style={{
@@ -126,19 +126,9 @@ export const ModalDetail = ({
                     justifyContent: 'space-between',
                     paddingHorizontal: 8,
                   }}>
-                  <ButtonDelete
-                    isRight={true}
-                    isDelete={true}
-                    title="DELETE"
-                    onPress={deleteItem}
-                  />
+                  <ButtonDelete title="DELETE" onPress={deleteItem} />
                   <View style={{ width: 16 }} />
-                  <ButtonEdit
-                    isRight={false}
-                    isDelete={false}
-                    title="EDIT"
-                    onPress={editItem}
-                  />
+                  <ButtonEdit title="EDIT" onPress={editItem} />
                 </View>
               </ModalInsert.Footer>
             </ScrollView>

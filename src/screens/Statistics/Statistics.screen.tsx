@@ -1,6 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   View,
@@ -80,6 +77,7 @@ const Statistics = ({ navigation }: any) => {
     handleModalEditExpense,
     handleModalEditIncome,
     handleEditItem,
+    setIsModalAdd,
   } = UseLogic();
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -143,8 +141,8 @@ const Statistics = ({ navigation }: any) => {
           />
           <HistoryComponent
             handlePress={() => navigation.navigate('ExpenseHistory')}
-            dataExpense={dataExpense}
             dataIncome={dataIncome}
+            dataExpense={dataExpense}
             title="Expense history"
             isIncome={false}
             handlePressDetail={handlePressDetail}
@@ -166,8 +164,8 @@ const Statistics = ({ navigation }: any) => {
         />
 
         <ModalAdd
-          isModaAdd={isModaAdd}
-          handleModalAddItem={handleModalAddItem}
+          isModalAdd={isModaAdd}
+          handleBack={() => setIsModalAdd(false)}
           titleModalAdd={titleModalAdd}
           handlePickDate={handlePickDate}
           selectedDateIncome={selectedDateIncome}

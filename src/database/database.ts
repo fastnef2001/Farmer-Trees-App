@@ -1,3 +1,4 @@
+import { is } from 'date-fns/locale';
 import { useState, useCallback } from 'react';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
@@ -99,6 +100,23 @@ export function Database() {
   const [dataExpense, setDataExpense] = useState<DataExpenseInterface[]>([]);
   const [userInfors, setUserInfors] = useState<UserInfor[]>([]);
   const [titleError, setTitleError] = useState('');
+  const [isPayment, setIsPayment] = useState(false);
+
+  //CHECK ISPAYMENT
+  const chekIsPayment = async () => {
+    const user = auth().currentUser;
+    try {
+      const subscriber = firestore()
+        .collection('users')
+        .doc(user?.uid)
+        .onSnapshot(documentSnapshot => {
+          setIsPayment(documentSnapshot.data()?.isPayment);
+        });
+      return () => subscriber();
+    } catch (error) {
+      return false;
+    }
+  };
   //CHECK CHECK PHONE NUMBER EXIST
   const checkFarmNameExist = async () => {
     try {
@@ -430,8 +448,8 @@ export function Database() {
       collectionName2: string,
       selectedDateStart: string,
       selectedDateEnd: string,
-      selectedTreeOrCostType: string,
-      filter: string,
+      selectedTreeOrCostType?: string,
+      filter?: string,
     ) => {
       const timestampStart = convertTotimestamp(selectedDateStart, true);
       const timestampEnd = convertTotimestamp(selectedDateEnd, false);
@@ -779,5 +797,7 @@ export function Database() {
     titleError,
     checkFarmNameExist,
     updateIsPayment,
+    isPayment,
+    chekIsPayment,
   };
 }

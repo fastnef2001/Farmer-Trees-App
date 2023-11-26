@@ -1,28 +1,17 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-type MessageType = {
-  type: 'user' | 'bot';
-  text: string;
-};
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import { MessageType } from '../../Interface/Interface';
+import { Database } from '../../database/database';
 
 export function UseLogic() {
-  const user = auth().currentUser;
-  const [isPayment, setIsPayment] = useState(false);
-
-  useEffect(() => {
-    const subscriber = firestore()
-      .collection('users')
-      .doc(user?.uid)
-      .onSnapshot(documentSnapshot => {
-        setIsPayment(documentSnapshot.data()?.isPayment);
-      });
-    return () => subscriber();
-  }, [user]);
-
+  const { chekIsPayment, isPayment } = Database();
   const [textInput, setTextInput] = useState('');
   const [data, setData] = useState<MessageType[]>([]);
+
+  useEffect(() => {
+    chekIsPayment();
+  }, [chekIsPayment]);
+
   const apiKey = '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';
   const apiUrl = 'https://api.openai.com/v1/completions';
   useEffect(() => {

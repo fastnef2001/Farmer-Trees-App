@@ -78,6 +78,23 @@ export const ButtonChatAI = ({ title, onPress }: ButtonProps) => {
     </TouchableOpacity>
   );
 };
+
+export const ButtonEdit = ({ title, onPress }: ButtonProps) => {
+  return (
+    <TouchableOpacity style={styles.button} onPress={onPress}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        <IconEdit20 />
+        <View style={{ width: 4 }} />
+        <Text style={styles.text}>{title}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 const styles = StyleSheet.create({
   button: {
     justifyContent: 'center',
