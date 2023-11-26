@@ -18,7 +18,6 @@ import { HeaderTitle } from '../../components/Header/Header.component';
 import { ModalDetail } from '../../components/Modal/ModalDetai';
 
 import { UseLogic } from './UseLogic';
-import { HandleAdd } from './HandleAdd';
 
 const ExpenseHistory = () => {
   const {
@@ -201,10 +200,10 @@ const ExpenseHistory = () => {
         titleHeader={titleHeader}
         titleBody={titleBody}
         isFooter={false}
-        handleDeleteTree={() => {}}
+        handleFunction={() => {}}
         handleModalSuccess={() => setIsModalSuccess(!isModalSuccess)}
       />
-      <PopUpLoading isModalSuccess={isModalLoading} />
+      <PopUpLoading isModalVisible={isModalLoading} />
       {/* End up noti and loading */}
     </>
   );

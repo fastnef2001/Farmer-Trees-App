@@ -3,33 +3,12 @@ import {
   SafeAreaView,
   View,
   Text,
-  StatusBar,
   TouchableOpacity,
   StyleSheet,
-  Image,
-  ScrollView,
 } from 'react-native';
 import { HeaderTitle } from '../../components/Header/Header.component';
-import IconUser40 from '../../assets/images/IconUser40.svg';
-import IconPhone40 from '../../assets/images/IconPhone40.svg';
-import IconDetailBold from '../../assets/images/IconDetailBold.svg';
-import IconBell40 from '../../assets/images/IconBell40.svg';
-import IconHeart40 from '../../assets/images/IconHeart40.svg';
-import IconLogOut40 from '../../assets/images/IconLogOut40.svg';
 import stylesButton from '../Login/Style';
-import IconEditBlue40 from '../../assets/images/IconEditBlue40.svg';
 import IconDola from '../../assets/images/IconDola.svg';
-import IconVerify from '../../assets/images/IconVerify.svg';
-import { styleElement1, styleElement2 } from '../Profile/Profile.style';
-// import { UseLogic } from './UserLogic';
-import { ModalInsert } from '../../components/Modal/ModalInsert';
-import IconBack from '../../assets/images/IconBack.svg';
-import IconUpload from '../../assets/images/IconUpload.svg';
-import IconDeleteRed from '../../assets/images/IconDeleteRed.svg';
-import IconSave from '../../assets/images/IconSave.svg';
-import IconPremium40 from '../../assets/images/IconPremium40.svg';
-import Input from '../../components/Input/Input.component';
-import { COLORS } from '../../theme/color';
 import {
   PopUpLoading,
   PopUpSuccess,
@@ -37,6 +16,7 @@ import {
 import LottieView from 'lottie-react-native';
 import { UseLogic } from './UseLogic';
 import { WebView } from 'react-native-webview';
+import styles from './Style';
 
 const InforPayment = ({ navigation }: any) => {
   const {
@@ -64,8 +44,8 @@ const InforPayment = ({ navigation }: any) => {
       ) : (
         <SafeAreaView style={{ flex: 1 }}>
           <HeaderTitle title="Upgarde premium" />
-          <View style={styless.root}>
-            <Text style={styless.textBody}>
+          <View style={styles.root}>
+            <Text style={styles.textBody}>
               Upgrade your account to Premium and take your user experience to
               the next level! With our Premium subscription, you gain exclusive
               access to the chat feature with AI, opening up a world of
@@ -77,7 +57,7 @@ const InforPayment = ({ navigation }: any) => {
               autoPlay
               loop
             />
-            <Text style={styless.textBody}>
+            <Text style={styles.textBody}>
               For only $100, you can unlock all these premium features and
               elevate your account to a new level of sophistication. We believe
               in providing exceptional value for your investment, making your
@@ -122,19 +102,3 @@ const InforPayment = ({ navigation }: any) => {
 };
 
 export default InforPayment;
-
-const styless = StyleSheet.create({
-  root: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '95%',
-    alignSelf: 'center',
-    paddingTop: 16,
-  },
-  textBody: {
-    color: COLORS.text1,
-    textAlign: 'justify',
-    fontFamily: 'Nunito-Medium',
-    fontSize: 14,
-  },
-});

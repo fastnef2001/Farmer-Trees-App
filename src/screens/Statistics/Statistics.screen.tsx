@@ -21,7 +21,6 @@ import {
   PopUpLoading,
 } from '../../components/Modal/GeneralPopUps.component';
 import { UseLogic } from './UseLogic';
-import { HandleAdd } from './HandleAdd';
 import { ModalAdd } from '../../components/Modal/ModalAdd';
 import { ModalPickDate } from '../../components/Modal/ModalPickDate';
 import { ModalPick } from '../../components/Modal/ModalPick';
@@ -219,10 +218,10 @@ const Statistics = ({ navigation }: any) => {
           titleBody={titleBody}
           handleModalSuccess={() => setIsModalSuccess(false)}
           isFooter={false}
-          handleDeleteTree={() => {}}
+          handleFunction={() => {}}
         />
 
-        <PopUpLoading isModalSuccess={isModalLoading} />
+        <PopUpLoading isModalVisible={isModalLoading} />
       </ImageBackground>
     </SafeAreaView>
   );
