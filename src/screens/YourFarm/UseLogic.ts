@@ -61,7 +61,7 @@ export function UseLogic() {
     }
   };
   const handleModalCalculate = (key: any) => {
-    const tree = trees.find(tree => tree.key === (key as any));
+    const tree = trees.find(item => item.key === (key as any));
     if (tree) {
       setInputs([
         { label: 'Quantity tree', value: tree.quanlity, error: '' },
