@@ -1,11 +1,8 @@
 /* eslint-disable no-alert */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useEffect } from 'react';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { MediaType, launchImageLibrary } from 'react-native-image-picker';
-import storage from '@react-native-firebase/storage';
 import paypalApi from './paypalAPI';
 import queryString from 'query-string';
 
@@ -14,7 +11,7 @@ export function UseLogic() {
   const [isLoading, setLoading] = useState(false);
   const [paypalUrl, setPaypalUrl] = useState(null);
   const [accessToken, setAccessToken] = useState<any>(null || '');
-  const [showPopUpSuccess, setShowPopUpSuccess] = useState(false);
+  const [isModalSuccess, setIsModalSuccess] = useState(false);
 
   const handleModalPayment = () => {
     setIsModalPayment(!isModalPayment);
@@ -62,7 +59,7 @@ export function UseLogic() {
     if (webviewState.url.includes('https://example.com/return')) {
       const urlValues = queryString.parseUrl(webviewState.url);
       console.log('my urls value', urlValues);
-      setShowPopUpSuccess(true);
+      setIsModalSuccess(true);
       const { token } = urlValues.query;
       if (!!token) {
         paymentSucess(token);
@@ -81,7 +78,6 @@ export function UseLogic() {
   };
 
   const clearPaypalState = () => {
-    //Update isPayment to true
     const user = auth().currentUser;
     if (user) {
       firestore().collection('users').doc(user?.uid).update({
@@ -90,7 +86,6 @@ export function UseLogic() {
     }
     setPaypalUrl(null);
     setAccessToken(null);
-    setShowPopUpSuccess(true);
   };
 
   const user = auth().currentUser;
@@ -118,8 +113,8 @@ export function UseLogic() {
     isLoading,
     accessToken,
     onUrlChange,
-    showPopUpSuccess,
-    setShowPopUpSuccess,
     isPayment,
+    isModalSuccess,
+    setIsModalSuccess,
   };
 }

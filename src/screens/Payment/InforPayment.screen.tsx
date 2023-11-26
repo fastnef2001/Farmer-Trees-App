@@ -32,35 +32,21 @@ import Input from '../../components/Input/Input.component';
 import { COLORS } from '../../theme/color';
 import {
   PopUpLoading,
-  PopUpSuccessPayment,
+  PopUpSuccess,
 } from '../../components/Modal/GeneralPopUps.component';
 import LottieView from 'lottie-react-native';
 import { UseLogic } from './UseLogic';
-import styles from '../Setupfarm/Style';
 import { WebView } from 'react-native-webview';
-import { is } from 'date-fns/locale';
-
-// interface UserData {
-//   fullName: string;
-//   farmName: string;
-//   phoneNumber: string;
-// }
 
 const InforPayment = ({ navigation }: any) => {
   const {
-    handleModalPayment,
-    isModalPayment,
-    setIsModalPayment,
-    setInputsPayment,
-    inputsPayment,
-    handleInputChange,
     paypalUrl,
     onPressPaypal,
     onUrlChange,
-    showPopUpSuccess,
-    setShowPopUpSuccess,
     isLoading,
     isPayment,
+    isModalSuccess,
+    setIsModalSuccess,
   } = UseLogic();
   return (
     <>
@@ -120,13 +106,15 @@ const InforPayment = ({ navigation }: any) => {
           )}
         </SafeAreaView>
       )}
-      <PopUpSuccessPayment
-        isModalSuccess={showPopUpSuccess}
+      <PopUpSuccess
+        isModalSuccess={isModalSuccess}
         titleHeader={'Successfully'}
-        titleBody={'Your account has been upgraded to Premium'}
-        handleModalSuccess={() => setShowPopUpSuccess(false)}
-        isFooter={true}
-        handleDeleteTree={() => navigation.navigate('Chat AI')}
+        titleBody={'Your account has been upgraded to Premium.'}
+        handleModalSuccess={() => setIsModalSuccess(!isModalSuccess)}
+        handleFunction={() => {
+          navigation.navigate('Chat AI');
+        }}
+        title={'payment'}
       />
       <PopUpLoading isModalVisible={isLoading} />
     </>
