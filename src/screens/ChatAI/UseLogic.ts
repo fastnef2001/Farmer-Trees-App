@@ -12,7 +12,7 @@ export function UseLogic() {
     chekIsPayment();
   }, [chekIsPayment]);
 
-  const apiKey = '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';
+  const apiKey = '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';
   const apiUrl = 'https://api.openai.com/v1/completions';
   useEffect(() => {
     setData([
@@ -42,7 +42,7 @@ export function UseLogic() {
     const response = await axios.post(
       apiUrl,
       {
-        model: 'gpt-3.5-turbo-1106',
+        model: 'davinci',
         prompt: prompt,
         max_tokens: 150,
         temperature: 0.3,

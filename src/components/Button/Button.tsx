@@ -6,7 +6,7 @@ import IconSignUp from '../../assets/images/IconSignUp.svg';
 import IconBackSmall from '../../assets/images/IconBackSmall.svg';
 import IconChat24 from '../../assets/images/IconChat24.svg';
 import IconDelete24 from '../../assets/images/IconDelete24.svg';
-import IconEdit20 from '../../assets/images/IconEdit20.svg';
+import IconEdit24White from '../../assets/images/IconEdit24White.svg';
 
 export type ButtonProps = {
   title: string;
@@ -88,7 +88,7 @@ export const ButtonEdit = ({ title, onPress }: ButtonProps) => {
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
-        <IconEdit20 />
+        <IconEdit24White />
         <View style={{ width: 4 }} />
         <Text style={styles.text}>{title}</Text>
       </View>
