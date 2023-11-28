@@ -1,4 +1,3 @@
-import { is } from 'date-fns/locale';
 import { useState, useCallback } from 'react';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
@@ -13,7 +12,6 @@ import {
   InputValues,
   UserInfor,
 } from '../Interface/Interface';
-import { set } from 'date-fns';
 
 function convertTotimestamp(date: string, isStart?: boolean) {
   let timeNow = format(new Date(), 'hh:mm:ss a');

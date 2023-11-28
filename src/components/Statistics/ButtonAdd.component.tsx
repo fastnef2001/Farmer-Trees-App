@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { COLORS } from '../../theme/color';
@@ -30,12 +29,6 @@ const ButtonAddComponent = ({ onPress, title, isRight }: ButtonProps) => {
         )}
       </View>
     </TouchableOpacity>
-    // <TouchableOpacity style={stylesButtonAdd.buttonAdd2}>
-    //   <View style={stylesButtonAdd.bodyButton}>
-    //     <IconPlusRed />
-    //     <Text style={stylesButtonAdd.titleButton2}>Expense</Text>
-    //   </View>
-    // </TouchableOpacity>
   );
 };
 

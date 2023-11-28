@@ -10,39 +10,33 @@ import {
 import React, { useEffect, useState } from 'react';
 import { styles, stylesHeaderTitle } from './Header.styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Logo from '../../assets/images/Logo.svg';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { COLORS } from '../../theme/color';
 import Logo35 from '../../assets/images/Logo72.svg';
 import IconBackWhite40 from '../../assets/images/IconBackWhite40.svg';
 import IconPlusWhite40 from '../../assets/images/IconPlusWhite40.svg';
 import { useNavigation } from '@react-navigation/native';
-import Profile from '../../screens/Profile/Profile.screen';
+import { Database } from '../../database/database';
 
 export type ButtonProps = {
   onPress?: () => void;
 };
-
 export const HeaderComponent = ({ onPress }: ButtonProps) => {
+  const { getInforUser, userInfors } = Database();
   const user = auth().currentUser;
-  const [fullName, setFullName] = useState('');
-  const [avatar, setAvatar] = useState('');
-  if (user) {
-    useEffect(() => {
-      const subscriber = firestore()
-        .collection('users')
-        .doc(user?.uid)
-        .onSnapshot(documentSnapshot => {
-          setFullName(documentSnapshot.data()?.fullName);
-          setAvatar(documentSnapshot.data()?.imageUrl);
-        });
-      return () => subscriber();
-    }, [user]);
-  }
+  let fullName = '';
+  let avatar = '';
+  useEffect(() => {
+    getInforUser();
+  }, [getInforUser]);
+
+  userInfors.forEach((userInfor: any) => {
+    fullName = userInfor.fullName;
+    avatar = userInfor.imageUrl;
+  });
+
   const fullNameClipped =
     fullName.length > 20 ? `${fullName.slice(0, 10)}...` : fullName;
-
   return (
     <>
       <StatusBar

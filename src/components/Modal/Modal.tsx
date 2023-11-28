@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { StyleSheet, View, Text, Button } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import RNModal from 'react-native-modal';
 import IconDone from '../../assets/images/IconDone.svg';
 import IconQuestion from '../../assets/images/IconQuestion48.svg';

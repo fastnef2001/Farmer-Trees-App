@@ -1,6 +1,6 @@
 import LottieView from 'lottie-react-native';
 import React from 'react';
-import { StyleSheet, View, Text, Button, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
 import RNModal from 'react-native-modal';
 
 type ModalProps = {

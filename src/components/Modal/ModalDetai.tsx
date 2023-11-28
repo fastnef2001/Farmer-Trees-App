@@ -24,24 +24,8 @@ export type ModalAddProps = {
   titleDetail: string;
   itemIncome?: DataIncomeInterface;
   itemExpense?: DataExpenseInterface;
-  // deleteItem: () => void;
   editItem: () => void;
   handleModalDele: () => void;
-  //   handlePickDate: (type: string) => () => void;
-  //   selectedDateIncome: string;
-  //   selectedDateExpense: string;
-  //   handleModalPickTree: () => void;
-  //   handleModalPickUnitIncome: () => void;
-  //   handleModalPickUnitExpense: () => void;
-  //   handleModalPickCostType: () => void;
-  //   handleInputChange: (index: number, text: string) => void;
-  //   handleAdd: (type: string) => void;
-  //   inputs: {
-  //     label: string;
-  //     value: string;
-  //     error: string;
-  //   }[];
-  //   isDisabled: boolean;
 };
 
 export const ModalDetail = ({
@@ -50,7 +34,6 @@ export const ModalDetail = ({
   titleDetail,
   itemIncome,
   itemExpense,
-  // deleteItem,
   editItem,
   handleModalDele,
 }: ModalAddProps) => {

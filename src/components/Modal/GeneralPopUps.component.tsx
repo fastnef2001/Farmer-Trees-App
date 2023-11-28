@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import React from 'react';
+import { View, SafeAreaView } from 'react-native';
 import { Modal } from './Modal';
 import { StatusBar } from 'react-native';
 import { ModalLoading } from './ModalLoading';
@@ -22,48 +22,6 @@ export type PopUpSuccessProps = {
 export type PopUpLoadingProps = {
   isModalVisible: boolean;
 };
-
-// export const PopUpSuccessLogin = ({
-//   isModalSuccess,
-//   handleFunction,
-//   handleModalSuccess,
-// }: PopUpSuccessProps) => {
-//   return (
-//     <>
-//       <Modal isVisible={isModalSuccess}>
-//         <StatusBar backgroundColor={'#07111B'} />
-//         <Modal.Container>
-//           <Modal.Header title={'Successfully'} />
-//           <Modal.Body
-//             title={'You have successfully registered, please login.'}
-//           />
-//           <Modal.Footer>
-//             <View
-//               style={{
-//                 flexDirection: 'row',
-//                 justifyContent: 'space-between',
-//                 paddingHorizontal: 8,
-//               }}>
-//               <ButtonBack
-//                 isRight={false}
-//                 isDelete={false}
-//                 title="CANCEL"
-//                 onPress={handleModalSuccess}
-//               />
-//               <View style={{ width: 16 }} />
-//               <ButtonLogin
-//                 isRight={true}
-//                 isDelete={true}
-//                 title="LOGIN"
-//                 onPress={handleFunction}
-//               />
-//             </View>
-//           </Modal.Footer>
-//         </Modal.Container>
-//       </Modal>
-//     </>
-//   );
-// };
 
 export const PopUpSuccess = ({
   isModalSuccess,

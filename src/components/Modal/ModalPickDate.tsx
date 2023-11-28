@@ -50,7 +50,6 @@ export const ModalPickDate = ({
                 } else {
                   setSelectedDateExpense(date);
                 }
-                // setIsModalPickDate(false);
               }}
               mode="calendar"
               options={{

@@ -1,10 +1,7 @@
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable no-dupe-keys */
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import IconSignUp from '../../assets/images/IconSignUp.svg';
 import IconBackSmall from '../../assets/images/IconBackSmall.svg';
-import IconChat24 from '../../assets/images/IconChat24.svg';
 import IconDelete24 from '../../assets/images/IconDelete24.svg';
 import IconEdit24White from '../../assets/images/IconEdit24White.svg';
 

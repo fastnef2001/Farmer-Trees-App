@@ -1,5 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable no-dupe-keys */
 import React from 'react';
 import {
   View,

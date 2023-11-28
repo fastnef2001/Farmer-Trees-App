@@ -110,24 +110,6 @@ const WeatherComponent = () => {
 
   const iconWeather = weatherData.weather[0].icon;
   const WeatherIcon = iconMappings[iconWeather];
-
-  //lấy ngày tháng năm
-
-  //   console.log('weatherData', weatherData);
-  //   const intervalId = setInterval(() => {
-  //     setCurrentDateTime(new Date());
-  //   }, 60000);
-
-  //   // lấy 5:23 pm Jan 1 không lấy năm
-
-  //   const currentDate = currentDateTime.toLocaleTimeString('en-US', {
-  //     hour: 'numeric',
-  //     minute: 'numeric',
-  //     hour12: true,
-  //     month: 'short',
-  //     day: 'numeric',
-  //   });
-
   return (
     <View style={styles.root}>
       <View style={styles.weatherLeft}>
