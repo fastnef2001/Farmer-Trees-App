@@ -1,4 +1,3 @@
-import { set } from 'date-fns';
 import { useState, useEffect } from 'react';
 import { Database } from '../../database/database';
 import { InputInterface } from '../../Interface/Interface';
@@ -151,10 +150,12 @@ export function UseLogic() {
     if (keyValue && title) {
       if (title === 'Income history') {
         setTitleDetail('Income Detail');
-        setItemIncome(dataIncome.find(item => item.key === (key as any)));
+        setItemIncome(dataIncome.find(item => item.key === (keyValue as any)));
       } else if (title === 'Expense history') {
         setTitleDetail('Expense Detail');
-        setItemExpense(dataExpense.find(item => item.key === (key as any)));
+        setItemExpense(
+          dataExpense.find(item => item.key === (keyValue as any)),
+        );
       }
       setKey(keyValue);
     }
