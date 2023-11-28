@@ -91,6 +91,22 @@ export const ModalPick = (
                       value={unit.name}
                     />
                   ))
+                ) : titlePick === 'Pick cost type filter' ? (
+                  costTypes.map((costType, index) => (
+                    <RadioButton.Item
+                      color={COLORS.blue}
+                      label={costType.name}
+                      value={costType.name}
+                    />
+                  ))
+                ) : titlePick === 'Pick tree filter' ? (
+                  trees.map((tree, index) => (
+                    <RadioButton.Item
+                      color={COLORS.blue}
+                      label={tree.name}
+                      value={tree.name}
+                    />
+                  ))
                 ) : (
                   <></>
                 )}

@@ -14,10 +14,8 @@ export type PopUpSuccessProps = {
   isModalSuccess: boolean;
   titleHeader: string;
   titleBody: string;
-  isFooter?: boolean;
   handleFunction: any;
   handleModalSuccess: () => void;
-  isLogin?: boolean;
   title?: string;
 };
 

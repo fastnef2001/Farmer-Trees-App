@@ -7,7 +7,7 @@ import { COLORS } from '../../theme/color';
 export type ModalPickDateProps = {
   isModalPickDate: boolean;
   setIsModalPickDate: React.Dispatch<React.SetStateAction<boolean>>;
-  status: string;
+  titlePickDate: string;
   setSelectedDateStart: React.Dispatch<React.SetStateAction<string>>;
   setSelectedDateEnd: React.Dispatch<React.SetStateAction<string>>;
   setSelectedDateIncome: React.Dispatch<React.SetStateAction<string>>;
@@ -21,7 +21,7 @@ export type ModalPickDateProps = {
 export const ModalPickDate = ({
   isModalPickDate,
   setIsModalPickDate,
-  status,
+  titlePickDate,
   setSelectedDateStart,
   setSelectedDateEnd,
   setSelectedDateIncome,
@@ -41,11 +41,11 @@ export const ModalPickDate = ({
           <PickDate.Body>
             <DatePicker
               onSelectedChange={date => {
-                if (status === 'startDate') {
+                if (titlePickDate === 'startDate') {
                   setSelectedDateStart(date);
-                } else if (status === 'endDate') {
+                } else if (titlePickDate === 'endDate') {
                   setSelectedDateEnd(date);
-                } else if (status === 'incomeDate') {
+                } else if (titlePickDate === 'incomeDate') {
                   setSelectedDateIncome(date);
                 } else {
                   setSelectedDateExpense(date);
@@ -62,11 +62,11 @@ export const ModalPickDate = ({
                 defaultFont: 'Nunito-SemiBold',
               }}
               selected={
-                status === 'startDate'
+                titlePickDate === 'startDate'
                   ? selectedDateStart
-                  : status === 'endDate'
+                  : titlePickDate === 'endDate'
                   ? selectedDateEnd
-                  : status === 'incomeDate'
+                  : titlePickDate === 'incomeDate'
                   ? selectedDateIncome
                   : selectedDateExpense
               }

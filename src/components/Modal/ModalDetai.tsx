@@ -24,8 +24,9 @@ export type ModalAddProps = {
   titleDetail: string;
   itemIncome?: DataIncomeInterface;
   itemExpense?: DataExpenseInterface;
-  deleteItem: () => void;
+  // deleteItem: () => void;
   editItem: () => void;
+  handleModalDele: () => void;
   //   handlePickDate: (type: string) => () => void;
   //   selectedDateIncome: string;
   //   selectedDateExpense: string;
@@ -49,8 +50,9 @@ export const ModalDetail = ({
   titleDetail,
   itemIncome,
   itemExpense,
-  deleteItem,
+  // deleteItem,
   editItem,
+  handleModalDele,
 }: ModalAddProps) => {
   return (
     <>
@@ -112,7 +114,7 @@ export const ModalDetail = ({
                     <View style={{ width: 8 }} />
                     <Text style={styles1.titleText}>
                       {titleDetail === 'Income Detail'
-                        ? `${itemIncome?.quantityInKilograms} kg`
+                        ? `${itemIncome?.quantity} ${itemIncome?.unit}`
                         : `${itemExpense?.quantity} ${itemExpense?.unit}`}
                     </Text>
                   </View>
@@ -126,7 +128,8 @@ export const ModalDetail = ({
                     justifyContent: 'space-between',
                     paddingHorizontal: 8,
                   }}>
-                  <ButtonDelete title="DELETE" onPress={deleteItem} />
+                  <ButtonDelete title="DELETE" onPress={handleModalDele} />
+
                   <View style={{ width: 16 }} />
                   <ButtonEdit title="EDIT" onPress={editItem} />
                 </View>

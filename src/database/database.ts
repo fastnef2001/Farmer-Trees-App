@@ -531,7 +531,7 @@ export function Database() {
       const quantity = Number(inputs[1].value);
       const unit = inputs[2].value;
       const totalPrice = Number(inputs[3].value);
-      const quantityInKilograms = convertToKilograms(quantity, unit);
+      // const quantityInKilograms = convertToKilograms(quantity, unit);
       const month = changeMonthToSrting(date.slice(5, 7));
       const timestamp = convertTotimestamp(selectedDateIncome);
       const day = date.slice(8, 10);
@@ -549,7 +549,7 @@ export function Database() {
           quantity,
           unit,
           totalPrice,
-          quantityInKilograms,
+          // quantityInKilograms,
         });
       return true;
     } catch (error) {
@@ -563,7 +563,7 @@ export function Database() {
       const date = selectedDateExpense;
       const costType = inputs[0].value;
       const quantity = Number(inputs[1].value);
-      const unit = inputs[2].value.toLowerCase();
+      const unit = inputs[2].value;
       const totalPrice = Number(inputs[3].value);
       const month = changeMonthToSrting(date.slice(5, 7));
       const timestamp = convertTotimestamp(selectedDateExpense);

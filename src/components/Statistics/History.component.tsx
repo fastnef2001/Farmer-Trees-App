@@ -1,7 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import IconDrop from '../../assets/images/IconDrop.svg';
-import IconCalendar from '../../assets/images/IconCalendar.svg';
 import { COLORS } from '../../theme/color';
 import IconDetailBold from '../../assets/images/IconDetailBold.svg';
 import Detail from '../../assets/images/Detail.svg';
@@ -9,7 +7,7 @@ import {
   DataExpenseInterface,
   DataIncomeInterface,
 } from '../../Interface/Interface';
-import { is } from 'date-fns/locale';
+import LottieView from 'lottie-react-native';
 
 export type HistoryProps = {
   dataIncome: DataIncomeInterface[];
@@ -29,7 +27,6 @@ export const HistoryComponent = ({
   handlePressDetail,
 }: HistoryProps) => {
   let data = isIncome ? dataIncome : dataExpense;
-  // chỉ lấy 5 phần tử đầu tiên
   data = data.slice(0, 5);
 
   return (
@@ -39,47 +36,57 @@ export const HistoryComponent = ({
         <Text style={stylesHeader.exportExcel}>Export excel</Text>
       </View>
       <View style={{ height: 16 }} />
-
-      {data.map((item: any) => (
-        <TouchableOpacity
-          style={stylesItem.root}
-          onPress={() => handlePressDetail(item.key, title)}>
-          <View style={isIncome ? stylesDate.root : stylesDate.root1}>
-            <Text style={stylesDate.tileMonth}>{item.month}</Text>
-            <Text style={stylesDate.tileDate}>{item.day}</Text>
-          </View>
-          <View style={{ width: 6 }} />
-          <View style={stylesBody.root}>
-            {isIncome ? (
-              <Text style={stylesBody.titleNameTree}>{item.tree}</Text>
-            ) : (
-              <Text style={stylesBody.titleNameTree}>{item.costType}</Text>
-            )}
-            <View style={{ height: 0 }} />
-            <View style={stylesContent.root}>
-              {isIncome ? (
-                <Text style={stylesContent.titleQuantity}>
-                  {item.quantityInKilograms} kg
-                </Text>
-              ) : (
-                <Text style={stylesContent.titleQuantity}>
-                  {item.quantity} {item.unit}
-                </Text>
-              )}
-              <Text
-                style={
-                  isIncome
-                    ? stylesContent.titlePrice
-                    : stylesContent.titlePrice1
-                }>
-                {item.totalPrice}$
-              </Text>
-            </View>
-          </View>
-          <View style={{ width: 24 }} />
-          <Detail />
-        </TouchableOpacity>
-      ))}
+      {data.length > 0 ? (
+        <>
+          {data.map((item: any) => (
+            <TouchableOpacity
+              style={stylesItem.root}
+              onPress={() => handlePressDetail(item.key, title)}>
+              <View style={isIncome ? stylesDate.root : stylesDate.root1}>
+                <Text style={stylesDate.tileMonth}>{item.month}</Text>
+                <Text style={stylesDate.tileDate}>{item.day}</Text>
+              </View>
+              <View style={{ width: 6 }} />
+              <View style={stylesBody.root}>
+                {isIncome ? (
+                  <Text style={stylesBody.titleNameTree}>{item.tree}</Text>
+                ) : (
+                  <Text style={stylesBody.titleNameTree}>{item.costType}</Text>
+                )}
+                <View style={{ height: 0 }} />
+                <View style={stylesContent.root}>
+                  {isIncome ? (
+                    <Text style={stylesContent.titleQuantity}>
+                      {item.quantity} {item.unit}
+                    </Text>
+                  ) : (
+                    <Text style={stylesContent.titleQuantity}>
+                      {item.quantity} {item.unit}
+                    </Text>
+                  )}
+                  <Text
+                    style={
+                      isIncome
+                        ? stylesContent.titlePrice
+                        : stylesContent.titlePrice1
+                    }>
+                    {item.totalPrice}$
+                  </Text>
+                </View>
+              </View>
+              <View style={{ width: 24 }} />
+              <Detail />
+            </TouchableOpacity>
+          ))}
+        </>
+      ) : (
+        <LottieView
+          style={{ width: 100, height: 100, alignSelf: 'center' }}
+          source={require('../../assets/animations/Empty.json')}
+          autoPlay
+          loop
+        />
+      )}
 
       <View style={{ height: 16 }} />
       <TouchableOpacity style={stylesFooter.root} onPress={handlePress}>

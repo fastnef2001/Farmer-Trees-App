@@ -22,25 +22,23 @@ const GeneralStatistics = ({
   totalIncome,
   totalProfit,
 }: GeneralStatisticsProps) => {
-  const [chartExpense, setChartExpense] = React.useState(1);
-  const [chartProfit, setChartProfit] = React.useState(1);
-
   const formatTotalIncome = formatCurrency(totalIncome);
   const formatTotalExpense = formatCurrency(totalExpense);
   const formatTotalProfit = formatCurrency(totalProfit);
-  const widthAndHeight = 130;
-  useEffect(() => {
-    if (totalExpense !== 0) {
-      setChartExpense(totalExpense);
-    } else if (totalProfit !== 0) {
-      setChartProfit(totalProfit);
-    }
-  }, [totalExpense, totalIncome, totalProfit]);
-  if (chartProfit < 0) {
-    setChartProfit(0);
+  let colorProfit = COLORS.blue;
+  let colorExpense = COLORS.red;
+
+  let chartExpense = totalExpense;
+  let chartProfit = totalProfit >= 0 ? totalProfit : 0;
+
+  if (chartExpense === 0 && chartProfit === 0) {
+    chartProfit = 1;
+    chartExpense = 1;
+    colorExpense = COLORS.grey;
+    colorProfit = COLORS.grey;
   }
+  const sliceColor = [colorProfit, colorExpense];
   const series = [chartProfit, chartExpense];
-  const sliceColor = [COLORS.blue, COLORS.red];
   return (
     <View style={stylesFrame.root}>
       <View style={stylesHeader.root}>
@@ -51,7 +49,7 @@ const GeneralStatistics = ({
       <View style={stylesBody.root}>
         <View style={stylesChart.container}>
           <PieChart
-            widthAndHeight={widthAndHeight}
+            widthAndHeight={130}
             series={series}
             sliceColor={sliceColor}
             coverRadius={0.45}

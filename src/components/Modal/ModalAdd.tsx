@@ -79,8 +79,8 @@ export const ModalAdd = ({
     const handlePickDateFunc =
       titleModalAdd === ModalTypes.ADD_INCOME ||
       titleModalAdd === ModalTypes.EDIT_INCOME
-        ? () => handlePickDate('incomeDate')
-        : () => handlePickDate('expenseDate');
+        ? handlePickDate('incomeDate')
+        : handlePickDate('expenseDate');
 
     const selectedDate =
       titleModalAdd === ModalTypes.ADD_INCOME ||

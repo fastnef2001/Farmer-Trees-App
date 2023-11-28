@@ -45,10 +45,8 @@ export function UseLogic() {
   const [selectedDateEnd, setSelectedDateEnd] = useState('');
   const [selectedDateIncome, setSelectedDateIncome] = useState('');
   const [selectedDateExpense, setSelectedDateExpense] = useState('');
-  const [status, setStatus] = useState('');
+  const [titlePickDate, setTitlePickDate] = useState('');
   const [isModalPickDate, setIsModalPickDate] = useState(false);
-  const [isModalPickFilter, setIsModalPickFilter] = useState(false);
-  const [titlePickFilter, setTitlePickFilter] = useState('');
   const [valuePick, setValuePick] = useState('');
   const [isModalPick, setIsModalPick] = useState(false);
   const [titlePick, setTitlePick] = useState('');
@@ -62,10 +60,26 @@ export function UseLogic() {
   const [key, setKey] = useState('');
   const [itemExpense, setItemExpense] = useState<any>({});
   const [itemIncome, setItemIncome] = useState<any>({});
+  const [titleFooterModalSuccess, setTitleFooterModalSuccess] = useState('');
+  const [handleFunction, setHandleFunction] = useState(() => {});
   //CRUD INCOME AND EXPENSE
   useEffect(() => {
-    getItems('incomes', 'income', selectedDateStart, selectedDateEnd);
-    getItems('expenses', 'expense', selectedDateStart, selectedDateEnd);
+    getItems(
+      'incomes',
+      'income',
+      selectedDateStart,
+      selectedDateEnd,
+      selectedTreeOrCostType,
+      'tree',
+    );
+    getItems(
+      'expenses',
+      'expense',
+      selectedDateStart,
+      selectedDateEnd,
+      selectedTreeOrCostType,
+      'costType',
+    );
     getCostType();
     getUnitExpense();
     getUnitIncome();
@@ -102,6 +116,8 @@ export function UseLogic() {
         setTitleHeader('Successfully');
         setTitleBody('You have successfully added income');
         setIsModalSuccess(true);
+        setTitleFooterModalSuccess('');
+        setHandleFunction(() => {});
         setTimeout(() => {
           setIsModalSuccess(false);
         }, 5000);
@@ -119,6 +135,8 @@ export function UseLogic() {
         setTitleHeader('Successfully');
         setTitleBody('You have successfully added expense');
         setIsModalSuccess(true);
+        setTitleFooterModalSuccess('');
+        setHandleFunction(() => {});
         setTimeout(() => {
           setIsModalSuccess(false);
         }, 5000);
@@ -130,142 +148,54 @@ export function UseLogic() {
       }
     }
   };
+
+  const handleModalDeleteIncome = () => {
+    setIsModalSuccess(true);
+    setTitleHeader('Delete');
+    setTitleBody('Do you want to delete this income?');
+    setHandleFunction(() => () => handleDeleteIncome());
+    setTitleFooterModalSuccess('delete');
+  };
+
+  const handleModalDeleteExpense = () => {
+    setIsModalSuccess(true);
+    setTitleHeader('Delete');
+    setTitleBody('Do you want to delete this expense?');
+    setHandleFunction(() => () => handleDeleteExpense());
+    setTitleFooterModalSuccess('delete');
+  };
+
   const handleDeleteIncome = async () => {
     setIsModalDetail(false);
-    if (await deleteIncome(key)) {
-      setTitleBody('You have successfully deleted the income.');
-      setTitleHeader('Successfully');
+    setTimeout(() => {
+      setIsModalSuccess(false);
+    }, 100);
+
+    const isDeleteIncome = await deleteIncome(key);
+    if (isDeleteIncome) {
+      setTimeout(() => {
+        setTitleBody('You have successfully deleted the income.');
+        setTitleHeader('Successfully');
+        setTitleFooterModalSuccess('');
+        setIsModalSuccess(true);
+      }, 1000);
     }
-    setIsModalSuccess(true);
   };
   const handleDeleteExpense = async () => {
     setIsModalDetail(false);
-    if (await deleteExpense(key)) {
-      setTitleBody('You have successfully deleted the expense.');
-      setTitleHeader('Successfully');
-      setIsModalSuccess(true);
-    }
-  };
-  const handlePressDetail = (keyValue?: string, title?: string) => {
-    if (keyValue && title) {
-      if (title === 'Income history') {
-        setTitleDetail('Income Detail');
-        setItemIncome(dataIncome.find(item => item.key === (keyValue as any)));
-      } else if (title === 'Expense history') {
-        setTitleDetail('Expense Detail');
-        setItemExpense(
-          dataExpense.find(item => item.key === (keyValue as any)),
-        );
-      }
-      setKey(keyValue);
-    }
-    setIsModalDetail(!isModalDetail);
-  };
-
-  const handlePickDate = (text: string) => () => {
-    setIsModalPickDate(!isModalPickDate);
-    setStatus(text);
-  };
-  function getTimeNow() {
-    return `${new Date().getFullYear()}/${(new Date().getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}/${new Date().getDate().toString().padStart(2, '0')}`;
-  }
-  const timeNow = getTimeNow();
-
-  const handleModalAddItem = (title?: string) => {
-    if (title === 'Add income') {
-      setTitleModalAdd(title);
-      setSelectedDateIncome(timeNow);
-      setInputs([...inputsIncome]);
-    } else if (title === 'Add expense') {
-      setTitleModalAdd(title);
-      setSelectedDateExpense(timeNow);
-      setInputs([...inputsExpense]);
-    }
     setTimeout(() => {
-      setIsModalAdd(!isModaAdd);
-    }, 200);
-  };
+      setIsModalSuccess(false);
+    }, 100);
 
-  const handlePickItem = (value?: string) => {
-    setIsModalPick(!isModalPick);
-    if (titlePick === 'Pick tree' && value) {
-      setSelectedTreeOrCostType(value);
-      const newInputs = [...inputsIncome];
-      newInputs[0].value = value;
-      setTitlePick('Pick tree');
-    } else if (titlePick === 'Pick unit income' && value) {
-      const newInputs = [...inputsIncome];
-      newInputs[2].value = value;
-      setTitlePick('Pick unit income');
-    } else if (titlePick === 'Pick cost type' && value) {
-      setSelectedTreeOrCostType(value);
-      const newInputs = [...inputsExpense];
-      newInputs[0].value = value;
-      setTitlePick('Pick cost type');
-    } else if (titlePick === 'Pick unit expense' && value) {
-      const newInputs = [...inputsExpense];
-      newInputs[2].value = value;
-      setTitlePick('Pick unit expense');
+    const isDeleteExpense = await deleteExpense(key);
+    if (isDeleteExpense) {
+      setTimeout(() => {
+        setTitleBody('You have successfully deleted the expense.');
+        setTitleHeader('Successfully');
+        setTitleFooterModalSuccess('');
+        setIsModalSuccess(true);
+      }, 1000);
     }
-  };
-
-  const handleModalPickTree = () => {
-    const newInputs = [...inputsIncome];
-    setValuePick(newInputs[0].value);
-    setIsModalPick(!isModalPick);
-    setTitlePick('Pick tree');
-  };
-  const handleModalPickUnitIncome = () => {
-    const newInputs = [...inputsIncome];
-    setValuePick(newInputs[2].value);
-    setTitlePick('Pick unit income');
-    setIsModalPick(!isModalPick);
-  };
-  const handleModalPickCostType = () => {
-    const newInputs = [...inputsExpense];
-    setValuePick(newInputs[0].value);
-    setTitlePick('Pick cost type');
-    setIsModalPick(!isModalPick);
-  };
-  const handleModalPickUnitExpense = () => {
-    const newInputs = [...inputsExpense];
-    setValuePick(newInputs[2].value);
-    setTitlePick('Pick unit expense');
-    setIsModalPick(!isModalPick);
-  };
-  const handleInputChange = (index: any, value: any) => {
-    const newInputs = [...inputs];
-    newInputs[index].value = value;
-    newInputs[index].error = '';
-    setInputs(newInputs);
-  };
-  const handleModalEditIncome = () => {
-    setIsModalDetail(false);
-    setIsDisabled(!isDisabled);
-    setSelectedDateIncome(itemIncome?.date || '');
-    setTitleModalAdd('Edit income');
-    const newInputs = [...inputsIncome];
-    newInputs[0].value = itemIncome?.tree || '';
-    newInputs[1].value = itemIncome?.quantityInKilograms.toString();
-    newInputs[2].value = itemIncome?.unit || '';
-    newInputs[3].value = itemIncome?.totalPrice.toString();
-    setInputs(newInputs);
-    setIsModalAdd(!isModaAdd);
-  };
-  const handleModalEditExpense = () => {
-    setIsModalDetail(false);
-    setIsDisabled(!isDisabled);
-    setSelectedDateExpense(itemExpense?.date || '');
-    setTitleModalAdd('Edit expense');
-    const newInputs = [...inputsExpense];
-    newInputs[0].value = itemExpense?.costType || '';
-    newInputs[1].value = itemExpense?.quantity.toString();
-    newInputs[2].value = itemExpense?.unit || '';
-    newInputs[3].value = itemExpense?.totalPrice.toString();
-    setInputs(newInputs);
-    setIsModalAdd(!isModaAdd);
   };
   const handleEditItem = async (text: string) => {
     if (text === 'income') {
@@ -304,23 +234,130 @@ export function UseLogic() {
       }
     }
   };
-
-  //RELOAD
-  const handleReload = () => {
-    setSelectedDateStart('');
-    setSelectedDateEnd('');
-    setSelectedTreeOrCostType('');
+  // MODAL
+  const handleModalAddItem = (title?: string) => {
+    // RESSET INPUTS
+    const newInputs = [...inputs];
+    newInputs.forEach((input, index) => {
+      newInputs[index].value = '';
+      newInputs[index].error = '';
+    });
+    setInputs(newInputs);
+    if (title === 'Add income') {
+      setTitleModalAdd(title);
+      setSelectedDateIncome(timeNow);
+      setInputs([...inputsIncome]);
+    } else if (title === 'Add expense') {
+      setTitleModalAdd(title);
+      setSelectedDateExpense(timeNow);
+      setInputs([...inputsExpense]);
+    }
+    setTimeout(() => {
+      setIsModalAdd(!isModaAdd);
+    }, 200);
   };
-  //PICK FILTER
+  const handleModalEditIncome = () => {
+    setIsModalDetail(false);
+    setIsDisabled(!isDisabled);
+    setSelectedDateIncome(itemIncome?.date || '');
+    setTitleModalAdd('Edit income');
+    const newInputs = [...inputsIncome];
+    newInputs[0].value = itemIncome?.tree || '';
+    newInputs[1].value = itemIncome?.quantityInKilograms.toString();
+    newInputs[2].value = itemIncome?.unit || '';
+    newInputs[3].value = itemIncome?.totalPrice.toString();
+    setInputs(newInputs);
+    setIsModalAdd(!isModaAdd);
+  };
+  const handleModalEditExpense = () => {
+    setIsModalDetail(false);
+    setIsDisabled(!isDisabled);
+    setSelectedDateExpense(itemExpense?.date || '');
+    setTitleModalAdd('Edit expense');
+    const newInputs = [...inputsExpense];
+    newInputs[0].value = itemExpense?.costType || '';
+    newInputs[1].value = itemExpense?.quantity.toString();
+    newInputs[2].value = itemExpense?.unit || '';
+    newInputs[3].value = itemExpense?.totalPrice.toString();
+    setInputs(newInputs);
+    setIsModalAdd(!isModaAdd);
+  };
+  const handleModalPickTree = () => {
+    const newInputs = [...inputsIncome];
+    setValuePick(newInputs[0].value);
+    setIsModalPick(!isModalPick);
+    setTitlePick('Pick tree');
+  };
+  const handleModalPickUnitIncome = () => {
+    const newInputs = [...inputsIncome];
+    setValuePick(newInputs[2].value);
+    setTitlePick('Pick unit income');
+    setIsModalPick(!isModalPick);
+  };
+  const handleModalPickCostType = () => {
+    const newInputs = [...inputsExpense];
+    setValuePick(newInputs[0].value);
+    setTitlePick('Pick cost type');
+    setIsModalPick(!isModalPick);
+  };
+  const handleModalPickUnitExpense = () => {
+    const newInputs = [...inputsExpense];
+    setValuePick(newInputs[2].value);
+    setTitlePick('Pick unit expense');
+    setIsModalPick(!isModalPick);
+  };
   const handleModalPickFilter = (value?: string) => {
-    console.log(value);
-    setIsModalPickFilter(!isModalPickFilter);
-    if (value) {
+    if (value === 'income') {
+      setTitlePick('Pick tree filter');
+    } else if (value === 'expense') {
+      setTitlePick('Pick cost type filter');
+    }
+    setIsModalPick(!isModalPick);
+  };
+  const handlePickDate = (text: string) => () => {
+    setIsModalPickDate(!isModalPickDate);
+    setTitlePickDate(text);
+  };
+  const handlePickItem = (value?: string) => {
+    setIsModalPick(!isModalPick);
+    if (titlePick === 'Pick tree' && value) {
+      const newInputs = [...inputsIncome];
+      newInputs[0].value = value;
+    } else if (titlePick === 'Pick unit income' && value) {
+      const newInputs = [...inputsIncome];
+      newInputs[2].value = value;
+    } else if (titlePick === 'Pick cost type' && value) {
+      const newInputs = [...inputsExpense];
+      newInputs[0].value = value;
+    } else if (titlePick === 'Pick unit expense' && value) {
+      const newInputs = [...inputsExpense];
+      newInputs[2].value = value;
+    } else if (titlePick === 'Pick cost type filter' && value) {
+      setSelectedTreeOrCostType(value);
+    } else if (titlePick === 'Pick tree filter' && value) {
       setSelectedTreeOrCostType(value);
     }
-    if (titlePick) {
-      setTitlePickFilter(titlePick);
+  };
+  const handlePressDetail = (keyValue?: string, title?: string) => {
+    if (keyValue && title) {
+      if (title === 'Income history') {
+        setTitleDetail('Income Detail');
+        setItemIncome(dataIncome.find(item => item.key === (keyValue as any)));
+      } else if (title === 'Expense history') {
+        setTitleDetail('Expense Detail');
+        setItemExpense(
+          dataExpense.find(item => item.key === (keyValue as any)),
+        );
+      }
+      setKey(keyValue);
     }
+    setIsModalDetail(!isModalDetail);
+  };
+  const handleInputChange = (index: any, value: any) => {
+    const newInputs = [...inputs];
+    newInputs[index].value = value;
+    newInputs[index].error = '';
+    setInputs(newInputs);
   };
 
   // Handle general statistic
@@ -329,66 +366,79 @@ export function UseLogic() {
     setTotalProfit(totalIncome - totalExpense);
   }, [totalIncome, totalExpense]);
 
+  // Other
+  const handleReload = () => {
+    setSelectedDateStart('');
+    setSelectedDateEnd('');
+    setSelectedTreeOrCostType('');
+  };
+  function getTimeNow() {
+    return `${new Date().getFullYear()}/${(new Date().getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}/${new Date().getDate().toString().padStart(2, '0')}`;
+  }
+  const timeNow = getTimeNow();
   return {
-    selectedDateStart,
-    setSelectedDateStart,
-    selectedDateEnd,
-    setSelectedDateEnd,
-    selectedDateIncome,
-    setSelectedDateIncome,
-    selectedDateExpense,
-    setSelectedDateExpense,
-    handlePickDate,
-    handleReload,
-    totalIncome,
-    totalExpense,
-    totalProfit,
-    dataIncome,
-    dataExpense,
-    status,
-    setStatus,
-    isModalPickDate,
-    setIsModalPickDate,
-    selectedTreeOrCostType,
-    setSelectedTreeOrCostType,
-    isModalPickFilter,
-    titlePickFilter,
-    handleModalPickFilter,
-    handleModalAddItem,
-    isModaAdd,
-    titleModalAdd,
-    inputs,
-    handleModalPickTree,
-    handleModalPickCostType,
-    handleModalPickUnitExpense,
-    handleModalPickUnitIncome,
-    titlePick,
-    isModalPick,
-    valuePick,
-    handlePickItem,
-    handleInputChange,
-    isDisabled,
-    handleAdd,
-    isModalSuccess,
-    titleBody,
-    titleHeader,
-    isModalLoading,
-    setIsModalSuccess,
     trees,
     unitsIncome,
     unitsExpense,
     costTypes,
-    handlePressDetail,
+    isModalPickDate,
+    isModaAdd,
+    isModalPick,
+    isModalLoading,
     isModalDetail,
-    titleDetail,
-    key,
-    itemIncome,
-    itemExpense,
+    isModalSuccess,
+    isDisabled,
+    handleModalAddItem,
+    handleModalPickTree,
+    handleModalPickFilter,
+    handleModalPickCostType,
+    handleModalPickUnitExpense,
+    handleModalPickUnitIncome,
+    handleModalEditIncome,
+    handleModalEditExpense,
+    handlePressDetail,
+    handlePickDate,
+    handlePickItem,
+    handleReload,
+    handleInputChange,
     handleDeleteIncome,
     handleDeleteExpense,
-    handleModalEditExpense,
-    handleModalEditIncome,
+    handleAdd,
     handleEditItem,
+    handleFunction,
+    handleModalDeleteIncome,
+    handleModalDeleteExpense,
+    setIsModalPickDate,
+    setIsModalSuccess,
     setIsModalAdd,
+    titleBody,
+    titleHeader,
+    titleModalAdd,
+    titleDetail,
+    titlePick,
+    titlePickDate,
+    titleFooterModalSuccess,
+    selectedTreeOrCostType,
+    selectedDateStart,
+    selectedDateEnd,
+    selectedDateIncome,
+    selectedDateExpense,
+    setSelectedDateStart,
+    setSelectedDateEnd,
+    setSelectedDateIncome,
+    setSelectedDateExpense,
+    setSelectedTreeOrCostType,
+    itemIncome,
+    itemExpense,
+    dataIncome,
+    dataExpense,
+    totalIncome,
+    totalExpense,
+    totalProfit,
+    valuePick,
+    key,
+    inputs,
   };
 }

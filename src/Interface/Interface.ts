@@ -30,7 +30,7 @@ export interface DataIncomeInterface {
   key(key: any): void;
   tree: string;
   date: string;
-  quantityInKilograms: any;
+  quantity: any;
   totalPrice: any;
   unit: string;
 }

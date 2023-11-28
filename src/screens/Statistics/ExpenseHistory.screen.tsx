@@ -1,6 +1,6 @@
 //Libary
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 //Icon
 import IconSwitch from '../../assets/images/IconSwitch.svg';
@@ -16,60 +16,65 @@ import { FilterComponent } from '../../components/Statistics/Filter.component';
 import { HistoryElemment } from '../../components/Statistics/History.component';
 import { HeaderTitle } from '../../components/Header/Header.component';
 import { ModalDetail } from '../../components/Modal/ModalDetai';
-
+//STYLE
+import { stylesButtonReload, stylesFilter } from '../Statistics/Style';
+//USE LOGIC
 import { UseLogic } from './UseLogic';
 
 const ExpenseHistory = () => {
   const {
-    selectedDateStart,
-    setSelectedDateStart,
-    selectedDateEnd,
-    setSelectedDateEnd,
-    handlePickDate,
-    handleReload,
-    dataExpense,
-    status,
-    isModalPickDate,
-    setIsModalPickDate,
-    selectedTreeOrCostType,
-    isModaAdd,
-    titleModalAdd,
-    inputs,
-    handleInputChange,
-    isDisabled,
-    unitsIncome,
     trees,
-    costTypes,
+    unitsIncome,
     unitsExpense,
+    costTypes,
+    isModalPickDate,
+    isModaAdd,
+    isModalPick,
+    isModalLoading,
+    isModalDetail,
+    isModalSuccess,
+    isDisabled,
+    handleModalAddItem,
     handleModalPickTree,
-    handleModalPickUnitIncome,
     handleModalPickCostType,
     handleModalPickUnitExpense,
-    isModalPick,
-    titlePick,
-    valuePick,
-    selectedDateIncome,
-    setSelectedDateIncome,
-    selectedDateExpense,
-    setSelectedDateExpense,
-    handleAdd,
-    isModalSuccess,
-    setIsModalSuccess,
-    titleHeader,
-    titleBody,
-    isModalLoading,
-    //Delete
-    isModalDetail,
-    handlePressDetail,
-    handleDeleteExpense,
-    dataIncome,
-    handleModalAddItem,
-    handleEditItem,
-    itemIncome,
+    handleModalPickUnitIncome,
     handleModalEditExpense,
+    handlePressDetail,
+    handlePickDate,
     handlePickItem,
-    itemExpense,
+    handleReload,
+    handleInputChange,
+    handleModalDeleteExpense,
+    handleAdd,
+    handleEditItem,
+    handleModalPickFilter,
+    handleFunction,
+    setIsModalPickDate,
+    setIsModalSuccess,
     setIsModalAdd,
+    titleBody,
+    titleHeader,
+    titleModalAdd,
+    titlePick,
+    titlePickDate,
+    titleDetail,
+    titleFooterModalSuccess,
+    selectedTreeOrCostType,
+    selectedDateStart,
+    selectedDateEnd,
+    selectedDateIncome,
+    selectedDateExpense,
+    setSelectedDateStart,
+    setSelectedDateEnd,
+    setSelectedDateIncome,
+    setSelectedDateExpense,
+    itemIncome,
+    itemExpense,
+    dataIncome,
+    dataExpense,
+    valuePick,
+    inputs,
   } = UseLogic();
 
   return (
@@ -101,7 +106,9 @@ const ExpenseHistory = () => {
         <View style={{ height: 8 }} />
         <View style={stylesFilter.root}>
           <FilterComponent
-            onPress={handleModalPickCostType}
+            onPress={() => {
+              handleModalPickFilter('expense');
+            }}
             titleDate={selectedTreeOrCostType}
             isCalendar={false}
             isIncome={false}
@@ -135,7 +142,7 @@ const ExpenseHistory = () => {
       <ModalPickDate
         isModalPickDate={isModalPickDate}
         setIsModalPickDate={setIsModalPickDate}
-        status={status}
+        titlePickDate={titlePickDate}
         setSelectedDateStart={setSelectedDateStart}
         setSelectedDateEnd={setSelectedDateEnd}
         setSelectedDateIncome={setSelectedDateIncome}
@@ -172,13 +179,14 @@ const ExpenseHistory = () => {
         unitsExpense={unitsExpense}
         handlePickItem={handlePickItem}
       />
+
       <ModalDetail
+        handleModalDele={handleModalDeleteExpense}
         isModaDetail={isModalDetail}
         handlePressDetail={handlePressDetail}
-        titleDetail={'Expense Detail'}
+        titleDetail={titleDetail}
         itemIncome={itemIncome}
         itemExpense={itemExpense}
-        deleteItem={handleDeleteExpense}
         editItem={handleModalEditExpense}
       />
 
@@ -186,34 +194,14 @@ const ExpenseHistory = () => {
         isModalSuccess={isModalSuccess}
         titleHeader={titleHeader}
         titleBody={titleBody}
-        isFooter={false}
-        handleFunction={() => {}}
         handleModalSuccess={() => setIsModalSuccess(!isModalSuccess)}
+        handleFunction={handleFunction}
+        title={titleFooterModalSuccess}
       />
+
       <PopUpLoading isModalVisible={isModalLoading} />
     </>
   );
 };
-const stylesFilter = StyleSheet.create({
-  root: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    width: '90%',
-    alignSelf: 'center',
-  },
-});
-
-const stylesButtonReload = StyleSheet.create({
-  root: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#163859',
-    backgroundColor: '#ffffff',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default ExpenseHistory;

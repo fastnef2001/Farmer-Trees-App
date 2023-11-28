@@ -5,7 +5,7 @@ import IconCalendar from '../../assets/images/IconCalendar.svg';
 import { COLORS } from '../../theme/color';
 
 export type ButtonProps = {
-  onPress?: () => void;
+  onPress: () => void;
   titleDate?: string;
   isCalendar?: boolean;
   title?: string;
