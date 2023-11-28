@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import paypalApi from './paypalAPI';
 import queryString from 'query-string';
 import { Database } from '../../database/database';

@@ -1,20 +1,11 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StatusBar,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StatusBar } from 'react-native';
 import { PopUpLoading } from '../../components/Modal/GeneralPopUps.component';
 import Input from '../../components/Input/Input.component';
 import IconSignUp from '../../assets/images/IconSignUp.svg';
 import IconGoogle from '../../assets/images/IconGoogle.svg';
 import styles from './Style';
 import Logo55 from '../../assets/images/Logo55.svg';
-import { ModalLoading } from '../../components/Modal/ModalLoading';
 import { UseLogic } from './Login.useLogic';
 
 const RegistrationScreen = ({ navigation }: any) => {
@@ -57,8 +48,7 @@ const RegistrationScreen = ({ navigation }: any) => {
               />
             </View>
           ))}
-          <TouchableOpacity
-            onPress={() => navigation.navigate('ForgotPasswordScreen')}>
+          <TouchableOpacity>
             <Text style={styles.forgotPasswordText}>Forgot password?</Text>
           </TouchableOpacity>
         </View>

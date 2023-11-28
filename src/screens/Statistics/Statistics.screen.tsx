@@ -21,8 +21,10 @@ import { ModalDetail } from '../../components/Modal/ModalDetai';
 import { stylesButtonReload, stylesFilter } from '../Statistics/Style';
 // USE LOGIC
 import { UseLogic } from './UseLogic';
+import { HandleExcel } from './HandleExcel';
 
 const Statistics = ({ navigation }: any) => {
+  const { createAndShareExcel } = HandleExcel();
   const {
     trees,
     unitsIncome,
@@ -37,7 +39,6 @@ const Statistics = ({ navigation }: any) => {
     isDisabled,
     handleModalAddItem,
     handleModalPickTree,
-    // handleModalPickCostType,
     handleModalPickUnitExpense,
     handleModalPickUnitIncome,
     handleModalEditIncome,
@@ -135,6 +136,9 @@ const Statistics = ({ navigation }: any) => {
           title="Income history"
           isIncome={true}
           handlePressDetail={handlePressDetail}
+          handleExportExcel={() => {
+            createAndShareExcel('income');
+          }}
         />
         <HistoryComponent
           handlePress={() => navigation.navigate('ExpenseHistory')}
@@ -143,6 +147,9 @@ const Statistics = ({ navigation }: any) => {
           title="Expense history"
           isIncome={false}
           handlePressDetail={handlePressDetail}
+          handleExportExcel={() => {
+            createAndShareExcel('expense');
+          }}
         />
       </ScrollView>
 

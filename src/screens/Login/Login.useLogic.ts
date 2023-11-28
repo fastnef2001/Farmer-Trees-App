@@ -2,7 +2,6 @@ import { useState } from 'react';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Database } from '../../database/database';
-import { set } from 'date-fns';
 
 export function UseLogic({ navigation }: any) {
   const { checkEmailExist, checkFarmNameExist, signOut } = Database();

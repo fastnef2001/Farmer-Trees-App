@@ -7,15 +7,11 @@ import RegistrationScreen from '../screens/Login/Registration.screen';
 import LoginScreen from '../screens/Login/Login.screen';
 import ChatAIScreen from '../screens/ChatAI/ChatAI.screen';
 import Statistics from '../screens/Statistics/Statistics.screen';
-import ForgotPassword from '../screens/Password/ForgotPassword.sceen';
 import Profile from '../screens/Profile/Profile.screen';
-import OTPScreen from '../screens/Password/OTP.screen';
-import ChangePassword from '../screens/Password/ChangePassword.screen';
-import Icon from 'react-native-vector-icons/Ionicons';
 import AddTree from '../screens/Setupfarm/Addtree.screen';
 import Farmname from '../screens/Setupfarm/Farmname.screen';
 import YourFarm from '../screens/YourFarm/YourFarm.screen';
-import { StatusBar, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import IncomeHistory from '../screens/Statistics/IncomeHistory.screen';
 import ExpenseHistory from '../screens/Statistics/ExpenseHistory.screen';
@@ -91,63 +87,6 @@ export function MyTabs() {
   );
 }
 
-export const MainNavigation = () => {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen
-        name="LoginScreen"
-        options={{ headerShown: false }}
-        component={LoginScreen}
-      />
-      <Stack.Screen
-        name="RegistrationScreen"
-        options={{ headerShown: false }}
-        component={RegistrationScreen}
-      />
-      <Stack.Screen
-        name="ForgotPasswordScreen"
-        options={{ headerShown: false }}
-        component={ForgotPassword}
-      />
-      <Stack.Screen
-        name="OTPScreen"
-        options={{ headerShown: false }}
-        component={OTPScreen}
-      />
-      <Stack.Screen
-        name="ChangePassword"
-        options={{ headerShown: false }}
-        component={ChangePassword}
-      />
-      <Stack.Screen
-        name="AddTree"
-        options={{ headerShown: false }}
-        component={AddTree}
-      />
-      <Stack.Screen
-        name="Farmname"
-        options={{ headerShown: false }}
-        component={Farmname}
-      />
-      <Stack.Screen
-        name="YourFarm"
-        options={{ headerShown: false }}
-        component={YourFarm}
-      />
-      <Stack.Screen
-        name="Profile"
-        options={{ headerShown: false }}
-        component={Profile}
-      />
-      <Stack.Screen
-        name="IncomeHistory"
-        options={{ headerShown: false }}
-        component={IncomeHistory}
-      />
-    </Stack.Navigator>
-  );
-};
-
 const AppNavigator = () => {
   const user = auth().currentUser;
   console.log('user', user);
@@ -186,21 +125,6 @@ const AppNavigator = () => {
           name="RegistrationScreen"
           options={{ headerShown: false }}
           component={RegistrationScreen}
-        />
-        <Stack.Screen
-          name="ForgotPasswordScreen"
-          options={{ headerShown: false }}
-          component={ForgotPassword}
-        />
-        <Stack.Screen
-          name="OTPScreen"
-          options={{ headerShown: false }}
-          component={OTPScreen}
-        />
-        <Stack.Screen
-          name="ChangePassword"
-          options={{ headerShown: false }}
-          component={ChangePassword}
         />
         <Stack.Screen
           name="AddTree"

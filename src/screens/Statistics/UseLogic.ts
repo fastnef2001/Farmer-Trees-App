@@ -107,6 +107,7 @@ export function UseLogic() {
     getTrees,
     inputs,
   ]);
+  console.log('dataIncome', dataIncome);
   const handleAdd = async (text: string) => {
     if (text === 'income') {
       setIsModalLoading(true);
@@ -440,5 +441,8 @@ export function UseLogic() {
     valuePick,
     key,
     inputs,
+    setTitleFooterModalSuccess,
+    setTitleBody,
+    setTitleHeader,
   };
 }

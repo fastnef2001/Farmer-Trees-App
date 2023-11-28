@@ -16,6 +16,7 @@ export type HistoryProps = {
   isIncome: boolean;
   handlePress: () => void;
   handlePressDetail: (key?: string, title?: string) => void;
+  handleExportExcel?: () => void;
 };
 
 export const HistoryComponent = ({
@@ -25,6 +26,7 @@ export const HistoryComponent = ({
   isIncome,
   handlePress,
   handlePressDetail,
+  handleExportExcel,
 }: HistoryProps) => {
   let data = isIncome ? dataIncome : dataExpense;
   data = data.slice(0, 5);
@@ -33,7 +35,9 @@ export const HistoryComponent = ({
     <View style={isIncome ? stylesHistory.root : stylesHistory.root1}>
       <View style={stylesHeader.root}>
         <Text style={stylesHeader.generalStatistics}>{title}</Text>
-        <Text style={stylesHeader.exportExcel}>Export excel</Text>
+        <TouchableOpacity onPress={handleExportExcel}>
+          <Text style={stylesHeader.exportExcel}>Export excel</Text>
+        </TouchableOpacity>
       </View>
       <View style={{ height: 16 }} />
       {data.length > 0 ? (
