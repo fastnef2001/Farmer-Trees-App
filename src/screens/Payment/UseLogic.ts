@@ -18,11 +18,12 @@ export function UseLogic() {
   const onPressPaypal = async () => {
     setLoading(true);
     try {
-      const token = await paypalApi.generateToken();
-      const res: any = await paypalApi.createOrder(token);
+      const token = await paypalApi.generateToken(); // Create token from PayPal API
+      const res: any = await paypalApi.createOrder(token); // Create order from PayPal API
       setAccessToken(token);
       setLoading(false);
       if (res?.links) {
+        // Get the link from the response
         const findUrl = res.links.find(
           (data: { rel: string }) => data?.rel == 'approve',
         );
@@ -34,11 +35,14 @@ export function UseLogic() {
     }
   };
 
+  // Function to handle when URL changes in webview
   const onUrlChange = (webviewState: any) => {
+    // Check if URL contains 'cancel'
     if (webviewState.url.includes('https://example.com/cancel')) {
       clearPaypalState();
       return;
     }
+    // Check if the URL contains information about payment completion
     if (webviewState.url.includes('https://example.com/return')) {
       const urlValues = queryString.parseUrl(webviewState.url);
       setIsModalSuccess(true);

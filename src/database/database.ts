@@ -459,7 +459,7 @@ export function Database() {
           .collection(collectionName1)
           .doc(auth().currentUser?.uid)
           .collection(collectionName2)
-          .orderBy('timestamp', 'asc');
+          .orderBy('timestamp', 'desc');
 
         if (selectedDateStart) {
           subscriberCollection = subscriberCollection.where(

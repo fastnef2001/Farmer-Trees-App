@@ -5,7 +5,7 @@ let clientId =
   'AcZShnSu5qkcp40PU7VBYph4K32HHGcJ5i2LwdoUvN2HEO1oV1e0jRlDv8RVicEugJ3Tt2SE7SO7kcj7';
 let secretKey =
   'EAMnXVPaXsMZNdyiPpmGZ_CYkMdH1cMKRkHnHg1ZTZv5En83LQ_PTLDNnnpvXRPEUZo1i2XRSJw7KZIX';
-
+// Define order details to create in PayPal
 let orderDetail = {
   intent: 'CAPTURE',
   purchase_units: [
@@ -34,32 +34,33 @@ let orderDetail = {
     },
   ],
   application_context: {
-    return_url: 'https://example.com/return',
-    cancel_url: 'https://example.com/cancel',
+    return_url: 'https://example.com/return', // URL to redirect to after payment success
+    cancel_url: 'https://example.com/cancel', // URL to redirect to after payment failure
   },
 };
-
+// Function to create authentication token from PayPal API
 const generateToken = () => {
+  // Create headers containing authentication information to send requests
   var headers = new Headers();
   headers.append('Content-Type', 'application/x-www-form-urlencoded');
   headers.append(
     'Authorization',
     `Basic ${base64.encode(`${clientId}:${secretKey}`)}`,
   );
-
+  // Create a POST request to the PayPal API to get the authentication token
   var requestOptions = {
     method: 'POST',
     headers: headers,
     body: 'grant_type=client_credentials',
   };
-
+  // Returns a Promise with the result from sending the request to get the token
   return new Promise((resolve, reject) => {
     fetch(`${baseUrl}/v1/oauth2/token`, requestOptions)
       .then(response => response.text())
       .then(result => {
         console.log('result print', result);
         const { access_token } = JSON.parse(result);
-        resolve(access_token);
+        resolve(access_token); // Return the token
       })
       .catch(error => {
         console.log('error raised', error);
@@ -84,7 +85,7 @@ const createOrder = (token: any = '') => {
       .then(result => {
         console.log('result print', result);
         const res = JSON.parse(result);
-        resolve(res);
+        resolve(res); // Return the order details
       })
       .catch(error => {
         console.log('error raised', error);
@@ -92,7 +93,7 @@ const createOrder = (token: any = '') => {
       });
   });
 };
-
+// Function to confirm payment for a specific order based on the order id
 const capturePayment = (id: any, token = '') => {
   var requestOptions = {
     method: 'POST',
@@ -108,7 +109,7 @@ const capturePayment = (id: any, token = '') => {
       .then(result => {
         console.log('result print', result);
         const res = JSON.parse(result);
-        resolve(res);
+        resolve(res); // Returns details about the payment confirmation as received from the PayPal API
       })
       .catch(error => {
         console.log('error raised', error);

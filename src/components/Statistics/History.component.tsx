@@ -108,7 +108,6 @@ export const HistoryElemment = ({
   isIncome,
   handlePressDetail,
 }: HistoryProps) => {
-  // nếu là income thì lấy dataIncome, ngược lại lấy dataExpense
   const data = isIncome ? dataIncome : dataExpense;
 
   return (
@@ -132,7 +131,7 @@ export const HistoryElemment = ({
             <View style={stylesContent.root}>
               {isIncome ? (
                 <Text style={stylesContent.titleQuantity}>
-                  {item.quantityInKilograms} kg
+                  {item.quantity} {item.unit}
                 </Text>
               ) : (
                 <Text style={stylesContent.titleQuantity}>

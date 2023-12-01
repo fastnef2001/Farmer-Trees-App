@@ -45,6 +45,7 @@ const WeatherComponent = () => {
 
   useEffect(() => {
     fetchLocationData();
+    // Call the fetchLocationData() function every 20 seconds to continuously update weather data
     const intervalId = setInterval(() => {
       fetchLocationData();
     }, 20000);

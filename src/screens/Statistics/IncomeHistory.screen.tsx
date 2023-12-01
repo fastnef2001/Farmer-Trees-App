@@ -45,8 +45,8 @@ const IncomeHistory = () => {
     handleInputChange,
     handleAdd,
     handleEditItem,
-    handleModalDeleteExpense,
-    handleModalEditExpense,
+    handleModalDeleteIncome,
+    handleModalEditIncome,
     handleFunction,
     handleModalPickFilter,
     titleFooterModalSuccess,
@@ -180,13 +180,13 @@ const IncomeHistory = () => {
       />
 
       <ModalDetail
-        handleModalDele={handleModalDeleteExpense}
+        handleModalDele={handleModalDeleteIncome}
         isModaDetail={isModalDetail}
         handlePressDetail={handlePressDetail}
         titleDetail={titleDetail}
         itemIncome={itemIncome}
         itemExpense={itemExpense}
-        editItem={handleModalEditExpense}
+        editItem={handleModalEditIncome}
       />
 
       <PopUpSuccess

@@ -12,8 +12,10 @@ export function UseLogic() {
     chekIsPayment();
   }, [chekIsPayment]);
 
-  const apiKey = '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';
+  const apiKey = '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';
   const apiUrl = 'https://api.openai.com/v1/completions';
+
+  // Initialize some sample data when the component is first rendered
   useEffect(() => {
     setData([
       {
@@ -22,10 +24,13 @@ export function UseLogic() {
       },
     ]);
   }, []);
+
+  // Function sends message from user to bot and handles response
   const sendUserMessage = async () => {
     if (textInput.trim() === '') {
       return;
     }
+    // Add user messages to display data
     setData([
       ...data,
       {
@@ -39,6 +44,7 @@ export function UseLogic() {
     ]);
     const prompt = textInput;
     setTextInput('');
+    // Send a request to OpenAI's API to receive a response from the bot
     const response = await axios.post(
       apiUrl,
       {
@@ -56,6 +62,7 @@ export function UseLogic() {
       },
     );
     const text = response.data.choices[0].text;
+    // Add bot messages to display data
     setData([
       ...data,
       {
