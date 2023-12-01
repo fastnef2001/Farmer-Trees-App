@@ -18,7 +18,6 @@ export function UseLogic() {
   const onPressPaypal = async () => {
     setLoading(true);
     try {
-      console.log('1');
       const token = await paypalApi.generateToken();
       const res: any = await paypalApi.createOrder(token);
       setAccessToken(token);

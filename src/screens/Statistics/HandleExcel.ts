@@ -3,7 +3,7 @@ import { Database } from '../../database/database';
 import XLSX from 'xlsx';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
-import { Alert } from 'react-native';
+import { Alert, PermissionsAndroid } from 'react-native';
 export function HandleExcel() {
   const { getItems, dataIncome, dataExpense } = Database();
   let nameFile = '';
@@ -11,8 +11,6 @@ export function HandleExcel() {
     getItems('incomes', 'income', '', '', '', 'tree');
     getItems('expenses', 'expense', '', '', '', 'tree');
   }, [getItems]);
-  console.log('dataIncome', dataIncome);
-  console.log('dataExpense', dataExpense);
   const dataToExport: any[][] = [];
   const headerIncome = [
     'Date',
@@ -64,30 +62,51 @@ export function HandleExcel() {
         dataToExport.push(formattedData);
       }
     }
+    console.log(nameFile);
+    console.log(dataToExport);
     const workbook = convertToXLSX(dataToExport);
     const excelBuffer = XLSX.write(workbook, { type: 'base64' });
-    const pathToWrite = `${RNFS.DownloadDirectoryPath}/${nameFile}.xlsx`;
+    const pathToWrite = `${RNFS.DocumentDirectoryPath}/${nameFile}.xlsx`;
+
     try {
-      await RNFS.writeFile(pathToWrite, excelBuffer, 'base64');
-      Alert.alert('Download Success', 'Do you want to share this file?', [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () => {
-            Share.open({
-              url: `file://${pathToWrite}`,
-              type: 'application/vnd.ms-excel',
-              title: 'Share File',
-            });
-          },
-        },
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
       ]);
-    } catch (error) {
-      return;
+      if (
+        granted['android.permission.WRITE_EXTERNAL_STORAGE'] ===
+          PermissionsAndroid.RESULTS.GRANTED &&
+        granted['android.permission.READ_EXTERNAL_STORAGE'] ===
+          PermissionsAndroid.RESULTS.GRANTED
+      ) {
+        try {
+          await RNFS.writeFile(pathToWrite, excelBuffer, 'base64');
+          Alert.alert('Download Success', 'Do you want to share this file?', [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            {
+              text: 'OK',
+              onPress: () => {
+                Share.open({
+                  url: `file://${pathToWrite}`,
+                  type: 'application/vnd.ms-excel',
+                  title: 'Share File',
+                });
+              },
+            },
+          ]);
+        } catch (error) {
+          console.log(error);
+          return;
+        }
+      } else {
+        console.log('Permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
     }
   };
   return {

@@ -264,7 +264,7 @@ export function UseLogic() {
     setTitleModalAdd('Edit income');
     const newInputs = [...inputsIncome];
     newInputs[0].value = itemIncome?.tree || '';
-    newInputs[1].value = itemIncome?.quantityInKilograms.toString();
+    newInputs[1].value = itemIncome?.quantity.toString();
     newInputs[2].value = itemIncome?.unit || '';
     newInputs[3].value = itemIncome?.totalPrice.toString();
     setInputs(newInputs);

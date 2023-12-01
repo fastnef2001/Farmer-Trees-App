@@ -43,7 +43,7 @@ const GeneralStatistics = ({
     <View style={stylesFrame.root}>
       <View style={stylesHeader.root}>
         <Text style={stylesHeader.generalStatistics}>General Statistics</Text>
-        <Text style={stylesHeader.exportExcel}>Export excel</Text>
+        <Text style={stylesHeader.exportExcel}></Text>
       </View>
       <View style={{ height: 16 }} />
       <View style={stylesBody.root}>

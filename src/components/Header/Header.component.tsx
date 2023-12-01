@@ -7,11 +7,10 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { styles, stylesHeaderTitle } from './Header.styles';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import Logo35 from '../../assets/images/Logo72.svg';
 import IconBackWhite40 from '../../assets/images/IconBackWhite40.svg';
 import IconPlusWhite40 from '../../assets/images/IconPlusWhite40.svg';
@@ -26,9 +25,11 @@ export const HeaderComponent = ({ onPress }: ButtonProps) => {
   const user = auth().currentUser;
   let fullName = '';
   let avatar = '';
+
   useEffect(() => {
     getInforUser();
   }, [getInforUser]);
+  console.log('userInfors', userInfors);
 
   userInfors.forEach((userInfor: any) => {
     fullName = userInfor.fullName;

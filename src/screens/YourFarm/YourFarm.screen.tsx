@@ -143,7 +143,7 @@ const YourFarm = ({ navigation }: any) => {
             <ScrollView>
               <ModalInsert.Body>
                 <View style={styleAddtree.root}>
-                  {selectImage ? (
+                  {selectImage !== '' ? (
                     <Image
                       style={{ height: 80, width: 80, borderRadius: 12 }}
                       source={{

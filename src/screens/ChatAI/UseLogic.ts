@@ -12,7 +12,7 @@ export function UseLogic() {
     chekIsPayment();
   }, [chekIsPayment]);
 
-  const apiKey = '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';
+  const apiKey = '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';
   const apiUrl = 'https://api.openai.com/v1/completions';
   useEffect(() => {
     setData([

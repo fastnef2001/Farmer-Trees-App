@@ -12,6 +12,17 @@ export function UseLogic({ navigation }: any) {
     { label: 'Password', value: '', error: '' },
   ]);
 
+  navigation.addListener('focus', () => {
+    setErrorText('');
+    setInputs(
+      inputs.map(input => ({
+        ...input,
+        value: '',
+        error: '',
+      })),
+    );
+  });
+
   GoogleSignin.configure({
     webClientId:
       '159898876320-kqda9k08g543vj86cqqq9ck78ismjiog.apps.googleusercontent.com',
@@ -75,7 +86,7 @@ export function UseLogic({ navigation }: any) {
         passwordInput?.value,
       );
       setIsModalVisibleLoading(false);
-      // checkFarmName();
+      checkFarmName();
     } catch (error: any) {
       if (error.code === 'auth/wrong-password') {
         setInputs(
@@ -85,9 +96,9 @@ export function UseLogic({ navigation }: any) {
           })),
         );
       } else {
-        setIsModalVisibleLoading(false);
         setErrorText('Sign in failed. Please check again.');
       }
+      setIsModalVisibleLoading(false);
     }
   };
 

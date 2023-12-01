@@ -38,7 +38,7 @@ import { UseLogic } from './UserLogic';
 
 const Profile = ({ navigation }: any) => {
   const {
-    handleLogOut,
+    signOut,
     fullName,
     email,
     avatar,
@@ -151,7 +151,7 @@ const Profile = ({ navigation }: any) => {
             <IconDetailBold />
           </TouchableOpacity>
           <View style={{ height: 16 }} />
-          <TouchableOpacity style={styleElement2.item} onPress={handleLogOut}>
+          <TouchableOpacity style={styleElement2.item} onPress={signOut}>
             <IconLogOut40 />
             <View style={{ width: 16 }} />
             <View style={styleElement2.content}>

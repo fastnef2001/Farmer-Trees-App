@@ -8,16 +8,15 @@ import { stylesFarmname } from './Style';
 import { UselogicFarmname } from './UseLogic';
 
 const Farmname = ({ navigation }: any) => {
-  const { signOut, handleInputChangeFarmName, saveFarmName } = UselogicFarmname(
-    { navigation },
-  );
+  const { handleInputChangeFarmName, saveFarmName, handleLogOut } =
+    UselogicFarmname({ navigation });
   return (
     <>
       <HeaderComponent />
       <View style={stylesFarmname.container}>
         {/* Title */}
         <View style={stylesFarmname.headSession}>
-          <TouchableOpacity onPress={signOut}>
+          <TouchableOpacity onPress={handleLogOut}>
             <IconBack />
           </TouchableOpacity>
           <View style={{ width: 8 }} />

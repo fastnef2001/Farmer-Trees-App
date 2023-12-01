@@ -222,11 +222,18 @@ export const UselogicFarmname = ({ navigation }: any) => {
     setFarmName(text);
   };
 
+  const handleLogOut = async () => {
+    signOut();
+    console.log('signOut');
+    navigation.navigate('LoginScreen');
+  };
+
   return {
     farmName,
     handleInputChangeFarmName,
     signOut,
     saveFarmName,
     errorName,
+    handleLogOut,
   };
 };

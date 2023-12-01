@@ -66,12 +66,6 @@ export function UseLogic(navigation: any) {
     }
   };
 
-  // HANDLE LOGOUT
-  const handleLogOut = async () => {
-    signOut();
-    navigation.navigate('LoginScreen');
-  };
-
   // HANDLE MODAL
   const handleModalSuccessEditProfile = () => {
     setIsModalSuccess(() => true);
@@ -112,7 +106,7 @@ export function UseLogic(navigation: any) {
   };
 
   return {
-    handleLogOut,
+    signOut,
     fullName,
     email,
     avatar,

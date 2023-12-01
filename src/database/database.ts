@@ -4,6 +4,8 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 const { format } = require('date-fns');
+import RNRestart from 'react-native-restart';
+
 import {
   TreeInterface,
   UnitInterface,
@@ -169,10 +171,11 @@ export function Database() {
   };
   //LOGOUT
   const signOut = async () => {
-    await GoogleSignin.revokeAccess();
-    await GoogleSignin.signOut();
     try {
       await auth().signOut();
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+      RNRestart.Restart();
       return true;
     } catch (error) {
       return false;
@@ -456,7 +459,7 @@ export function Database() {
           .collection(collectionName1)
           .doc(auth().currentUser?.uid)
           .collection(collectionName2)
-          .orderBy('timestamp', 'desc');
+          .orderBy('timestamp', 'asc');
 
         if (selectedDateStart) {
           subscriberCollection = subscriberCollection.where(
@@ -635,7 +638,7 @@ export function Database() {
       const date = selectedDateExpense;
       const costType = inputs[0].value;
       const quantity = Number(inputs[1].value);
-      const unit = inputs[2].value.toLowerCase();
+      const unit = inputs[2].value;
       const totalPrice = Number(inputs[3].value);
       const month = changeMonthToSrting(date.slice(5, 7));
       const timestamp = convertTotimestamp(selectedDateExpense);
