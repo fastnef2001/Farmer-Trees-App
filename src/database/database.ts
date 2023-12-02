@@ -175,9 +175,12 @@ export function Database() {
       await auth().signOut();
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
+      console.log('logout');
       RNRestart.Restart();
       return true;
     } catch (error) {
+      RNRestart.Restart();
+      console.log('error', error);
       return false;
     }
   };
