@@ -120,7 +120,6 @@ export function Database() {
   //CHECK CHECK PHONE NUMBER EXIST
   const checkFarmNameExist = async () => {
     try {
-      // check xem usser dang dang nhap co farmName hay chua
       const user = await firestore()
         .collection('users')
         .doc(auth().currentUser?.uid)
